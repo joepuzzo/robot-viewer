@@ -2,12 +2,20 @@ import React, { useState } from 'react';
 import AppContext from '../context/AppContext';
 import Kinematics from 'kinematics';
 
+// const geometry = [
+//   [0, 2, 0], // V0: 0x 2y
+//   [0, 2, 0], // V1: 0x 2y
+//   [2, 0, 0], // V2: 0x 2y
+//   [2, 0, 0], // V3: 2x 0y
+//   [0, -2, 0], // V4: 0x 2y
+// ];
+
 const geometry = [
-  [0, 2, 0], // V0: 0x 2y
-  [0, 2, 0], // V1: 0x 2y
-  [2, 0, 0], // V2: 0x 2y
+  [0, 0, 2], // V0: 0x 2y
+  [0, 0, 2], // V1: 0x 2y
+  [0, 0, 2], // V2: 0x 2y
   [2, 0, 0], // V3: 2x 0y
-  [0, -2, 0], // V4: 0x 2y
+  [0, 2, 0], // V4: 0x 2y
 ];
 
 const RobotKin = new Kinematics.default(geometry);
