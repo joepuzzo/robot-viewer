@@ -17,7 +17,7 @@ import { Arm } from '../3D/Arm';
 const Robot = () => {
   const { values } = useFormState();
   return (
-    <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [1, 5, 5] }}>
+    <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [15, 8, 8], zoom: 1 }}>
       <OrbitControls />
       <ambientLight intensity={0.5} />
       <directionalLight position={[-2, 5, 2]} intensity={1} />

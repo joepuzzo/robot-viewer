@@ -39,6 +39,60 @@ export const Nav = () => {
           maxValue={5}
           step={0.01}
         />
+        <InputSlider
+          name="v0"
+          label="V0"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
+          name="v1"
+          label="V1"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
+          name="v2"
+          label="V2"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
+          name="j0"
+          label="J0"
+          type="number"
+          initialValue={2}
+          minValue={0}
+          maxValue={Math.PI * 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j1"
+          label="J1"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={Math.PI * 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j2"
+          label="J2"
+          type="number"
+          initialValue={0.5}
+          minValue={0}
+          maxValue={Math.PI * 2}
+          step={0.01}
+        />
       </ul>
     </nav>
   );
