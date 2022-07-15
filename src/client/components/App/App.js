@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { defaultTheme, Provider } from '@adobe/react-spectrum';
 import { OrbitControls } from '@react-three/drei';
-import { FormProvider, useFormState } from 'informed';
+import { Debug, FormProvider, useFormState } from 'informed';
 
 // Hooks
 import useApp from '../../hooks/useApp';
@@ -14,17 +14,28 @@ import { Canvas } from '@react-three/fiber';
 import { Box } from '../3D/Box';
 import { Arm } from '../3D/Arm';
 
-const Robot = () => {
+const Robot = ({ config }) => {
   const { values } = useFormState();
+  const { RobotKin } = useApp();
+
+  const { j0, j1, j2, j3, j4, j5 } = values;
+
+  const angles = [j0, j1, j2, j3, j4, j5];
+
+  const pos = RobotKin.forward(...angles)[5].map((a) => Math.round(a));
+
   return (
-    <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [15, 10, 8], zoom: 1 }}>
-      <OrbitControls />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[-2, 5, 2]} intensity={1} />
-      <Suspense fallback={null}>
-        <Box values={values} />
-      </Suspense>
-    </Canvas>
+    <>
+      <h3>{JSON.stringify(pos)}</h3>
+      <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [15, 10, 8], zoom: 1 }}>
+        <OrbitControls />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[-2, 5, 2]} intensity={1} />
+        <Suspense fallback={null}>
+          <Box values={values} />
+        </Suspense>
+      </Canvas>
+    </>
   );
 };
 
@@ -45,13 +56,14 @@ const App = () => {
 
   return (
     <Provider theme={defaultTheme} colorScheme={colorScheme}>
-      <FormProvider>
+      <FormProvider initialValues={config}>
         <Header />
         <Nav />
         <main>
           <h1>Robot Viewer</h1>
           <h2>Health Check {data.status}</h2>
-          <Robot />
+          {/* <Debug /> */}
+          <Robot config={config} />
           {/* <Canvas>
           <Suspense fallback={null}>
             <ambientLight intensity={0.5} />

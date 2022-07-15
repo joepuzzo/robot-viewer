@@ -103,7 +103,9 @@ export function Box({ values }) {
         name="base"
         setSelected={setSelected}
         selected={selected}
+        position={[0, base / 2, 0]}
         args={[1, 1.5, base, 32]}
+        rotation={[0, Math.PI * 1.5, 0]}
       >
         <Component
           name="j0"
