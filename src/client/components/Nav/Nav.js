@@ -129,6 +129,15 @@ export const Nav = () => {
           maxValue={Math.PI / 2}
           step={0.01}
         />
+        <InputSlider
+          name="j5"
+          label="J5"
+          type="number"
+          initialValue={0}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
       </ul>
     </nav>
   );

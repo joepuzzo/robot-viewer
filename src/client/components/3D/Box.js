@@ -13,6 +13,24 @@ import Grid from './Grid';
 //   );
 // };
 
+const Tool = ({ name, setSelected, selected, args, grid, position, ...props }) => {
+  const mesh = useRef();
+
+  // Set up state for the hovered and active state
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+
+  return (
+    <group ref={mesh} position={position} {...props}>
+      <mesh onPointerOver={(event) => setHover(true)} onPointerOut={(event) => setHover(false)}>
+        <cylinderGeometry args={args} />
+        <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
+      </mesh>
+      {grid ? <Grid size={1} /> : null}
+    </group>
+  );
+};
+
 const Component = ({
   children,
   name,
@@ -67,20 +85,20 @@ const Component = ({
           <meshStandardMaterial color={color} />
         </mesh>
         {children}
-        {grid ? <Grid /> : null}
+        {grid ? <Grid size={3} /> : null}
       </group>
     );
   }
 };
 
 export function Box({ values }) {
-  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4 } = values;
+  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5 } = values;
 
   const [selected, setSelected] = useState();
 
   return (
     <>
-      <Grid />
+      <Grid size={10} />
       <Component
         name="base"
         setSelected={setSelected}
@@ -170,7 +188,27 @@ export function Box({ values }) {
                             rotation={[0, 0, Math.PI / 2]}
                             args={[1, 1, v4, 32]}
                             position={[v4 / 2 + 1, 0, 0]}
-                          ></Component>
+                          >
+                            <Component
+                              name="j5"
+                              rotation={[0, j5, 0]}
+                              setSelected={setSelected}
+                              selected={selected}
+                              args={[1, 1, 1, 32]}
+                              position={[0, -(v4 / 2 + 0.5), 0]}
+                              // grid
+                            >
+                              <Tool
+                                name="tool"
+                                rotation={[0, j5, 0]}
+                                setSelected={setSelected}
+                                selected={selected}
+                                args={[0.5, 0.5, 1, 32]}
+                                position={[0, -1, 0]}
+                                grid
+                              />
+                            </Component>
+                          </Component>
                         </Component>
                       </Component>
                     </Component>
