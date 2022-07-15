@@ -67,12 +67,30 @@ export const Nav = () => {
           step={0.01}
         />
         <InputSlider
+          name="v3"
+          label="V3"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
+          name="v4"
+          label="V4"
+          type="number"
+          initialValue={1}
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
           name="j0"
           label="J0"
           type="number"
           initialValue={2}
-          minValue={0}
-          maxValue={Math.PI * 2}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
           step={0.01}
         />
         <InputSlider
@@ -80,8 +98,8 @@ export const Nav = () => {
           label="J1"
           type="number"
           initialValue={1}
-          minValue={0}
-          maxValue={Math.PI * 2}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
           step={0.01}
         />
         <InputSlider
@@ -89,8 +107,26 @@ export const Nav = () => {
           label="J2"
           type="number"
           initialValue={0.5}
-          minValue={0}
-          maxValue={Math.PI * 2}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j3"
+          label="J3"
+          type="number"
+          initialValue={0.5}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j4"
+          label="J4"
+          type="number"
+          initialValue={-1}
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
           step={0.01}
         />
       </ul>

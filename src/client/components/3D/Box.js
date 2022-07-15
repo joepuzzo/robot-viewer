@@ -74,7 +74,7 @@ const Component = ({
 };
 
 export function Box({ values }) {
-  const { base, v0, v1, v2, j0, j1, j2 } = values;
+  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4 } = values;
 
   const [selected, setSelected] = useState();
 
@@ -136,7 +136,45 @@ export function Box({ values }) {
                     rotation={[0, Math.PI * 1, Math.PI / 2]}
                     args={[1, 1, v2, 32]}
                     position={[-(v2 / 2 + 1), 0, 0]}
-                  ></Component>
+                  >
+                    <Component
+                      name="j3"
+                      rotation={[0, j3, 0]}
+                      setSelected={setSelected}
+                      selected={selected}
+                      args={[1, 1, 1, 32]}
+                      position={[0, -(v2 / 2 + 0.5), 0]}
+                      // grid
+                    >
+                      <Component
+                        name="v3"
+                        setSelected={setSelected}
+                        selected={selected}
+                        rotation={[0, 0, Math.PI]}
+                        args={[1, 1, v3, 32]}
+                        position={[0, -(v3 / 2 + 0.5), 0]}
+                      >
+                        <Component
+                          name="j4"
+                          rotation={[j4, 0, Math.PI / 2]}
+                          setSelected={setSelected}
+                          selected={selected}
+                          args={[1, 1, 1, 32]}
+                          position={[0, v3 / 2 + 1, 0]}
+                          // grid
+                        >
+                          <Component
+                            name="v4"
+                            setSelected={setSelected}
+                            selected={selected}
+                            rotation={[0, 0, Math.PI / 2]}
+                            args={[1, 1, v4, 32]}
+                            position={[v4 / 2 + 1, 0, 0]}
+                          ></Component>
+                        </Component>
+                      </Component>
+                    </Component>
+                  </Component>
                 </Component>
               </Component>
             </Component>
