@@ -10,6 +10,14 @@ import Kinematics from 'kinematics';
 //   [0, -2, 0], // V4: 0x 2y
 // ];
 
+// const geometry = [
+//   [0, 0, 2], // V0: 0x 2y
+//   [0, 0, 2], // V1: 0x 2y
+//   [0, 0, 2], // V2: 0x 2y
+//   [2, 0, 0], // V3: 2x 0y
+//   [0, 2, 0], // V4: 0x 2y
+// ];
+
 const geometry = [
   [0, 0, 2], // V0: 0x 2y
   [0, 0, 2], // V1: 0x 2y
@@ -26,6 +34,7 @@ const RobotKin = new Kinematics.default(geometry);
 const AppProvider = ({ children }) => {
   const [colorScheme, setColorScheme] = useState('dark');
   const [navOpen, setNavOpen] = useState(false);
+  const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
   const [config, setConfig] = useState({
     base: 1,
@@ -68,6 +77,10 @@ const AppProvider = ({ children }) => {
     setNavOpen(false);
   };
 
+  const toggleOrbital = () => {
+    setOrbitalEnabled((prev) => !prev);
+  };
+
   const value = {
     colorScheme,
     setColorScheme,
@@ -78,6 +91,8 @@ const AppProvider = ({ children }) => {
     config,
     setConfig,
     RobotKin,
+    orbitEnabled,
+    toggleOrbital,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

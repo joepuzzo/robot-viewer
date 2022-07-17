@@ -1,5 +1,8 @@
 import { useFormState } from 'informed';
-import React, { useRef, useState } from 'react';
+import { useThree, useFrame } from '@react-three/fiber';
+// import { useDrag } from '@use-gesture/react';
+
+import React, { useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
 
 // export const Box = ({ config }) => {
@@ -13,15 +16,122 @@ import Grid from './Grid';
 //   );
 // };
 
-const Tool = ({ name, setSelected, selected, args, grid, position, ...props }) => {
-  const mesh = useRef();
+function useDrag(onDrag, onStart, onEnd, toggle) {
+  const active = React.useRef(false);
+  // const [, toggle] = React.useContext(context);
+  const [bind] = React.useState(() => ({
+    onPointerDown: (event) => {
+      event.stopPropagation();
+      event.target.setPointerCapture(event.pointerId);
+      active.current = true;
+      // We don't want the camera to move while we're dragging, toggle it off
+      toggle();
+      if (onStart) onStart();
+    },
+    onPointerUp: (event) => {
+      event.stopPropagation();
+      event.target.releasePointerCapture(event.pointerId);
+      active.current = false;
+      // Drag has concluded, toggle the controls on again
+      toggle();
+      if (onEnd) onEnd();
+    },
+    onPointerMove: (event) => {
+      if (active.current) {
+        event.stopPropagation();
+        onDrag(event.point);
+      }
+    },
+  }));
+  return bind;
+}
 
+const Pos = ({
+  name,
+  setSelected,
+  selected,
+  args,
+  grid,
+  formApi,
+  RobotKin,
+  toggleOrbital,
+  ...props
+}) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
+  const ref = useRef();
+  const [position, setPosition] = useState([2, 2, 0]);
+  const { size, viewport } = useThree();
+
+  const bind = useDrag(
+    (v) => {
+      let pos = v.toArray();
+      const [, , z] = position;
+      const [x, y] = pos;
+      pos = [x, y, z];
+      console.log('-------------------------------------------');
+      console.log('POS', pos);
+      setPosition(pos);
+
+      // Kinimatics
+      // const newPos = [x, y, z, 0, 0, 0];
+
+      // console.log('Getting angles for', newPos);
+      // const angles = RobotKin.inverse(...newPos);
+
+      // console.log('Setting angles to', angles);
+
+      // if (!angles.find((a) => isNaN(a))) {
+      //   formApi.setTheseValues({
+      //     j0: angles[0],
+      //     j1: angles[1],
+      //     j2: angles[2],
+      //     j3: angles[3],
+      //     j4: angles[4],
+      //     j5: angles[5],
+      //   });
+      // }
+    },
+    undefined,
+    undefined,
+    toggleOrbital
+  );
+
+  // ...bind()
   return (
-    <group ref={mesh} position={position} {...props}>
+    <group ref={ref} {...props} position={position} {...bind}>
+      <mesh onPointerOver={(event) => setHover(true)} onPointerOut={(event) => setHover(false)}>
+        <sphereBufferGeometry args={args} />
+        <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
+      </mesh>
+      {grid ? <Grid size={1} /> : null}
+    </group>
+  );
+};
+
+const Tool = ({
+  name,
+  setSelected,
+  selected,
+  args,
+  grid,
+  formApi,
+  RobotKin,
+  toggleOrbital,
+  position,
+  ...props
+}) => {
+  // Set up state for the hovered and active state
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+
+  const ref = useRef();
+
+  // ...bind()
+  return (
+    <group ref={ref} {...props} position={position}>
       <mesh onPointerOver={(event) => setHover(true)} onPointerOut={(event) => setHover(false)}>
         <cylinderGeometry args={args} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
@@ -91,7 +201,7 @@ const Component = ({
   }
 };
 
-export function Box({ values }) {
+export function Box({ values, formApi, RobotKin, toggleOrbital }) {
   const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5 } = values;
 
   const [selected, setSelected] = useState();
@@ -221,6 +331,18 @@ export function Box({ values }) {
           </Component>
         </Component>
       </Component>
+      <Pos
+        name="pos"
+        rotation={[0, j5, 0]}
+        setSelected={setSelected}
+        selected={selected}
+        args={[0.5, 30, 30]}
+        position={[0, -1, 0]}
+        grid
+        formApi={formApi}
+        RobotKin={RobotKin}
+        toggleOrbital={toggleOrbital}
+      />
     </>
   );
 }

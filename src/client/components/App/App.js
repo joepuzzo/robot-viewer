@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { defaultTheme, Provider } from '@adobe/react-spectrum';
 import { OrbitControls } from '@react-three/drei';
-import { Debug, FormProvider, useFormState } from 'informed';
+import { Debug, FormProvider, useFormApi, useFormState } from 'informed';
 
 // Hooks
 import useApp from '../../hooks/useApp';
@@ -14,8 +14,9 @@ import { Canvas } from '@react-three/fiber';
 import { Box } from '../3D/Box';
 import { Arm } from '../3D/Arm';
 
-const Robot = ({ config }) => {
+const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   const { values } = useFormState();
+  const formApi = useFormApi();
   const { RobotKin } = useApp();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
@@ -28,11 +29,16 @@ const Robot = ({ config }) => {
     <>
       <h3>{JSON.stringify(pos)}</h3>
       <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [15, 10, 8], zoom: 1 }}>
-        <OrbitControls />
+        <OrbitControls enabled={orbitEnabled} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
-          <Box values={values} />
+          <Box
+            values={values}
+            formApi={formApi}
+            RobotKin={RobotKin}
+            toggleOrbital={toggleOrbital}
+          />
         </Suspense>
       </Canvas>
     </>
@@ -40,7 +46,7 @@ const Robot = ({ config }) => {
 };
 
 const App = () => {
-  const { colorScheme, config } = useApp();
+  const { colorScheme, config, orbitEnabled, toggleOrbital } = useApp();
 
   const { loading, error, data } = useGet({
     url: '/health',
@@ -63,7 +69,7 @@ const App = () => {
           <h1>Robot Viewer</h1>
           <h2>Health Check {data.status}</h2>
           {/* <Debug /> */}
-          <Robot config={config} />
+          <Robot config={config} orbitEnabled={orbitEnabled} toggleOrbital={toggleOrbital} />
           {/* <Canvas>
           <Suspense fallback={null}>
             <ambientLight intensity={0.5} />
