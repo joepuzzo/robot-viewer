@@ -2,7 +2,7 @@ import { useFormState } from 'informed';
 import { useThree, useFrame } from '@react-three/fiber';
 // import { useDrag } from '@use-gesture/react';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
 
 // export const Box = ({ config }) => {
@@ -46,6 +46,35 @@ function useDrag(onDrag, onStart, onEnd, toggle) {
   return bind;
 }
 
+// Hook
+function useKeyPress({ targetKey, targetKeyCode }) {
+  // State for keeping track of whether key is pressed
+  const [keyPressed, setKeyPressed] = useState(false);
+  // If pressed key is our target key then set to true
+  function downHandler({ key, keyCode }) {
+    if (key === targetKey || keyCode === targetKeyCode) {
+      setKeyPressed(true);
+    }
+  }
+  // If released key is our target key then set to false
+  const upHandler = ({ key, keyCode }) => {
+    if (key === targetKey || keyCode === targetKeyCode) {
+      setKeyPressed(false);
+    }
+  };
+  // Add event listeners
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler);
+    window.addEventListener('keyup', upHandler);
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener('keyup', upHandler);
+    };
+  }, []); // Empty array ensures that effect is only run on mount and unmount
+  return keyPressed;
+}
+
 const Pos = ({
   name,
   setSelected,
@@ -61,47 +90,93 @@ const Pos = ({
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
+  // For z control
+  const spacePress = useKeyPress({ targetKeyCode: 32 });
+
   const ref = useRef();
   const [position, setPosition] = useState([2, 2, 0]);
   const { size, viewport } = useThree();
 
-  const bind = useDrag(
-    (v) => {
-      let pos = v.toArray();
-      const [, , z] = position;
-      const [x, y] = pos;
-      pos = [x, y, z];
-      console.log('-------------------------------------------');
-      console.log('POS', pos);
-      setPosition(pos);
+  // const bind = useDrag(
+  //   (v) => {
+  //     let pos = v.toArray();
+  //     // const [, , z] = position;
+  //     // const [x, y] = pos;
+  //     // pos = [x, y, z];
+  //     console.log('-------------------------------------------');
+  //     console.log('POS', pos);
+  //     setPosition(pos);
 
-      // Kinimatics
-      // const newPos = [x, y, z, 0, 0, 0];
+  //     // Kinimatics
+  //     // const newPos = [x, y, z, 0, 0, 0];
 
-      // console.log('Getting angles for', newPos);
-      // const angles = RobotKin.inverse(...newPos);
+  //     // console.log('Getting angles for', newPos);
+  //     // const angles = RobotKin.inverse(...newPos);
 
-      // console.log('Setting angles to', angles);
+  //     // console.log('Setting angles to', angles);
 
-      // if (!angles.find((a) => isNaN(a))) {
-      //   formApi.setTheseValues({
-      //     j0: angles[0],
-      //     j1: angles[1],
-      //     j2: angles[2],
-      //     j3: angles[3],
-      //     j4: angles[4],
-      //     j5: angles[5],
-      //   });
-      // }
+  //     // if (!angles.find((a) => isNaN(a))) {
+  //     //   formApi.setTheseValues({
+  //     //     j0: angles[0],
+  //     //     j1: angles[1],
+  //     //     j2: angles[2],
+  //     //     j3: angles[3],
+  //     //     j4: angles[4],
+  //     //     j5: angles[5],
+  //     //   });
+  //     // }
+  //   },
+  //   undefined,
+  //   undefined,
+  //   toggleOrbital
+  // );
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      const { key, keyCode } = event;
+
+      if (key === 'ArrowUp') {
+        setPosition(([x, y, z]) => {
+          if (spacePress) {
+            return [x, y, z - 1];
+          }
+          return [x, y + 1, z];
+        });
+      } else if (key === 'ArrowDown') {
+        setPosition(([x, y, z]) => {
+          if (spacePress) {
+            return [x, y, z + 1];
+          }
+          return [x, y - 1, z];
+        });
+      } else if (key === 'ArrowLeft') {
+        setPosition(([x, y, z]) => {
+          return [x - 1, y, z];
+        });
+      } else if (key === 'ArrowRight') {
+        setPosition(([x, y, z]) => {
+          return [x + 1, y, z];
+        });
+      }
+
+      // console.log('KEY', key, keyCode);
     },
-    undefined,
-    undefined,
-    toggleOrbital
+    [spacePress]
   );
 
-  // ...bind()
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    // document.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      // document.removeEventListener('keyup', handleKeyUp)
+    };
+  }, [spacePress]);
+
+  // ...bind
   return (
-    <group ref={ref} {...props} position={position} {...bind}>
+    <group ref={ref} {...props} position={position}>
       <mesh onPointerOver={(event) => setHover(true)} onPointerOut={(event) => setHover(false)}>
         <sphereBufferGeometry args={args} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />

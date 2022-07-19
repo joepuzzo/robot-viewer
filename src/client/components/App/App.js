@@ -28,7 +28,27 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   return (
     <>
       <h3>{JSON.stringify(pos)}</h3>
-      <Canvas camera={{ fov: 75, near: 0.1, far: 1000, position: [15, 10, 8], zoom: 1 }}>
+      <Canvas
+        // orthographic
+        // camera={{
+        //   position: [25, 25, 25],
+        //   zoom: 40,
+        //   left: window.innerWidth / -2,
+        //   right: window.innerWidth / 2,
+        //   top: window.innerHeight / 2,
+        //   bottom: window.innerHeight / -2,
+        // }}
+        camera={{
+          fov: 75,
+          aspect: window.innerWidth / window.innerHeight,
+          near: 0.1,
+          far: 1000,
+          position: [10, 10, 8],
+          zoom: 1,
+        }}
+        // camera={{ fov: 35, aspect: window.innerWidth / window.innerHeight, near: 1, far: 1000 }}
+        // camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000)
+      >
         <OrbitControls enabled={orbitEnabled} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
