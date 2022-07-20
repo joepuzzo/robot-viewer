@@ -12,6 +12,7 @@ import { Header } from '../Header/Header';
 import { Nav } from '../Nav/Nav';
 import { Canvas } from '@react-three/fiber';
 import { Box } from '../3D/Box';
+import { BoxZ } from '../3D/BoxZ';
 import { Arm } from '../3D/Arm';
 
 const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
@@ -54,7 +55,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
-          <Box
+          <BoxZ
             values={values}
             formApi={formApi}
             RobotKin={RobotKin}
