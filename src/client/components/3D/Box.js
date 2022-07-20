@@ -224,6 +224,8 @@ const Component = ({
   args,
   grid,
   position,
+  rotation,
+  jointRotation,
   doubleV,
   ...props
 }) => {
@@ -244,28 +246,30 @@ const Component = ({
   if (vertex) {
     return (
       <group ref={mesh} position={position} {...props}>
-        <mesh>
-          <cylinderGeometry args={args} />
-          <meshStandardMaterial color={color} />
-        </mesh>
-        <mesh position={[-0.75, args[2] / 2 + 1, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[1, 1, 0.5, 32]} />
-          <meshStandardMaterial color={color} />
-        </mesh>
-        {doubleV ? (
-          <mesh position={[-0.75, -(args[2] / 2 + 1), 0]} rotation={[0, 0, Math.PI / 2]}>
+        <group rotation={rotation}>
+          <mesh>
+            <cylinderGeometry args={args} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          <mesh position={[-0.75, args[2] / 2 + 1, 0]} rotation={[0, 0, Math.PI / 2]}>
             <cylinderGeometry args={[1, 1, 0.5, 32]} />
             <meshStandardMaterial color={color} />
           </mesh>
-        ) : null}
+          {doubleV ? (
+            <mesh position={[-0.75, -(args[2] / 2 + 1), 0]} rotation={[0, 0, Math.PI / 2]}>
+              <cylinderGeometry args={[1, 1, 0.5, 32]} />
+              <meshStandardMaterial color={color} />
+            </mesh>
+          ) : null}
+        </group>
         {children}
-        {grid ? <Grid /> : null}
+        {grid ? <Grid size={3} /> : null}
       </group>
     );
   } else {
     return (
-      <group ref={mesh} position={position} {...props}>
-        <mesh>
+      <group ref={mesh} position={position} rotation={jointRotation} {...props}>
+        <mesh rotation={rotation}>
           <cylinderGeometry args={args} />
           <meshStandardMaterial color={color} />
         </mesh>
@@ -277,28 +281,30 @@ const Component = ({
 };
 
 export function Box({ values, formApi, RobotKin, toggleOrbital }) {
-  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5 } = values;
+  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5, jointGrid, vertexGrid } = values;
 
   const [selected, setSelected] = useState();
 
   return (
     <>
-      <Grid size={10} />
+      {/* <Grid size={10} /> */}
       <Component
         name="base"
         setSelected={setSelected}
         selected={selected}
         position={[0, base / 2, 0]}
         args={[1, 1.5, base, 32]}
-        rotation={[0, Math.PI * 1.5, 0]}
+        rotation={[0, 0, 0]}
       >
         <Component
           name="j0"
           setSelected={setSelected}
           selected={selected}
           args={[1, 1, 1, 32]}
-          rotation={[0, j0, 0]}
+          rotation={[0, 0, 0]}
+          jointRotation={[0, j0, 0]}
           position={[0, base / 2 + 0.5, 0]}
+          grid={jointGrid}
         >
           <Component
             name="v0"
@@ -307,83 +313,93 @@ export function Box({ values, formApi, RobotKin, toggleOrbital }) {
             radius={0.1}
             args={[1, 1, v0, 32]}
             position={[0, v0 / 2 + 0.5, 0]}
+            grid={vertexGrid}
           >
             <Component
               name="j1"
-              rotation={[j1, 0, Math.PI / 2]}
+              jointRotation={[j1, 0, 0]}
+              rotation={[0, 0, Math.PI / 2]}
               setSelected={setSelected}
               selected={selected}
               args={[1, 1, 1, 32]}
               position={[0, v0 / 2 + 1, 0]}
+              grid={jointGrid}
             >
               <Component
                 name="v1"
                 setSelected={setSelected}
                 selected={selected}
-                rotation={[0, 0, Math.PI / 2]}
+                rotation={[0, Math.PI, 0]}
                 args={[1, 1, v1, 32]}
-                position={[v1 / 2 + 1, 0, 0]}
+                position={[0, v1 / 2 + 1, 0]}
                 doubleV
+                grid={vertexGrid}
               >
                 <Component
                   name="j2"
-                  rotation={[j2, 0, Math.PI / 2]}
+                  rotation={[0, 0, -Math.PI / 2]}
+                  jointRotation={[j2, 0, 0]}
                   setSelected={setSelected}
                   selected={selected}
                   args={[1, 1, 1, 32]}
-                  position={[0, -(v1 / 2 + 1), 0]}
-                  // grid
+                  position={[0, v1 / 2 + 1, 0]}
+                  grid={jointGrid}
                 >
                   <Component
                     name="v2"
                     setSelected={setSelected}
                     selected={selected}
-                    rotation={[0, Math.PI * 1, Math.PI / 2]}
+                    rotation={[Math.PI, 0, 0]}
                     args={[1, 1, v2, 32]}
-                    position={[-(v2 / 2 + 1), 0, 0]}
+                    position={[0, v2 / 2 + 1, 0]}
+                    grid={vertexGrid}
                   >
                     <Component
                       name="j3"
-                      rotation={[0, j3, 0]}
+                      jointRotation={[0, j3, 0]}
                       setSelected={setSelected}
                       selected={selected}
                       args={[1, 1, 1, 32]}
-                      position={[0, -(v2 / 2 + 0.5), 0]}
-                      // grid
+                      position={[0, v2 / 2 + 0.5, 0]}
+                      grid={jointGrid}
                     >
                       <Component
                         name="v3"
                         setSelected={setSelected}
                         selected={selected}
-                        rotation={[0, 0, Math.PI]}
+                        rotation={[0, 0, 0]}
                         args={[1, 1, v3, 32]}
-                        position={[0, -(v3 / 2 + 0.5), 0]}
+                        position={[0, v3 / 2 + 0.5, 0]}
+                        grid={vertexGrid}
                       >
                         <Component
                           name="j4"
-                          rotation={[j4, 0, Math.PI / 2]}
+                          rotation={[0, 0, Math.PI / 2]}
+                          jointRotation={[j4, 0, 0]}
                           setSelected={setSelected}
                           selected={selected}
                           args={[1, 1, 1, 32]}
                           position={[0, v3 / 2 + 1, 0]}
-                          // grid
+                          grid={jointGrid}
                         >
                           <Component
                             name="v4"
                             setSelected={setSelected}
                             selected={selected}
-                            rotation={[0, 0, Math.PI / 2]}
+                            rotation={[0, 0, Math.PI]}
                             args={[1, 1, v4, 32]}
-                            position={[v4 / 2 + 1, 0, 0]}
+                            position={[0, v4 / 2 + 1, 0]}
+                            grid={vertexGrid}
                           >
                             <Component
                               name="j5"
-                              rotation={[0, j5, 0]}
+                              rotation={[0, 0, 0]}
+                              jointRotation={[0, j5, 0]}
                               setSelected={setSelected}
                               selected={selected}
                               args={[1, 1, 1, 32]}
-                              position={[0, -(v4 / 2 + 0.5), 0]}
-                              // grid
+                              position={[0, v4 / 2 + 0.5, 0]}
+                              grid={jointGrid}
                             >
                               <Tool
                                 name="tool"
@@ -391,7 +407,7 @@ export function Box({ values, formApi, RobotKin, toggleOrbital }) {
                                 setSelected={setSelected}
                                 selected={selected}
                                 args={[0.5, 0.5, 1, 32]}
-                                position={[0, -1, 0]}
+                                position={[0, 1, 0]}
                                 grid
                               />
                             </Component>

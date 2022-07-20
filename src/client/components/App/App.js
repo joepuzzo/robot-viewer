@@ -43,7 +43,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
           far: 1000,
-          position: [10, 10, 8],
+          position: [8, 10, 10],
           zoom: 1,
         }}
         // camera={{ fov: 35, aspect: window.innerWidth / window.innerHeight, near: 1, far: 1000 }}
@@ -86,8 +86,8 @@ const App = () => {
         <Header />
         <Nav />
         <main>
-          <h1>Robot Viewer</h1>
-          <h2>Health Check {data.status}</h2>
+          {/* <h1>Robot Viewer</h1>
+          <h2>Health Check {data.status}</h2> */}
           {/* <Debug /> */}
           <Robot config={config} orbitEnabled={orbitEnabled} toggleOrbital={toggleOrbital} />
           {/* <Canvas>

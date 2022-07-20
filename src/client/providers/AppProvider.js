@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import AppContext from '../context/AppContext';
 import Kinematics from 'kinematics';
 
-// const geometry = [
-//   [0, 2, 0], // V0: 0x 2y
-//   [0, 2, 0], // V1: 0x 2y
-//   [2, 0, 0], // V2: 0x 2y
-//   [2, 0, 0], // V3: 2x 0y
-//   [0, -2, 0], // V4: 0x 2y
-// ];
+const geometry = [
+  [0, 2, 0], // V0: 0x 2y
+  [0, 2, 0], // V1: 0x 2y
+  [2, 0, 0], // V2: 0x 2y
+  [2, 0, 0], // V3: 2x 0y
+  [0, 2, 0], // V4: 0x 2y
+];
 
 // const geometry = [
 //   [0, 0, 2], // V0: 0x 2y
@@ -18,13 +18,13 @@ import Kinematics from 'kinematics';
 //   [0, 2, 0], // V4: 0x 2y
 // ];
 
-const geometry = [
-  [0, 0, 2], // V0: 0x 2y
-  [0, 0, 2], // V1: 0x 2y
-  [0, 0, 2], // V2: 0x 2y
-  [2, 0, 0], // V3: 2x 0y
-  [0, 2, 0], // V4: 0x 2y
-];
+// const geometry = [
+//   [0, 0, 2], // V0: 0x 2y
+//   [0, 0, 2], // V1: 0x 2y
+//   [0, 0, 2], // V2: 0x 2y
+//   [2, 0, 0], // V3: 2x 0y
+//   [0, 2, 0], // V4: 0x 2y
+// ];
 
 const RobotKin = new Kinematics.default(geometry);
 
@@ -49,15 +49,17 @@ const AppProvider = ({ children }) => {
     // j3: 0.5,
     // j4: -1,
     // j5: 0,
-    j0: 0,
+    j0: Math.PI / 2,
     j1: 0,
     j2: Math.PI / 2,
+    // j2: 0,
     j3: 0,
     j4: Math.PI / 2,
+    // j4: 0,
     j5: 0,
-    x: 0,
-    y: 10,
-    z: 0,
+    x: 1,
+    y: 1,
+    z: 1,
     a: 0,
     b: 0,
     c: 0,
