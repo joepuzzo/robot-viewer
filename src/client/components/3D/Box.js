@@ -292,7 +292,7 @@ export function Box({ values, formApi, RobotKin, toggleOrbital }) {
         name="base"
         setSelected={setSelected}
         selected={selected}
-        position={[0, base / 2, 0]}
+        position={[0, -base / 2 - 0.5, 0]}
         args={[1, 1.5, base, 32]}
         rotation={[0, 0, 0]}
       >
