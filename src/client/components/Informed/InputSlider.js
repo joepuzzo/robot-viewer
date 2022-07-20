@@ -19,6 +19,8 @@ const Input = (props) => {
         {...userProps}
         {...informed}
         onChange={(v) => fieldApi.setValue(v)}
+        type={props.type}
+        step={props.step}
       />
       <Slider
         maxWidth={140}

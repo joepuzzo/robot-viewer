@@ -28,6 +28,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   return (
     <>
       <h3>{JSON.stringify(pos)}</h3>
+      <h3>{JSON.stringify(angles.map((a) => Math.round(a * 10) / 10))}</h3>
       <Canvas
         // orthographic
         // camera={{

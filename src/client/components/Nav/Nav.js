@@ -39,7 +39,7 @@ export const Nav = () => {
         if (triggers.includes(name)) {
           // Get pos
           const { x, y, z } = formApi.getFormState().values;
-          const pos = [x, y, z, -3, 3, -1];
+          const pos = [x, y, z, -2, 3, -2];
 
           console.log('Getting angles for', pos);
           const angles = RobotKin.inverse(...pos);

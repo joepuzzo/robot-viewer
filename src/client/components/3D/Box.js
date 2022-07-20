@@ -287,7 +287,7 @@ export function Box({ values, formApi, RobotKin, toggleOrbital }) {
 
   return (
     <>
-      {/* <Grid size={10} /> */}
+      <Grid size={10} />
       <Component
         name="base"
         setSelected={setSelected}
