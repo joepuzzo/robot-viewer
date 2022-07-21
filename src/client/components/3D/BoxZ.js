@@ -138,14 +138,14 @@ const Pos = ({
       if (key === 'ArrowUp') {
         setPosition(([x, y, z]) => {
           if (spacePress) {
-            return [x, y, z - 1];
+            return [x, y, z + 1];
           }
           return [x, y + 1, z];
         });
       } else if (key === 'ArrowDown') {
         setPosition(([x, y, z]) => {
           if (spacePress) {
-            return [x, y, z + 1];
+            return [x, y, z - 1];
           }
           return [x, y - 1, z];
         });
@@ -444,9 +444,8 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
           </Component>
         </Component>
       </Component>
-      {/* <Pos
+      <Pos
         name="pos"
-        rotation={[0, j5, 0]}
         setSelected={setSelected}
         selected={selected}
         args={[0.5, 30, 30]}
@@ -455,7 +454,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
-      /> */}
+      />
     </group>
   );
 }
