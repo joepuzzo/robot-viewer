@@ -138,11 +138,11 @@ function matrixDot(a, b) {
 }
 
 let t1 = 0; // Theta 1 angle in degrees
-let t2 = 0; // Theta 2 angle in degrees
-let t3 = 0; // Theta 1 angle in degrees
-let t4 = 0; // Theta 2 angle in degrees
-let t5 = 0; // Theta 1 angle in degrees
-let t6 = 0; // Theta 2 angle in degrees
+let t2 = 90; // Theta 2 angle in degrees
+let t3 = -90; // Theta 3 angle in degrees
+let t4 = 0; // Theta 4 angle in degrees
+let t5 = 0; // Theta 5 angle in degrees
+let t6 = 0; // Theta 6 angle in degrees
 
 t1 = toRadians(t1);
 t2 = toRadians(t2);
@@ -397,11 +397,6 @@ const d2_3 = [
 ];
 
 // prettier-ignore
-// const d3_4 = [
-//   [(v2 + v3) * Math.sin(t3)],
-//   [0],
-//   [(v2 + v3) * Math.cos(t3)]
-// ];
 const d3_4 = [
   [0],
   [0],
@@ -416,11 +411,6 @@ const d4_5 = [
 ];
 
 // prettier-ignore
-// const d5_6 = [
-//   [(v4 + v5) * Math.sin(t5)],
-//   [0],
-//   [(v4 + v5) * Math.cos(t5)]
-// ];
 const d5_6 = [
   [0],
   [0],
@@ -471,15 +461,10 @@ console.log('H5_6 --------------------------------------------------');
 printMatrix(H5_6);
 
 const H0_2 = matrixDot(H0_1, H1_2);
-
 const H0_3 = matrixDot(H0_2, H2_3);
-
 const H2_4 = matrixDot(H2_3, H3_4);
-
 const H4_6 = matrixDot(H4_5, H5_6);
-
 const H0_4 = matrixDot(H0_2, H2_4);
-
 const H0_6 = matrixDot(H0_4, H4_6);
 
 console.log('H0_2 --------------------------------------------------');
@@ -496,3 +481,153 @@ printMatrix(H0_4);
 
 console.log('H0_6 --------------------------------------------------');
 printMatrix(H0_6);
+
+// Time for Denavit Hartenberg!!!!!
+
+//
+// 						             Zn
+// 					                ^
+// 					                |  Yn
+// 					  	            |   /
+// 					                |  /
+// 					                | /
+// 	    |_______[r]_______| + -----------> Xn
+//
+//      Zn-1				 |
+//      ^			  		 |
+//      |  Yn-1			[d]
+//   	  |   /				 |
+//      |  /			 	 |
+//      | /  				 |
+//      + -----------> Xn-1
+//
+// Step1: write out your kinimatic diagram accoding to the rules
+//
+// Step2: perform the following for each Hn_m
+//
+// theta = rotation around `Zn-1` that is required to get axis `Xn-1` to match `Xn` ( rotate frame n-1)
+// alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
+// r  = look at distance between center of two frames along the `Xn` direction
+// d = look at the distance between center of two fames along `Zn-1` direction.
+
+const buildHomogeneousDenavitForRow = (pt, row) => {
+  // Get variables for this row
+  const theta = pt[row][0];
+  const alpha = pt[row][1];
+  const r = pt[row][2];
+  const d = pt[row][3];
+
+  return [
+    [
+      round(Math.cos(theta)),
+      round(-Math.sin(theta) * Math.cos(alpha)),
+      round(Math.sin(theta) * Math.sin(alpha)),
+      round(r * Math.cos(theta)),
+    ],
+    [
+      round(Math.sin(theta)),
+      round(Math.cos(theta) * Math.cos(alpha)),
+      round(-Math.cos(theta) * Math.sin(alpha)),
+      round(r * Math.sin(theta)),
+    ],
+    [0, round(Math.sin(alpha)), round(Math.cos(alpha)), d],
+    [0, 0, 0, 1],
+  ];
+
+  console.log('ROW:', row, 'THETA', theta);
+
+  // return [
+  //   [
+  //     Math.cos(theta),
+  //     -Math.sin(theta) * Math.cos(alpha),
+  //     Math.sin(theta) * Math.sin(alpha),
+  //     r * Math.cos(theta),
+  //   ],
+  //   [
+  //     Math.sin(theta),
+  //     Math.cos(theta) * Math.cos(alpha),
+  //     -Math.cos(theta) * Math.sin(alpha),
+  //     r * Math.sin(theta),
+  //   ],
+  //   [0, Math.sin(alpha), Math.cos(alpha), d],
+  //   [0, 0, 0, 1],
+  // ];
+};
+
+const buildHomogeneousDenavitForTable = (pt) => {
+  // Build individual matricies
+  const matriceis = pt.map((_, i) => buildHomogeneousDenavitForRow(pt, i));
+
+  // Matrix multiply them all
+  // [a,b,c,d,e,f,g]
+  // res(ab) = a * b
+  // res(ac) = res * c
+  // res(ad) = res * d
+  // res(ae) = res * e
+  // ...
+  const endMatrix = matriceis.reduce((acc, cur) => {
+    return matrixDot(acc, cur);
+  });
+
+  return {
+    matriceis,
+    endMatrix,
+  };
+};
+
+console.log('-------------------------Denavit Hartenberg-------------------------------');
+
+// For testing against you tube video our numbers are good!
+//
+// const d1 = 1;
+// const d2 = 1;
+// const d3 = 1;
+// const PT = [
+//   [toRadians(90), toRadians(90), 0, a1 + d1],
+//   [toRadians(90), -toRadians(90), 0, a2 + d2],
+//   [0, 0, 0, a3 + d3],
+// ];
+
+// const res = buildHomogeneousDenavitForTable(PT);
+
+// console.log('H0_1 --------------------------------------------------');
+// printMatrix(res.matriceis[0]);
+// console.log('H1_2 --------------------------------------------------');
+// printMatrix(res.matriceis[1]);
+// console.log('H2_3 --------------------------------------------------');
+// printMatrix(res.matriceis[2]);
+// console.log('H0_3 --------------------------------------------------');
+// printMatrix(res.endMatrix);
+
+// t   a   r   d
+const d90 = toRadians(90);
+
+// prettier-ignore
+const PT = [
+  [ t1, d90, 0, v0 ],
+  [ t2+d90, 0, v1, 0 ],
+  [ t3-d90, -d90, 0, 0 ],
+  [ t4, d90, 0, v2 + v3 ],
+  [ t5, -d90, 0, 0 ],
+  [ t6, 0, 0, v4 + v5 ]
+];
+
+console.log('PT --------------------------------------------------');
+printMatrix(PT);
+
+const res = buildHomogeneousDenavitForTable(PT);
+
+console.log('H0_1 --------------------------------------------------');
+printMatrix(res.matriceis[0]);
+console.log('H1_2 --------------------------------------------------');
+printMatrix(res.matriceis[1]);
+console.log('H2_3 --------------------------------------------------');
+printMatrix(res.matriceis[2]);
+console.log('H3_4 --------------------------------------------------');
+printMatrix(res.matriceis[3]);
+console.log('H4_5 --------------------------------------------------');
+printMatrix(res.matriceis[4]);
+console.log('H5_6 --------------------------------------------------');
+printMatrix(res.matriceis[5]);
+console.log('H0_6 --------------------------------------------------');
+printMatrix(res.endMatrix);
