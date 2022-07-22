@@ -21,6 +21,10 @@ const toRadians = (deg) => {
   return (deg / 180) * Math.PI;
 };
 
+const toDeg = (rad) => {
+  return 180 * (rad / Math.PI);
+};
+
 const identityMatrix = [
   [1, 0, 0],
   [0, 1, 0],
@@ -360,24 +364,24 @@ const v3 = 1;
 const v4 = 1;
 const v5 = 1;
 
-const a1 = 1;
-const a2 = 1;
-const a3 = 1;
-const a4 = 1;
+// const a1 = 1;
+// const a2 = 1;
+// const a3 = 1;
+// const a4 = 1;
 
 // prettier-ignore
-const Testd0_1 = [
-  [a2 * Math.cos(test1)],
-  [a2 * Math.sin(test1)],
-  [a1],
-];
+// const Testd0_1 = [
+//   [a2 * Math.cos(test1)],
+//   [a2 * Math.sin(test1)],
+//   [a1],
+// ];
 
-// prettier-ignore
-const Testd1_2 = [
-  [a4 * Math.cos(test2)],
-  [a4 * Math.sin(test2)],
-  [a3],
-];
+// // prettier-ignore
+// const Testd1_2 = [
+//   [a4 * Math.cos(test2)],
+//   [a4 * Math.sin(test2)],
+//   [a3],
+// ];
 
 // prettier-ignore
 const d0_1 = [
@@ -432,8 +436,8 @@ const buildHomogeneous = (r, d) => {
   ];
 };
 
-const TestH0_1 = buildHomogeneous(Test_R0_1, Testd0_1);
-const TestH1_2 = buildHomogeneous(Test_R1_2, Testd1_2);
+// const TestH0_1 = buildHomogeneous(Test_R0_1, Testd0_1);
+// const TestH1_2 = buildHomogeneous(Test_R1_2, Testd1_2);
 
 const H0_1 = buildHomogeneous(R0_1, d0_1);
 const H1_2 = buildHomogeneous(R1_2, d1_2);
@@ -442,14 +446,14 @@ const H3_4 = buildHomogeneous(R3_4, d3_4);
 const H4_5 = buildHomogeneous(R4_5, d4_5);
 const H5_6 = buildHomogeneous(R5_6, d5_6);
 
-const TestH0_2 = matrixDot(TestH0_1, TestH1_2);
+// const TestH0_2 = matrixDot(TestH0_1, TestH1_2);
 
-console.log('TestH0_1 --------------------------------------------------');
-printMatrix(TestH0_1);
-console.log('TestH1_2 --------------------------------------------------');
-printMatrix(TestH1_2);
-console.log('TestH0_2 --------------------------------------------------');
-printMatrix(TestH0_2);
+// console.log('TestH0_1 --------------------------------------------------');
+// printMatrix(TestH0_1);
+// console.log('TestH1_2 --------------------------------------------------');
+// printMatrix(TestH1_2);
+// console.log('TestH0_2 --------------------------------------------------');
+// printMatrix(TestH0_2);
 
 console.log('H0_1 --------------------------------------------------');
 printMatrix(H0_1);
@@ -641,26 +645,203 @@ console.log('H0_3 --------------------------------------------------');
 printMatrix(res.h0_3);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(res.endMatrix);
+/**
+ * Useful things
+ *
+ * 1. Pythagorean Theorum
+ * Math.pow(a, 2) + Math.pow(b, 2) = Math.pow(c, 2)
+ *
+ *        /|
+ *     c / |
+ *      /t | b
+ *     /___|
+ *       a
+ *
+ * 2. SOHCAHTOA
+ *
+ * 3. Law of cosines
+ *
+ * Math.pow(c, 2) = Math.pow(a, 2) + Math.pow(b, 2) - 2 * a * b * Math.cos( alpha )
+ *
+ * where c is angle opposite side c
+ *
+ *        /\
+ *     a /  \ c
+ *      /    \
+ *     /)_ _ _\
+ *         b
+ *
+ *
+ * Using above we are ging to do reverse kinimatics on 1-3
+ *
+ * The joints will be reffered to as j0 j1 and j2 respectivley
+ *
+ *  ---------- SideView ----------
+ *              .            .
+ *               \          |
+ *             a3 \ t3      |
+ *                ( )       |
+ *                /         |
+ *               /          |
+ *              /           |
+ *          a2 /            | z0_3
+ *            / t2          |
+ *          ( )---          |
+ *   z       |              |
+ *   |    a1 |              |
+ *   | y     |              |
+ *   |/___x [ ]             .
+ *
+ *
+ *   ---- Useful Triangles ----
+ *
+ * Below depicts J1 -- J2
+ *                            _
+ *                          _ _ |
+ *                        _  _  |
+ *                      _   _   |
+ *                    _    _    |
+ *                  _     _ a3  |
+ *           r3   _      _      |
+ *              _       _       |
+ *            _          \->t3  | r2
+ *          _     p3 ( )        |
+ *        _       _             |
+ *      _   \  _  a2            |
+ *    _\ p1 _\                  |
+ *  _   \_    \ -> p2           |
+ *   ( ) \->t2 \                |
+ * -----------------------------
+ *              r1
+ *
+ *
+ *  -------- TopDownView --------
+ *             .           y0_3
+ *            /             |
+ *           /              |
+ *     r1  [ ]              |
+ *         /                |
+ *        /                 |
+ *       / t1               |
+ *     ( )                  |
+ *      _ _ _ _ _ _ _ _ _x0_3
+ *
+ *
+ * Goal: our goal is to derrive equasions for each theta for joints 1-3
+ */
 
-// Useful things
-//
-// 1. Pythagorean Theorum
-// Math.pow(a, 2) + Math.pow(b, 2) = Math.pow(c, 2)
-//
-//        /|
-//     c / |
-//      /t | b
-//     /___|
-//       a
-//
-// 2. SOHCAHTOA
-//
-// 3. Law of cosines
-//
-// Math.pow(a, 2) = Math.pow(b, 2) + Math.pow(c, 2) - 2 * b * c * Math.cos( alpha )
-//
-//        /\
-//     c /  \ b
-//      /    \
-//     /______\
-//         a
+// ---------- Compute t1 ----------
+
+const computeT1 = (x0_3, y0_3) => {
+  return Math.atan2(y0_3, x0_3);
+};
+
+// ---------- Compute t2 ----------
+
+/**
+ * t2 = p2 - p1
+ *
+ * -- first we need to get p2
+ *
+ * p2 = Math.atan( r2 / r1 )
+ *
+ * r2 = z0_3 - a1
+ *
+ * Taken from looking at top view
+ * r1 = Math.sqrt( Math.pow(x0_3, 2) + Math.pow( y0_3, 2 ) )
+ *
+ * -- now we need to get p1
+ *
+ * 1. we need r3 as a known variable
+ *
+ *  r3 = Math.sqrt( Math.pow(r1, 2) + Math.pow( r2, 2 ) )
+ *
+ * 2. Re arrange law of cosines
+ *
+ * Math.pow(a3, 2) = Math.pow(a2, 2) + Math.pow(r3, 2) - 2 * a2 * r3 * Math.cos( p1 )
+ * p1 = Math.acos( ( Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2) ) / ( -2 * a2 * r3 )  )
+ *
+ */
+const computeR1 = (x0_3, y0_3) => {
+  return Math.sqrt(Math.pow(x0_3, 2) + Math.pow(y0_3, 2));
+};
+
+const computeR2 = (z0_3, a1) => {
+  return z0_3 - a1;
+};
+
+const computeP2 = (r2, r1) => {
+  return Math.atan2(r2, r1);
+};
+
+const computeR3 = (r1, r2) => {
+  return Math.sqrt(Math.pow(r1, 2) + Math.pow(r2, 2));
+};
+
+const computeP1 = (a2, a3, r3) => {
+  // console.log('a2', a2);
+  // console.log('a3', a3);
+  // console.log('r3', r3);
+  // console.log('Math.pow(a3, 2)', Math.pow(a3, 2));
+  // console.log('Math.pow(a2, 2)', Math.pow(a2, 2));
+  // console.log('Math.pow(r3, 2)', Math.pow(r3, 2));
+  // console.log('(-2 * a2 * r3)', -2 * a2 * r3);
+  // console.log(
+  //   '(Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3)',
+  //   (Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3)
+  // );
+
+  return Math.acos((Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3));
+};
+
+const computeT2 = (p1, p2) => {
+  return p2 - p1;
+};
+
+// ---------- Compute t3 ----------
+
+const computeP3 = (a2, a3, r3) => {
+  return Math.acos((Math.pow(r3, 2) - Math.pow(a2, 2) - Math.pow(a3, 2)) / (-2 * a2 * a3));
+};
+
+const computeT3 = (p3) => {
+  return Math.PI - p3;
+};
+
+// -------- Inverse Function ---------
+
+const config = {
+  a1: v0,
+  a2: v1,
+  a3: v2,
+};
+
+const inverse = (x, y, z, robotConfig) => {
+  const { a1, a2, a3 } = robotConfig;
+
+  const r1 = computeR1(x, y);
+  console.log('r1', r1);
+  const r2 = computeR2(z, a1);
+  console.log('r2', r2);
+  const p2 = computeP2(r1, r2);
+  console.log('p2', p2);
+  const r3 = computeR3(r1, r2);
+  console.log('r3', r3);
+  const p1 = computeP1(a2, a3, r3);
+  console.log('p1', p1);
+  const p3 = computeP3(a2, a3, r3);
+  console.log('p3', p3);
+
+  const t1 = computeT1(x, y);
+  const t2 = computeT2(p1, p2);
+  const t3 = computeT3(p3);
+
+  return [t1, t2, t3];
+};
+
+const result = inverse(2, 0, 1, config);
+
+console.log(
+  'RES',
+  result.map((a) => toDeg(a))
+);
