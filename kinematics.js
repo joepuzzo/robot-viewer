@@ -327,6 +327,7 @@ const R4_6 = matrixDot(R4_5, R5_6);
 const R0_3 = matrixDot(R0_2, R2_3);
 const R0_4 = matrixDot(R0_2, R2_4);
 const R0_6 = matrixDot(R0_4, R4_6);
+const R3_6 = matrixDot(R3_4, R4_6);
 
 console.log('Test_R0_1 --------------------------------------------------');
 printMatrix(Test_R0_1);
@@ -348,6 +349,9 @@ printMatrix(R4_6);
 
 console.log('R0_3 --------------------------------------------------');
 printMatrix(R0_3);
+
+console.log('R3_6 --------------------------------------------------');
+printMatrix(R3_6);
 
 console.log('R0_4 --------------------------------------------------');
 printMatrix(R0_4);
@@ -490,7 +494,7 @@ printMatrix(H0_4);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(H0_6);
 
-// Time for Denavit Hartenberg!!!!!
+// ---------- Time for Denavit Hartenberg!!!!! ----------
 
 //
 // 						             Zn
@@ -543,23 +547,6 @@ const buildHomogeneousDenavitForRow = (pt, row) => {
   ];
 
   console.log('ROW:', row, 'THETA', theta);
-
-  // return [
-  //   [
-  //     Math.cos(theta),
-  //     -Math.sin(theta) * Math.cos(alpha),
-  //     Math.sin(theta) * Math.sin(alpha),
-  //     r * Math.cos(theta),
-  //   ],
-  //   [
-  //     Math.sin(theta),
-  //     Math.cos(theta) * Math.cos(alpha),
-  //     -Math.cos(theta) * Math.sin(alpha),
-  //     r * Math.sin(theta),
-  //   ],
-  //   [0, Math.sin(alpha), Math.cos(alpha), d],
-  //   [0, 0, 0, 1],
-  // ];
 };
 
 const buildHomogeneousDenavitForTable = (pt) => {
@@ -580,10 +567,17 @@ const buildHomogeneousDenavitForTable = (pt) => {
     return matrixDot(acc, cur);
   });
 
+  // Get h3_6
+  const m3_6 = matriceis.slice(3, 6);
+  const h3_6 = m3_6.reduce((acc, cur, i) => {
+    return matrixDot(acc, cur);
+  });
+
   return {
     matriceis,
     endMatrix,
     h0_3,
+    h3_6,
   };
 };
 
@@ -643,6 +637,8 @@ console.log('H5_6 --------------------------------------------------');
 printMatrix(res.matriceis[5]);
 console.log('H0_3 --------------------------------------------------');
 printMatrix(res.h0_3);
+console.log('H3_6 --------------------------------------------------');
+printMatrix(res.h3_6);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(res.endMatrix);
 /**
@@ -779,18 +775,6 @@ const computeR3 = (r1, r2) => {
 };
 
 const computeP1 = (a2, a3, r3) => {
-  // console.log('a2', a2);
-  // console.log('a3', a3);
-  // console.log('r3', r3);
-  // console.log('Math.pow(a3, 2)', Math.pow(a3, 2));
-  // console.log('Math.pow(a2, 2)', Math.pow(a2, 2));
-  // console.log('Math.pow(r3, 2)', Math.pow(r3, 2));
-  // console.log('(-2 * a2 * r3)', -2 * a2 * r3);
-  // console.log(
-  //   '(Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3)',
-  //   (Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3)
-  // );
-
   return Math.acos((Math.pow(a3, 2) - Math.pow(a2, 2) - Math.pow(r3, 2)) / (-2 * a2 * r3));
 };
 
