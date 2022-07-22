@@ -320,6 +320,7 @@ const TestR0_2 = matrixDot(Test_R0_1, Test_R1_2);
 const R0_2 = matrixDot(R0_1, R1_2);
 const R2_4 = matrixDot(R2_3, R3_4);
 const R4_6 = matrixDot(R4_5, R5_6);
+const R0_3 = matrixDot(R0_2, R2_3);
 const R0_4 = matrixDot(R0_2, R2_4);
 const R0_6 = matrixDot(R0_4, R4_6);
 
@@ -340,6 +341,9 @@ printMatrix(R2_4);
 
 console.log('R4_6 --------------------------------------------------');
 printMatrix(R4_6);
+
+console.log('R0_3 --------------------------------------------------');
+printMatrix(R0_3);
 
 console.log('R0_4 --------------------------------------------------');
 printMatrix(R0_4);
@@ -559,19 +563,23 @@ const buildHomogeneousDenavitForTable = (pt) => {
   const matriceis = pt.map((_, i) => buildHomogeneousDenavitForRow(pt, i));
 
   // Matrix multiply them all
-  // [a,b,c,d,e,f,g]
-  // res(ab) = a * b
-  // res(ac) = res * c
-  // res(ad) = res * d
-  // res(ae) = res * e
+  // [h0_1,h1_2,h2_3,h3_4 ...]
+  // return(h0_2) = h0_1 * h0_2;
+  // return(h0_3) = h0_2 * h2_2;
   // ...
-  const endMatrix = matriceis.reduce((acc, cur) => {
+  let h0_3;
+  const endMatrix = matriceis.reduce((acc, cur, i) => {
+    // current index starts at 1 when no initial value on reducer so 3 is actuall third iteration
+    if (i === 3) {
+      h0_3 = acc;
+    }
     return matrixDot(acc, cur);
   });
 
   return {
     matriceis,
     endMatrix,
+    h0_3,
   };
 };
 
@@ -629,5 +637,30 @@ console.log('H4_5 --------------------------------------------------');
 printMatrix(res.matriceis[4]);
 console.log('H5_6 --------------------------------------------------');
 printMatrix(res.matriceis[5]);
+console.log('H0_3 --------------------------------------------------');
+printMatrix(res.h0_3);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(res.endMatrix);
+
+// Useful things
+//
+// 1. Pythagorean Theorum
+// Math.pow(a, 2) + Math.pow(b, 2) = Math.pow(c, 2)
+//
+//        /|
+//     c / |
+//      /t | b
+//     /___|
+//       a
+//
+// 2. SOHCAHTOA
+//
+// 3. Law of cosines
+//
+// Math.pow(a, 2) = Math.pow(b, 2) + Math.pow(c, 2) - 2 * b * c * Math.cos( alpha )
+//
+//        /\
+//     c /  \ b
+//      /    \
+//     /______\
+//         a
