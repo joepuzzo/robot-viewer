@@ -17,6 +17,8 @@
 // cos(t)	= adjacent
 // tan(t)	= opposite / adjacent
 
+// import { inv } from 'mathjs';
+
 const toRadians = (deg) => {
   return (deg / 180) * Math.PI;
 };
@@ -24,6 +26,73 @@ const toRadians = (deg) => {
 const toDeg = (rad) => {
   return 180 * (rad / Math.PI);
 };
+
+/**
+ * matrixSubset
+ *
+ * @param {*} m - the matrix
+ * @param {*} cols - the number of columns we want
+ * @param {*} rows - the number of rows we want
+ * @returns a subset of the original matrix
+ */
+const matrixSubset = (m, cols, rows) => {
+  const subset = [];
+
+  for (let i = 0; i < rows; i++) {
+    subset[i] = m[i].slice(0, cols);
+  }
+
+  return subset;
+};
+
+// https://gist.github.com/husa/5652439
+function inverseMatrix(matrix) {
+  const _A = JSON.parse(JSON.stringify(matrix));
+
+  var temp,
+    N = _A.length,
+    E = [];
+
+  for (var i = 0; i < N; i++) E[i] = [];
+
+  for (i = 0; i < N; i++)
+    for (var j = 0; j < N; j++) {
+      E[i][j] = 0;
+      if (i == j) E[i][j] = 1;
+    }
+
+  for (var k = 0; k < N; k++) {
+    temp = _A[k][k];
+
+    for (var j = 0; j < N; j++) {
+      _A[k][j] /= temp;
+      E[k][j] /= temp;
+    }
+
+    for (var i = k + 1; i < N; i++) {
+      temp = _A[i][k];
+
+      for (var j = 0; j < N; j++) {
+        _A[i][j] -= _A[k][j] * temp;
+        E[i][j] -= E[k][j] * temp;
+      }
+    }
+  }
+
+  for (var k = N - 1; k > 0; k--) {
+    for (var i = k - 1; i >= 0; i--) {
+      temp = _A[i][k];
+
+      for (var j = 0; j < N; j++) {
+        _A[i][j] -= _A[k][j] * temp;
+        E[i][j] -= E[k][j] * temp;
+      }
+    }
+  }
+
+  for (var i = 0; i < N; i++) for (var j = 0; j < N; j++) _A[i][j] = E[i][j];
+  return _A;
+}
 
 const identityMatrix = [
   [1, 0, 0],
@@ -522,12 +591,12 @@ printMatrix(H0_6);
 // r  = look at distance between center of two frames along the `Xn` direction
 // d = look at the distance between center of two fames along `Zn-1` direction.
 
-const buildHomogeneousDenavitForRow = (pt, row) => {
+const buildHomogeneousDenavitForRow = (row) => {
   // Get variables for this row
-  const theta = pt[row][0];
-  const alpha = pt[row][1];
-  const r = pt[row][2];
-  const d = pt[row][3];
+  const theta = row[0];
+  const alpha = row[1];
+  const r = row[2];
+  const d = row[3];
 
   return [
     [
@@ -545,39 +614,24 @@ const buildHomogeneousDenavitForRow = (pt, row) => {
     [0, round(Math.sin(alpha)), round(Math.cos(alpha)), d],
     [0, 0, 0, 1],
   ];
-
-  console.log('ROW:', row, 'THETA', theta);
 };
 
 const buildHomogeneousDenavitForTable = (pt) => {
   // Build individual matricies
-  const matriceis = pt.map((_, i) => buildHomogeneousDenavitForRow(pt, i));
+  const matriceis = pt.map((row) => buildHomogeneousDenavitForRow(row));
 
   // Matrix multiply them all
   // [h0_1,h1_2,h2_3,h3_4 ...]
   // return(h0_2) = h0_1 * h0_2;
   // return(h0_3) = h0_2 * h2_2;
   // ...
-  let h0_3;
   const endMatrix = matriceis.reduce((acc, cur, i) => {
-    // current index starts at 1 when no initial value on reducer so 3 is actuall third iteration
-    if (i === 3) {
-      h0_3 = acc;
-    }
-    return matrixDot(acc, cur);
-  });
-
-  // Get h3_6
-  const m3_6 = matriceis.slice(3, 6);
-  const h3_6 = m3_6.reduce((acc, cur, i) => {
     return matrixDot(acc, cur);
   });
 
   return {
     matriceis,
     endMatrix,
-    h0_3,
-    h3_6,
   };
 };
 
@@ -635,10 +689,10 @@ console.log('H4_5 --------------------------------------------------');
 printMatrix(res.matriceis[4]);
 console.log('H5_6 --------------------------------------------------');
 printMatrix(res.matriceis[5]);
-console.log('H0_3 --------------------------------------------------');
-printMatrix(res.h0_3);
-console.log('H3_6 --------------------------------------------------');
-printMatrix(res.h3_6);
+// console.log('H0_3 --------------------------------------------------');
+// printMatrix(res.h0_3);
+// console.log('H3_6 --------------------------------------------------');
+// printMatrix(res.h3_6);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(res.endMatrix);
 /**
@@ -800,7 +854,7 @@ const config = {
   a3: v2,
 };
 
-const inverse = (x, y, z, robotConfig) => {
+const inverse1_3 = (x, y, z, robotConfig) => {
   const { a1, a2, a3 } = robotConfig;
 
   const r1 = computeR1(x, y);
@@ -823,9 +877,65 @@ const inverse = (x, y, z, robotConfig) => {
   return [t1, t2, t3];
 };
 
-const result = inverse(2, 0, 1, config);
+const result = inverse1_3(2, 0, 1, config);
 
 console.log(
   'RES',
   result.map((a) => toDeg(a))
 );
+
+const inverse = (x, y, z, robotConfig) => {
+  // ----------------------------------------------------------------
+  // Step1 find inverse kinimatics for 1-3
+  const [angle1, angle2, angle3] = inverse1_3(x, y, z, robotConfig);
+
+  // ----------------------------------------------------------------
+  // Step2 build the transformatin matrix for 1-3
+  const PT_0_3 = [
+    [angle1, d90, 0, v0],
+    [angle2 + d90, 0, v1, 0],
+    [angle3 - d90, -d90, 0, 0],
+  ];
+
+  const { endMatrix: h0_3 } = buildHomogeneousDenavitForTable(PT_0_3);
+
+  // ----------------------------------------------------------------
+  // Step3 take the inverse of R0_3
+  //
+  // Background:
+  //
+  // R0_6 = R0_3 * R3_6
+  //
+  // therefore
+  //
+  // R3_6 = inverseMatrix(R0_3) * R0_6
+
+  // we only need to inverse the rotational part so get that
+  const r0_3 = matrixSubset(h0_3, 3, 3);
+  const inv_r0_3 = inverseMatrix(r0_3);
+
+  // Step4 find R3_6
+
+  const PT_3_6 = [
+    [t4, d90, 0, v2 + v3],
+    [t5, -d90, 0, 0],
+    [t6, 0, 0, v4 + v5],
+  ];
+
+  // Step6 identify where we want
+
+  // const { endMatrix: h0_3 } = buildHomogeneousDenavitForTable(PT);
+};
+
+// prettier-ignore
+const test = [
+  [1, 2, -1 ],
+  [-2, 0, 1 ],
+  [1, -1, 0 ]
+]
+
+// console.table(inv(test));
+console.table(inverseMatrix(test));
+console.table(test);
+
+console.table(matrixSubset(test, 2, 3));
