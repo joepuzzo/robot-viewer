@@ -17,7 +17,7 @@
 // cos(t)	= adjacent
 // tan(t)	= opposite / adjacent
 
-// import { inv } from 'mathjs';
+import { inv } from 'mathjs';
 
 const toRadians = (deg) => {
   return (deg / 180) * Math.PI;
@@ -111,9 +111,6 @@ const mapping = (c) => (e) => {
 };
 
 const printMatrix = (m, c1, c2) => {
-  // m.forEach((a) => console.log(`${a}`));
-  // console.log('\n');
-
   if (c1) {
     const mapped = [m[0].map(mapping(c2)), m[1].map(mapping(c2)), m[2].map(mapping(c2))];
     // console.table(mapped);
@@ -125,6 +122,121 @@ const printMatrix = (m, c1, c2) => {
     console.table(m);
   }
 };
+
+const printMatrixCSV = (m) => {
+  m.forEach((a) => console.log(`${a}`));
+  console.log('\n');
+};
+
+const printMatrixJS = (m, c) => {
+  console.log(`const ${c} = [`);
+  m.forEach((a) => console.log(`  [${a}],`));
+  console.log(']');
+};
+
+/**
+ * Use to build variable based matrix!
+ * @param {*} a
+ * @param {*} b
+ * @returns
+ */
+const matrixDotString = (a, b) => {
+  var result = new Array(a.length).fill(0).map((row) => new Array(b[0].length).fill(0));
+
+  return result.map((row, i) => {
+    return row.map((val, j) => {
+      const r = a[i].reduce((sum, elm, k) => {
+        // If the result will be zero then do nothing
+        if (elm === '0' || b[k][j] === '0' || elm === '-0' || b[k][j] === '-0') {
+          return sum;
+        }
+
+        // If both are 1 then return 1
+        if (elm === '1' && b[k][j] === '1') {
+          return '1';
+        }
+
+        // If one of the operands is one then just return the other operand
+        if (elm === '1' || b[k][j] === '1') {
+          return elm === '1' ? b[k][j] : elm;
+        }
+
+        // If both are -1 then return 1
+        if (elm === '-1' && b[k][j] === '-1') {
+          return '1';
+        }
+
+        // If one of the operands is -1 then just return the other operand negated
+        if (elm === '-1' || b[k][j] === '-1') {
+          // We replace double neg with posative
+          return elm === '-1' ? `-${b[k][j]}`.replace('--', '') : `-${elm}`.replace('--', '');
+        }
+
+        // First iteration
+        if (sum != '') {
+          return `${sum} + ${elm} * ${b[k][j]}`;
+        } else {
+          return `${elm} * ${b[k][j]}`;
+        }
+      }, '');
+
+      // If we got nothing then its just a zero!
+      if (r === '') {
+        return '0';
+      }
+
+      // we got something so return that!
+      return r;
+    });
+  });
+};
+
+const Test_Matrix_1 = [
+  ['Math.cos(t1)', '0', 'Math.sin(t1)'],
+  ['Math.sin(t1)', '0', '-Math.cos(t1)'],
+  ['0', '1', '0'],
+];
+
+const Test_Matrix_2 = [
+  ['-Math.sin(t2)', '-Math.cos(t2)', '0'],
+  ['Math.cos(t2)', '-Math.sin(t2)', '0'],
+  ['0', '0', '1'],
+];
+
+// const Test_Matrix_1 = [
+//   ['a', 'b', 'c'],
+//   ['d', 'e', 'f'],
+//   ['g', 'h', 'i'],
+// ];
+
+// const Test_Matrix_2 = [
+//   ['j', 'k', 'l'],
+//   ['m', 'n', 'o'],
+//   ['p', 'q', 'r'],
+// ];
+
+// const Test_Matrix_1 = [
+//   ['a', 'b'],
+//   ['c', 'd'],
+// ];
+
+// const Test_Matrix_2 = [
+//   ['e', 'f'],
+//   ['g', 'h'],
+// ];
+
+// const Test_Matrix_1 = [
+//   ['1', '0'],
+//   ['0', '1'],
+// ];
+
+// const Test_Matrix_2 = [
+//   ['0', '1'],
+//   ['1', '0'],
+// ];
+
+console.log('TEST MATRIX--------------------------------');
+printMatrix(matrixDotString(Test_Matrix_1, Test_Matrix_2));
 
 /**
  *      Z0
@@ -212,7 +324,7 @@ function matrixDot(a, b) {
 
 let t1 = 0; // Theta 1 angle in degrees
 let t2 = 90; // Theta 2 angle in degrees
-let t3 = -90; // Theta 3 angle in degrees
+let t3 = 0; // Theta 3 angle in degrees
 let t4 = 0; // Theta 4 angle in degrees
 let t5 = 0; // Theta 5 angle in degrees
 let t6 = 0; // Theta 6 angle in degrees
@@ -635,6 +747,164 @@ const buildHomogeneousDenavitForTable = (pt) => {
   };
 };
 
+// sin(d90) = 1
+// sin(0) = 0
+const generateSin = (a) => {
+  let sinA = `Math.sin(${a})`;
+  if (a === 'd90') {
+    sinA = '1';
+  }
+  if (a === '-d90') {
+    sinA = '-1';
+  }
+  if (a === '0') {
+    sinA = '0';
+  }
+  return sinA;
+};
+
+// cos(d90) = 0
+// cos(0) = 1
+const generateCos = (a) => {
+  let cosA = `Math.cos(${a})`;
+  if (a === 'd90' || a == '-d90') {
+    cosA = '0';
+  }
+  if (a === '0') {
+    cosA = '1';
+  }
+  return cosA;
+};
+
+const checkParameters = (a, b) => {
+  // If the result will be zero then return zero
+  if (a === '0' || b === '0') {
+    return '0';
+  }
+
+  // If both are 1 then return 1
+  if (a === '1' && b === '1') {
+    return '1';
+  }
+
+  // If both are -1 then return 1
+  if (a === '-1' && b === '-1') {
+    return '1';
+  }
+
+  // If one of the operands is 1 then just return the other operand
+  if (a === '1' || b === '1') {
+    return a === '1' ? b : a;
+  }
+
+  // If one of the operands is -1 then just return the other operand negated
+  if (a === '-1' || b === '-1') {
+    return a === '-1' ? `-${b}` : `-${a}`;
+  }
+
+  return `${a} * ${b}`;
+};
+
+const buildHomogeneousDenavitStringForRow = (row) => {
+  // Get variables for this row
+  const theta = row[0];
+  const alpha = row[1];
+  const r = row[2];
+  const d = row[3];
+
+  // sin(d90)  = 1
+  // sin(-d90) = -1
+  // sin(0)    = 0
+  let sinAlpha = generateSin(alpha);
+  let sinTheta = generateSin(theta);
+
+  // cost(d90) = 0;
+  let cosAlpha = generateCos(alpha);
+  let cosTheta = generateCos(theta);
+
+  // checkParameters(sinTheta, cosAlpha)
+  // equals
+  // `${sinTheta} * ${sinAlpha}` or 0 or 1 or sinTheta or sinAlpha or - sinTheta or -sinAlpha
+
+  return [
+    [
+      `${cosTheta}`,
+      `-${checkParameters(sinTheta, cosAlpha)}`.replace('--', ''),
+      `${checkParameters(sinTheta, sinAlpha)}`,
+      `${checkParameters(r, cosTheta)}`,
+    ],
+    [
+      `${sinTheta}`,
+      `${checkParameters(cosTheta, cosAlpha)}`,
+      `-${checkParameters(cosTheta, sinAlpha)}`.replace('--', ''),
+      `${checkParameters(r, sinTheta)}`,
+    ],
+    [`0`, `${sinAlpha}`, `${cosAlpha}`, `${d}`],
+    [`0`, `0`, `0`, `1`],
+  ];
+
+  // return [
+  //   [
+  //     `Math.cos(${theta})`,
+  //     `-Math.sin(${theta}) * Math.cos(${alpha})`,
+  //     `Math.sin(${theta}) * Math.sin(${alpha})`,
+  //     `${r} * Math.cos(${theta})`,
+  //   ],
+  //   [
+  //     `Math.sin(${theta})`,
+  //     `Math.cos(${theta}) * Math.cos(${alpha})`,
+  //     `-Math.cos(${theta}) * Math.sin(${alpha})`,
+  //     `${r} * Math.sin(${theta})`,
+  //   ],
+  //   [`0`, `Math.sin(${alpha})`, `Math.cos(${alpha})`, `${d}`],
+  //   [`0`, `0`, `0`, `1`],
+  // ];
+
+  // return [
+  //   [
+  //     `C(${theta})`,
+  //     `-S(${theta}) * C(${alpha})`,
+  //     `S(${theta}) * S(${alpha})`,
+  //     `${r} * C(${theta})`,
+  //   ],
+  //   [
+  //     `S(${theta})`,
+  //     `C(${theta}) * C(${alpha})`,
+  //     `-C(${theta}) * S(${alpha})`,
+  //     `${r} * S(${theta})`,
+  //   ],
+  //   [`0`, `S(${alpha})`, `C(${alpha})`, `${d}`],
+  //   [`0`, `0`, `0`, `1`],
+  // ];
+};
+
+const buildHomogeneousDenavitStringForTable = (pt) => {
+  // Build individual matricies
+  const homogeneousMatriceis = pt.map((row) => buildHomogeneousDenavitStringForRow(row));
+
+  // Matrix multiply them all
+  // [h0_1,h1_2,h2_3,h3_4 ...]
+  // return(h0_2) = h0_1 * h0_2;
+  // return(h0_3) = h0_2 * h2_2;
+  // ...
+  const endHomogeneous = homogeneousMatriceis.reduce((acc, cur, i) => {
+    return matrixDotString(acc, cur);
+  });
+
+  const rotationalMatricies = homogeneousMatriceis.map((mat) => matrixSubset(mat, 3, 3));
+
+  const endRotation = rotationalMatricies.reduce((acc, cur, i) => {
+    return matrixDotString(acc, cur);
+  });
+
+  return {
+    homogeneousMatriceis,
+    rotationalMatricies,
+    endHomogeneous,
+    endRotation,
+  };
+};
+
 console.log('-------------------------Denavit Hartenberg-------------------------------');
 
 // For testing against you tube video our numbers are good!
@@ -661,6 +931,8 @@ console.log('-------------------------Denavit Hartenberg------------------------
 
 // t   a   r   d
 const d90 = toRadians(90);
+
+console.log('90DEG', d90);
 
 // prettier-ignore
 const PT = [
@@ -689,10 +961,6 @@ console.log('H4_5 --------------------------------------------------');
 printMatrix(res.matriceis[4]);
 console.log('H5_6 --------------------------------------------------');
 printMatrix(res.matriceis[5]);
-// console.log('H0_3 --------------------------------------------------');
-// printMatrix(res.h0_3);
-// console.log('H3_6 --------------------------------------------------');
-// printMatrix(res.h3_6);
 console.log('H0_6 --------------------------------------------------');
 printMatrix(res.endMatrix);
 /**
@@ -884,10 +1152,75 @@ console.log(
   result.map((a) => toDeg(a))
 );
 
+const PT_0_3 = [
+  ['t1', 'd90', '0', 'v0'],
+  ['t2 + d90', '0', 'v1', '0'],
+  ['t3 - d90', '-d90', '0', '0'],
+];
+
+const PT_3_6 = [
+  ['t4', 'd90', '0', 'v2 + v3'],
+  ['t5', '-d90', '0', '0'],
+  ['t6', '0', '0', 'v4 + v5'],
+];
+
+const stringRes1 = buildHomogeneousDenavitStringForTable(PT_0_3);
+const stringRes2 = buildHomogeneousDenavitStringForTable(PT_3_6);
+
+console.log('R0_1_String --------------------------------------------------');
+printMatrix(stringRes1.rotationalMatricies[0]);
+console.log('R1_2_String  --------------------------------------------------');
+printMatrix(stringRes1.rotationalMatricies[1]);
+console.log('R2_3_String  --------------------------------------------------');
+printMatrix(stringRes1.rotationalMatricies[2]);
+console.log('R0_3_String  --------------------------------------------------');
+printMatrixJS(stringRes1.endRotation, 'r0_3');
+
+console.log('R3_4_String --------------------------------------------------');
+printMatrix(stringRes2.rotationalMatricies[0]);
+console.log('R4_5_String  --------------------------------------------------');
+printMatrix(stringRes2.rotationalMatricies[1]);
+console.log('R5_6_String  --------------------------------------------------');
+printMatrix(stringRes2.rotationalMatricies[2]);
+console.log('R3_6_String  --------------------------------------------------');
+printMatrixJS(stringRes2.endRotation, 'r3_6');
+
+// Below are ths strings we derrived manually ( NOT USING THE hart method )
+// These should match the things above!
+const R3_4_String = [
+  ['Math.cos(t4)', '0', 'Math.sin(t4)'],
+  ['Math.sin(t4)', '0', '-Math.cos(t4)'],
+  ['0', '1', '0'],
+];
+const R4_5_String = [
+  ['Math.cos(t5)', '0', '-Math.sin(t5)'],
+  ['Math.sin(t5)', '0', 'Math.cos(t5)'],
+  ['0', '-1', '0'],
+];
+const R5_6_Sring = [
+  ['Math.cos(t6)', '-Math.sin(t6)', '0'],
+  ['Math.sin(t6)', 'Math.cos(t6)', '0'],
+  ['0', '0', '1'],
+];
+
+console.log('R3_4_String_v2 --------------------------------------------------');
+printMatrix(R3_4_String);
+console.log('R4_5_String_v2  --------------------------------------------------');
+printMatrix(R4_5_String);
+console.log('R5_6_String_v2  --------------------------------------------------');
+printMatrix(R5_6_Sring);
+console.log('R3_6_String_v2  --------------------------------------------------');
+const R3_5_String = matrixDotString(R3_4_String, R4_5_String);
+const R3_6_String = matrixDotString(R3_5_String, R5_6_Sring);
+printMatrixJS(R3_6_String, 'r3_6');
+
 const inverse = (x, y, z, robotConfig) => {
   // ----------------------------------------------------------------
   // Step1 find inverse kinimatics for 1-3
   const [angle1, angle2, angle3] = inverse1_3(x, y, z, robotConfig);
+
+  console.log('inverse1_3 --------------------------------------------------');
+  console.log('Angles:', [angle1, angle2, angle3]);
 
   // ----------------------------------------------------------------
   // Step2 build the transformatin matrix for 1-3
@@ -912,19 +1245,102 @@ const inverse = (x, y, z, robotConfig) => {
 
   // we only need to inverse the rotational part so get that
   const r0_3 = matrixSubset(h0_3, 3, 3);
-  const inv_r0_3 = inverseMatrix(r0_3);
 
-  // Step4 find R3_6
+  console.log('r0_3 --------------------------------------------------');
+  printMatrix(r0_3);
 
-  const PT_3_6 = [
-    [t4, d90, 0, v2 + v3],
-    [t5, -d90, 0, 0],
-    [t6, 0, 0, v4 + v5],
+  // Inverse of
+  const inv_r0_3 = inv(r0_3);
+
+  console.log('inv_r0_3 --------------------------------------------------');
+  printMatrix(inv_r0_3);
+
+  // Fixed for now
+  const r0_6 = [
+    // x6 y6 z6
+    [0, 0, -1],
+    [0, 1, 0],
+    [1, 0, 0],
   ];
 
-  // Step6 identify where we want
+  console.log('r0_6 --------------------------------------------------');
+  printMatrix(r0_6);
 
-  // const { endMatrix: h0_3 } = buildHomogeneousDenavitForTable(PT);
+  const r3_6 = matrixDot(inv_r0_3, r0_6);
+
+  console.log('r3_6 --------------------------------------------------');
+  printMatrix(r3_6);
+
+  /**
+   *
+   * We use our special functions to create the matrix for r3_6
+   * from this we can start to define functions!
+   *
+   *  const r3_6 = [
+   *    [ a, b, c ],
+   *    [ d, e, f ],
+   *    [ g, h, i ]
+   *  ]
+   *
+   *  const r3_6 = [
+   *    [Math.cos(t4) * Math.cos(t5) * Math.cos(t6) + -Math.sin(t4) * Math.sin(t6),Math.cos(t4) * Math.cos(t5) * -Math.sin(t6) + -Math.sin(t4) * Math.cos(t6),Math.cos(t4) * -Math.sin(t5)],
+   *    [Math.sin(t4) * Math.cos(t5) * Math.cos(t6) + Math.cos(t4) * Math.sin(t6),Math.sin(t4) * Math.cos(t5) * -Math.sin(t6) + Math.cos(t4) * Math.cos(t6),Math.sin(t4) * -Math.sin(t5)],
+   *    [Math.sin(t5) * Math.cos(t6),Math.sin(t5) * -Math.sin(t6),Math.cos(t5)],
+   *  ]
+   *
+   *  therefore
+   *
+   *  i = Math.cos(t5)
+   *
+   *  t5 = Math.acos(r3_6[2][2])
+   *
+   *  -----------------------------
+   *
+   *  g = Math.sin(t5) * Math.cos(t6)
+   *
+   *  t6 = Math.acos( r3_6[2][0] / Math.sin(t5) )
+   *
+   *  -----------------------------
+   *
+   *  c = Math.cos(t4) * -Math.sin(t5)
+   *  c / -Math.sin(t5) = Math.cos(t4)
+   *  Math.acos( c / -Math.sin(t5) ) = t4
+   *
+   *  t4 = Math.acos( c / -Math.sin(t5) )
+   *
+   */
+
+  const angle5 = Math.acos(r3_6[2][2]);
+  const angle6 = Math.acos(r3_6[2][0] / Math.sin(angle5));
+  const angle4 = Math.acos(r3_6[0][2] / -Math.sin(angle5));
+
+  // Check r3_6
+
+  const r3_6_check = [
+    [
+      Math.cos(angle4) * Math.cos(angle5) * Math.cos(angle6) + -Math.sin(angle4) * Math.sin(angle6),
+      Math.cos(angle4) * Math.cos(angle5) * -Math.sin(angle6) +
+        -Math.sin(angle4) * Math.cos(angle6),
+      Math.cos(angle4) * -Math.sin(angle5),
+    ],
+    [
+      Math.sin(angle4) * Math.cos(angle5) * Math.cos(angle6) + Math.cos(angle4) * Math.sin(angle6),
+      Math.sin(angle4) * Math.cos(angle5) * -Math.sin(angle6) + Math.cos(angle4) * Math.cos(angle6),
+      Math.sin(angle4) * -Math.sin(angle5),
+    ],
+    [Math.sin(angle5) * Math.cos(angle6), Math.sin(angle5) * -Math.sin(angle6), Math.cos(angle5)],
+  ];
+
+  console.log('r3_6_check --------------------------------------------------');
+  printMatrix(r3_6_check);
+
+  // Step4 do forward kinimatics on the last three joints and get the rotation part
+
+  // Step5 specify the rotation matrix of R0_6 to be
+
+  // Step6 given a desired xyz pos solve for the first three joints
+
+  return [angle1, angle2, angle3, angle4, angle5, angle6];
 };
 
 // prettier-ignore
@@ -939,3 +1355,7 @@ console.table(inverseMatrix(test));
 console.table(test);
 
 console.table(matrixSubset(test, 2, 3));
+
+const inverseRes = inverse(5, 0, 0, config);
+console.log('INVERSE----------------------------------');
+console.log('Angles:', inverseRes);
