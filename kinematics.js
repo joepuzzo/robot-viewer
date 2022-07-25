@@ -1090,7 +1090,6 @@ const computeR2 = (z0_3, a1) => {
 
 const computeP2 = (r2, r1) => {
   return Math.atan2(r2, r1);
-  // return -Math.atan2(r2, r1);
 };
 
 const computeR3 = (r1, r2) => {

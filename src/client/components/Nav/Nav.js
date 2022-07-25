@@ -241,8 +241,8 @@ export const Nav = () => {
           onNativeChange={onValueChange('z')}
           label="Z"
           type="number"
-          minValue={-10}
-          maxValue={10}
+          minValue={-15}
+          maxValue={15}
           step={0.1}
         />
       </ul>
