@@ -2,6 +2,8 @@ import { useFormState } from 'informed';
 import { useThree, useFrame } from '@react-three/fiber';
 // import { useDrag } from '@use-gesture/react';
 
+import { inverse } from '../../../../inverse';
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
 
@@ -94,7 +96,7 @@ const Pos = ({
   const spacePress = useKeyPress({ targetKeyCode: 32 });
 
   const ref = useRef();
-  const [position, setPosition] = useState([2, 2, 0]);
+  const [position, setPosition] = useState([5, 0, 10]);
   const { size, viewport } = useThree();
 
   // const bind = useDrag(
@@ -131,31 +133,70 @@ const Pos = ({
   //   toggleOrbital
   // );
 
+  const updateRobot = (x, y, z) => {
+    const pos = [x, y, z];
+
+    const { v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+
+    console.log('Updating robot to', pos);
+    console.log('Getting angles for', pos);
+    const angles = inverse(x, y, z, {
+      a1: v0 + 1.5, // 2.5
+      a2: v1 + 2, // 3
+      a3: v2 + 1.5, // 2.5
+      a4: v3 + 1.5, // 2.5
+      a5: v4 + 1.5, // 2.5
+      a6: v5 + 1, // 2
+    });
+
+    console.log('Setting angles to', angles);
+
+    if (!angles.find((a) => isNaN(a))) {
+      formApi.setTheseValues({
+        j0: angles[0],
+        j1: angles[1],
+        j2: angles[2],
+        j3: angles[3],
+        j4: angles[4],
+        j5: angles[5],
+        x,
+        y,
+        z,
+      });
+    }
+  };
+
+  useEffect(() => {
+    updateRobot(...position);
+  }, [...position]);
+
   const handleKeyDown = useCallback(
     (event) => {
       const { key, keyCode } = event;
 
+      const step = 0.1;
+
       if (key === 'ArrowUp') {
         setPosition(([x, y, z]) => {
           if (spacePress) {
-            return [x, y, z + 1];
+            return [x, y, z + step];
           }
-          return [x, y + 1, z];
+          return [x, y + step, z];
         });
       } else if (key === 'ArrowDown') {
         setPosition(([x, y, z]) => {
           if (spacePress) {
-            return [x, y, z - 1];
+            return [x, y, z - step];
           }
-          return [x, y - 1, z];
+          return [x, y - step, z];
         });
       } else if (key === 'ArrowLeft') {
         setPosition(([x, y, z]) => {
-          return [x - 1, y, z];
+          return [x - step, y, z];
         });
       } else if (key === 'ArrowRight') {
         setPosition(([x, y, z]) => {
-          return [x + 1, y, z];
+          return [x + step, y, z];
         });
       }
 
@@ -176,7 +217,13 @@ const Pos = ({
 
   // ...bind
   return (
-    <group ref={ref} {...props} position={position}>
+    <group
+      ref={ref}
+      {...props}
+      position={[position[0], position[1], position[2] + 1]}
+      // position={[-position.x, position.y, position.z]}
+      // position={[2, 2, 2]}
+    >
       <mesh onPointerOver={(event) => setHover(true)} onPointerOut={(event) => setHover(false)}>
         <sphereBufferGeometry args={args} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
@@ -306,7 +353,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
 
   return (
     <group rotation={[Math.PI * -0.5, 0, 0]}>
-      <Grid size={10} />
+      <Grid size={20} />
       <Component
         name="base"
         setSelected={setSelected}
@@ -444,17 +491,16 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
           </Component>
         </Component>
       </Component>
-      {/* <Pos
+      <Pos
         name="pos"
         setSelected={setSelected}
         selected={selected}
         args={[0.5, 30, 30]}
-        position={[0, -1, 0]}
         grid
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
-      /> */}
+      />
     </group>
   );
 }

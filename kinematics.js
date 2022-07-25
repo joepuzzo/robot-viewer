@@ -1090,6 +1090,7 @@ const computeR2 = (z0_3, a1) => {
 
 const computeP2 = (r2, r1) => {
   return Math.atan2(r2, r1);
+  // return -Math.atan2(r2, r1);
 };
 
 const computeR3 = (r1, r2) => {
@@ -1139,8 +1140,8 @@ const inverse1_3 = (x, y, z, robotConfig) => {
   console.log('p3', p3);
 
   const t1 = computeT1(x, y);
-  const t2 = computeT2(p1, p2);
-  const t3 = computeT3(p3);
+  const t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
+  const t3 = -computeT3(p3); // Needed to negate to match main x, y frame
 
   return [t1, t2, t3];
 };

@@ -64,16 +64,14 @@ export const Nav = () => {
           const { x, y, z, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
           const pos = [x, y, z];
 
-          console.log('WTF', v0, v1, v2, v3, v4, v5);
-
           console.log('Getting angles for', pos);
           const angles = inverse(x, y, z, {
-            a1: v0 * 2,
-            a2: v1 * 2,
-            a3: v2 * 2,
-            a4: v3 * 2,
-            a5: v4 * 2,
-            a6: v5 * 2,
+            a1: v0 + 1.5, // 2.5
+            a2: v1 + 2, // 3
+            a3: v2 + 1.5, // 2.5
+            a4: v3 + 1.5, // 2.5
+            a5: v4 + 1.5, // 2.5
+            a6: v5 + 1, // 2
           });
 
           console.log('Setting angles to', angles);
@@ -222,7 +220,7 @@ export const Nav = () => {
         />
         <InputSlider
           name="x"
-          onValueChange={onValueChange('x')}
+          onNativeChange={onValueChange('x')}
           label="X"
           type="number"
           minValue={-10}
@@ -231,7 +229,7 @@ export const Nav = () => {
         />
         <InputSlider
           name="y"
-          onValueChange={onValueChange('y')}
+          onNativeChange={onValueChange('y')}
           label="Y"
           type="number"
           minValue={-10}
@@ -240,7 +238,7 @@ export const Nav = () => {
         />
         <InputSlider
           name="z"
-          onValueChange={onValueChange('z')}
+          onNativeChange={onValueChange('z')}
           label="Z"
           type="number"
           minValue={-10}
