@@ -1,22 +1,3 @@
-// sin(t)	= opposite / hypotenuse
-// cos(t)	= adjacent / hypotenuse
-// tan(t)	= opposite / adjacent
-
-// All x1, y1, z1 = 1
-
-// Therefore
-//
-// hypotenuse = 1
-//
-// sin(t)	= opposite / 1
-// cos(t)	= adjacent / 1
-// tan(t)	= opposite / adjacent
-//
-// OR
-// sin(t)	= opposite
-// cos(t)	= adjacent
-// tan(t)	= opposite / adjacent
-
 import { inv } from 'mathjs';
 
 const toRadians = (deg) => {
@@ -329,6 +310,8 @@ const inverse1_3 = (x, y, z, robotConfig) => {
 
   return [t1, t2, t3];
 };
+
+// ---------------------------- Now we have everything we need to write our inverse function!!!
 
 export const inverse = (x, y, z, robotConfig) => {
   // Fixed for now ( up )
