@@ -331,16 +331,16 @@ export const inverse = (x, y, z, robotConfig) => {
    *       wc = wrist center vector
    *      ( )
    *      / \
-   *     /   \ v4
+   *     /   \ a5
    *    /     \
    *  [ ]     [ ]
-   *            \ v5
+   *            \ a6
    *             \
    *             ef = end effector vector
    *
    * goal: find the x,y,z for
    *
-   * wc = ef - (v4 + v5) * R0_6
+   * wc = ef - (a5 + a6) * R0_6
    *
    * or
    *
