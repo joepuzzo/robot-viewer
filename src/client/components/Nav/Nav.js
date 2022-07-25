@@ -7,6 +7,7 @@ import Input from '../Informed/Input';
 import InputSlider from '../Informed/InputSlider';
 import Form from '../Informed/Form';
 import { Button } from '@adobe/react-spectrum';
+import { inverse } from '../../../../inverse';
 
 // Hooks
 import useApp from '../../hooks/useApp';
@@ -36,13 +37,44 @@ export const Nav = () => {
         console.log('SETTING', name, 'to', value, 'wtf', triggers.includes(name));
 
         // Need to update joints!
+        // if (triggers.includes(name)) {
+        //   // Get pos
+        //   const { x, y, z } = formApi.getFormState().values;
+        //   const pos = [x, y, z, -2, 3, -2];
+
+        //   console.log('Getting angles for', pos);
+        //   const angles = RobotKin.inverse(...pos);
+
+        //   console.log('Setting angles to', angles);
+
+        //   if (!angles.find((a) => isNaN(a))) {
+        //     formApi.setTheseValues({
+        //       j0: angles[0],
+        //       j1: angles[1],
+        //       j2: angles[2],
+        //       j3: angles[3],
+        //       j4: angles[4],
+        //       j5: angles[5],
+        //     });
+        //   }
+        // }
+
         if (triggers.includes(name)) {
           // Get pos
-          const { x, y, z } = formApi.getFormState().values;
-          const pos = [x, y, z, -2, 3, -2];
+          const { x, y, z, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+          const pos = [x, y, z];
+
+          console.log('WTF', v0, v1, v2, v3, v4, v5);
 
           console.log('Getting angles for', pos);
-          const angles = RobotKin.inverse(...pos);
+          const angles = inverse(x, y, z, {
+            a1: v0 * 2,
+            a2: v1 * 2,
+            a3: v2 * 2,
+            a4: v3 * 2,
+            a5: v4 * 2,
+            a6: v5 * 2,
+          });
 
           console.log('Setting angles to', angles);
 
@@ -126,6 +158,15 @@ export const Nav = () => {
           step={0.01}
         />
         <InputSlider
+          name="v5"
+          // onValueChange={onValueChange('v4')}
+          label="V5"
+          type="number"
+          minValue={0}
+          maxValue={5}
+          step={0.01}
+        />
+        <InputSlider
           name="j0"
           // onValueChange={onValueChange('v5')}
           label="J0"
@@ -186,7 +227,7 @@ export const Nav = () => {
           type="number"
           minValue={-10}
           maxValue={10}
-          step={0.01}
+          step={0.1}
         />
         <InputSlider
           name="y"
@@ -195,7 +236,7 @@ export const Nav = () => {
           type="number"
           minValue={-10}
           maxValue={10}
-          step={0.01}
+          step={0.1}
         />
         <InputSlider
           name="z"
@@ -204,7 +245,7 @@ export const Nav = () => {
           type="number"
           minValue={-10}
           maxValue={10}
-          step={0.01}
+          step={0.1}
         />
       </ul>
     </nav>

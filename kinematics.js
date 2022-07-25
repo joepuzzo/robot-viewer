@@ -17,7 +17,7 @@
 // cos(t)	= adjacent
 // tan(t)	= opposite / adjacent
 
-import { inv } from 'mathjs';
+import { inv, dot, matrix } from 'mathjs';
 
 const toRadians = (deg) => {
   return (deg / 180) * Math.PI;
@@ -1214,10 +1214,40 @@ const R3_5_String = matrixDotString(R3_4_String, R4_5_String);
 const R3_6_String = matrixDotString(R3_5_String, R5_6_Sring);
 printMatrixJS(R3_6_String, 'r3_6');
 
-const inverse = (x, y, z, robotConfig) => {
+export const inverse = (x, y, z, robotConfig) => {
+  // Fixed for now
+  const r0_6 = [
+    // x6 y6 z6
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1],
+  ];
+
+  const { a1, a2, a3, a4, a5, a6 } = robotConfig;
+
+  // First we need fo find the x0_3, y0_3 and Z0_3
+
+  // vector0_3 = vector0_6 - wrist_offset * R0_6
+
+  const rotatedVector = matrixDot(r0_6, [[0], [0], [a5 + a6]]);
+
+  console.log('rotatedVector', rotatedVector);
+
+  const x0_3 = x - rotatedVector[0][0];
+  const y0_3 = y - rotatedVector[1][0];
+  const z0_3 = z - rotatedVector[2][0];
+
+  console.log('x0_3, y0_3, z0_3', x0_3, y0_3, z0_3);
+
   // ----------------------------------------------------------------
   // Step1 find inverse kinimatics for 1-3
-  const [angle1, angle2, angle3] = inverse1_3(x, y, z, robotConfig);
+
+  const robotConfig1_3 = {
+    a1,
+    a2,
+    a3: a3 + a4, // Our point includes joint 4 because we want location to wrist center,
+  };
+  const [angle1, angle2, angle3] = inverse1_3(x0_3, y0_3, z0_3, robotConfig1_3);
 
   console.log('inverse1_3 --------------------------------------------------');
   console.log('Angles:', [angle1, angle2, angle3]);
@@ -1225,8 +1255,8 @@ const inverse = (x, y, z, robotConfig) => {
   // ----------------------------------------------------------------
   // Step2 build the transformatin matrix for 1-3
   const PT_0_3 = [
-    [angle1, d90, 0, v0],
-    [angle2 + d90, 0, v1, 0],
+    [angle1, d90, 0, a1],
+    [angle2 + d90, 0, a2, 0],
     [angle3 - d90, -d90, 0, 0],
   ];
 
@@ -1254,14 +1284,6 @@ const inverse = (x, y, z, robotConfig) => {
 
   console.log('inv_r0_3 --------------------------------------------------');
   printMatrix(inv_r0_3);
-
-  // Fixed for now
-  const r0_6 = [
-    // x6 y6 z6
-    [0, 0, -1],
-    [0, 1, 0],
-    [1, 0, 0],
-  ];
 
   console.log('r0_6 --------------------------------------------------');
   printMatrix(r0_6);
@@ -1311,8 +1333,16 @@ const inverse = (x, y, z, robotConfig) => {
    */
 
   const angle5 = Math.acos(r3_6[2][2]);
-  const angle6 = Math.acos(r3_6[2][0] / Math.sin(angle5));
-  const angle4 = Math.acos(r3_6[0][2] / -Math.sin(angle5));
+
+  console.log('r3_6[2][0]', r3_6[2][0]);
+  console.log(`Math.sin(${angle5})'`, Math.sin(angle5));
+  console.log(
+    'Math.acos(r3_6[2][0] / Math.sin(angle5))',
+    Math.sin(angle5) === 0 ? 0 : Math.acos(r3_6[2][0] / Math.sin(angle5))
+  );
+
+  const angle6 = Math.sin(angle5) === 0 ? 0 : Math.acos(r3_6[2][0] / Math.sin(angle5));
+  const angle4 = Math.sin(angle5) === 0 ? 0 : Math.acos(r3_6[0][2] / -Math.sin(angle5));
 
   // Check r3_6
 
@@ -1356,6 +1386,15 @@ console.table(test);
 
 console.table(matrixSubset(test, 2, 3));
 
-const inverseRes = inverse(5, 0, 0, config);
+const rConfig = {
+  a1: v0,
+  a2: v1,
+  a3: v2,
+  a4: v3,
+  a5: v4,
+  a6: v5,
+};
+
+const inverseRes = inverse(1, 0, 5, rConfig);
 console.log('INVERSE----------------------------------');
 console.log('Angles:', inverseRes);

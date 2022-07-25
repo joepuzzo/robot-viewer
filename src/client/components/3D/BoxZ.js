@@ -306,7 +306,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
 
   return (
     <group rotation={[Math.PI * -0.5, 0, 0]}>
-      {/* <Grid size={10} /> */}
+      <Grid size={10} />
       <Component
         name="base"
         setSelected={setSelected}
@@ -444,7 +444,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
           </Component>
         </Component>
       </Component>
-      <Pos
+      {/* <Pos
         name="pos"
         setSelected={setSelected}
         selected={selected}
@@ -454,7 +454,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
-      />
+      /> */}
     </group>
   );
 }

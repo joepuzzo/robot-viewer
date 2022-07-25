@@ -1,6 +1,6 @@
 import React from 'react';
 import { useField } from 'informed';
-import { Flex, Slider, TextField } from '@adobe/react-spectrum';
+import { Flex, Slider, NumberField } from '@adobe/react-spectrum';
 
 const Input = (props) => {
   const { render, informed, fieldState, fieldApi, userProps, ref } = useField({
@@ -11,7 +11,7 @@ const Input = (props) => {
   const { error, showError } = fieldState;
   return render(
     <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
-      <TextField
+      <NumberField
         ref={ref}
         validationState={!error ? null : 'invalid'}
         errorMessage={showError ? error : undefined}
@@ -19,11 +19,12 @@ const Input = (props) => {
         {...userProps}
         {...informed}
         onChange={(v) => fieldApi.setValue(v)}
-        type={props.type}
+        // type={props.type}
         step={props.step}
+        type="number"
       />
       <Slider
-        maxWidth={140}
+        maxWidth={120}
         trackGradient={['white', 'rgba(177,141,32,1)']}
         ref={ref}
         validationState={!error ? null : 'invalid'}
