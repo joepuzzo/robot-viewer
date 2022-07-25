@@ -15,6 +15,12 @@ import { Box } from '../3D/Box';
 import { BoxZ } from '../3D/BoxZ';
 import { Arm } from '../3D/Arm';
 
+const toDeg = (rad) => {
+  return 180 * (rad / Math.PI);
+};
+
+const round = (n) => Math.round(n * 100) / 100;
+
 const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
@@ -24,12 +30,19 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
 
   const angles = [j0, j1, j2, j3, j4, j5];
 
-  const pos = RobotKin.forward(...angles)[5].map((a) => Math.round(a));
+  // const pos = RobotKin.forward(...angles)[5].map((a) => Math.round(a));
 
   return (
     <>
-      <h3>{JSON.stringify(pos)}</h3>
-      <h3>{JSON.stringify(angles.map((a) => Math.round(a * 10) / 10))}</h3>
+      {/* <h3>{JSON.stringify(pos)}</h3> */}
+      <h3>
+        Angles:{' '}
+        {JSON.stringify(
+          angles.map((a) => round(toDeg(a))),
+          null,
+          2
+        )}
+      </h3>
       <Canvas
         // orthographic
         // camera={{
