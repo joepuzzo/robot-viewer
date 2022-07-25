@@ -41,7 +41,7 @@ const matrixSubset = (m, cols, rows) => {
   return subset;
 };
 
-const round = (n) => Math.round(n * 100) / 100;
+const round = (n) => Math.round(n * 1000000) / 1000000;
 
 const roundOne = (n) => {
   let r = n;
@@ -331,7 +331,7 @@ const inverse1_3 = (x, y, z, robotConfig) => {
 };
 
 export const inverse = (x, y, z, robotConfig) => {
-  // Fixed for now
+  // Fixed for now ( up )
   const r0_6 = [
     // x6 y6 z6
     [1, 0, 0],
@@ -341,9 +341,28 @@ export const inverse = (x, y, z, robotConfig) => {
 
   const { a1, a2, a3, a4, a5, a6 } = robotConfig;
 
-  // First we need fo find the x0_3, y0_3 and Z0_3
-
-  // vector0_3 = vector0_6 - wrist_offset * R0_6
+  /**
+   *
+   * First we need fo find the x0_3, y0_3 and Z0_3
+   *
+   *       wc = wrist center vector
+   *      ( )
+   *      / \
+   *     /   \ v4
+   *    /     \
+   *  [ ]     [ ]
+   *            \ v5
+   *             \
+   *             ef = end effector vector
+   *
+   * goal: find the x,y,z for
+   *
+   * wc = ef - (v4 + v5) * R0_6
+   *
+   * or
+   *
+   * vector0_3 = vector0_6 - wrist_offset_vector * R0_6
+   */
 
   const rotatedVector = matrixDot(r0_6, [[0], [0], [a5 + a6]]);
 
