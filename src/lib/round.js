@@ -10,3 +10,17 @@ export const roundOne = (n) => {
     return -1;
   } else return r;
 };
+
+/**
+ * Rounds the array and removes negative zeros
+ *
+ * @param {*} arr
+ * @returns
+ */
+export const roundArray = (arr) => {
+  return arr.map((n) => {
+    let rounded = round(n);
+    rounded = Object.is(rounded, -0) ? 0 : rounded;
+    return rounded;
+  });
+};

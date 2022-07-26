@@ -99,40 +99,6 @@ const Pos = ({
   const [position, setPosition] = useState([5, 0, 10]);
   const { size, viewport } = useThree();
 
-  // const bind = useDrag(
-  //   (v) => {
-  //     let pos = v.toArray();
-  //     // const [, , z] = position;
-  //     // const [x, y] = pos;
-  //     // pos = [x, y, z];
-  //     console.log('-------------------------------------------');
-  //     console.log('POS', pos);
-  //     setPosition(pos);
-
-  //     // Kinimatics
-  //     // const newPos = [x, y, z, 0, 0, 0];
-
-  //     // console.log('Getting angles for', newPos);
-  //     // const angles = RobotKin.inverse(...newPos);
-
-  //     // console.log('Setting angles to', angles);
-
-  //     // if (!angles.find((a) => isNaN(a))) {
-  //     //   formApi.setTheseValues({
-  //     //     j0: angles[0],
-  //     //     j1: angles[1],
-  //     //     j2: angles[2],
-  //     //     j3: angles[3],
-  //     //     j4: angles[4],
-  //     //     j5: angles[5],
-  //     //   });
-  //     // }
-  //   },
-  //   undefined,
-  //   undefined,
-  //   toggleOrbital
-  // );
-
   const updateRobot = (x, y, z) => {
     const pos = [x, y, z];
 
@@ -140,7 +106,7 @@ const Pos = ({
 
     console.log('Updating robot to', pos);
     console.log('Getting angles for', pos);
-    const angles = inverse(x, y, z, {
+    const angles = inverse(x, y, z, 0, 0, 0, {
       a1: v0 + 1.5, // 2.5
       a2: v1 + 2, // 3
       a3: v2 + 1.5, // 2.5

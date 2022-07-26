@@ -36,36 +36,13 @@ export const Nav = () => {
         newConfig[name] = value;
         console.log('SETTING', name, 'to', value, 'wtf', triggers.includes(name));
 
-        // Need to update joints!
-        // if (triggers.includes(name)) {
-        //   // Get pos
-        //   const { x, y, z } = formApi.getFormState().values;
-        //   const pos = [x, y, z, -2, 3, -2];
-
-        //   console.log('Getting angles for', pos);
-        //   const angles = RobotKin.inverse(...pos);
-
-        //   console.log('Setting angles to', angles);
-
-        //   if (!angles.find((a) => isNaN(a))) {
-        //     formApi.setTheseValues({
-        //       j0: angles[0],
-        //       j1: angles[1],
-        //       j2: angles[2],
-        //       j3: angles[3],
-        //       j4: angles[4],
-        //       j5: angles[5],
-        //     });
-        //   }
-        // }
-
         if (triggers.includes(name)) {
           // Get pos
           const { x, y, z, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
           const pos = [x, y, z];
 
           console.log('Getting angles for', pos);
-          const angles = inverse(x, y, z, {
+          const angles = inverse(x, y, z, 0, 0, 0, {
             a1: v0 + 1.5, // 2.5
             a2: v1 + 2, // 3
             a3: v2 + 1.5, // 2.5

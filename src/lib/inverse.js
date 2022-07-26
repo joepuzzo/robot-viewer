@@ -6,6 +6,8 @@ import { matrixDot } from './matrixDot';
 import { buildHomogeneousDenavitForTable } from './denavitHartenberg';
 import { inverse1_3 } from './inverse1_3';
 import { Debug } from './debug';
+import { zxz } from './euler';
+import { cleanAndRoundMatrix } from './roundMatrix';
 
 const logger = Debug('ik:inverse' + '\t');
 
@@ -22,14 +24,18 @@ const d90 = toRadians(90);
  * @param {*} robotConfig
  * @returns
  */
-export const inverse = (x, y, z, robotConfig) => {
+export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
+  const r0_6 = cleanAndRoundMatrix(zxz(r1, r2, r3));
+
+  // console.table(r0_6);
+
   // Fixed for now ( up )
-  const r0_6 = [
-    // x6 y6 z6
-    [1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1],
-  ];
+  // const r0_6 = [
+  //   // x6 y6 z6
+  //   [1, 0, 0],
+  //   [0, 1, 0],
+  //   [0, 0, 1],
+  // ];
 
   // Get lengths of all verticies between joints
   const { a1, a2, a3, a4, a5, a6 } = robotConfig;

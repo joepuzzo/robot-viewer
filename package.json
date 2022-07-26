@@ -1,5 +1,5 @@
 {
-  "name": "scaffold-javascript-website--express-react",
+  "name": "robot-viewer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,8 +13,8 @@
     "start:dev": "concurrently --raw \"npm run client:local\" \"npm run server:local\"",
     "client:local": "webpack serve --hot --config src/client/webpack/webpack.dev.cjs",
     "server:local": "NODE_ENV=development nodemon -r dotenv/config src/server/index.js",
-    "build:docker": "docker build -t scaffold-javascript-website--express-react .",
-    "run:docker": "docker run --env-file=.env -p 3000:3000 scaffold-javascript-website--express-react"
+    "build:docker": "docker build -t robot-viewer .",
+    "run:docker": "docker run --env-file=.env -p 3000:3000 robot-viewer"
   },
   "keywords": [],
   "author": "",

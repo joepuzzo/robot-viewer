@@ -1,4 +1,5 @@
 import { Debug } from './debug';
+import { round } from './round';
 const logger = Debug('ik:inverse1_3' + '\t');
 
 /**
@@ -183,5 +184,6 @@ export const inverse1_3 = (x, y, z, robotConfig) => {
   const t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
   const t3 = -computeT3(p3); // Needed to negate to match main x, y frame
 
-  return [t1, t2, t3];
+  // Return angles removing negative zeros
+  return [t1, t2, t3].map((a) => (Object.is(a, -0) ? 0 : a));
 };

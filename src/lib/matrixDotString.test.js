@@ -2,6 +2,10 @@ import { matrixDotString } from './matrixDotString.js';
 import { printMatrixJS } from './printMatrixJs.js';
 
 describe('matrixDotString', () => {
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('should generate the matrixDotString for simple matrixDotString', () => {
     const Test_Matrix_1 = [
       ['a', 'b'],
@@ -115,7 +119,7 @@ describe('matrixDotString', () => {
 
     expect(result).toEqual(expected);
 
-    console.log = jest.fn();
+    jest.spyOn(console, 'log').mockImplementation(() => {});
 
     printMatrixJS(result, 'R1_2');
 
@@ -148,5 +152,61 @@ describe('matrixDotString', () => {
     ];
 
     expect(result).toEqual(expected);
+  });
+
+  it('should generate yaw + pitch + roll', () => {
+    const yaw = [
+      ['Math.cos(a)', '-Math.sin(a)', '0'], // x0
+      ['Math.sin(a)', 'Math.cos(a)', '0'], // y0
+      ['0', '0', '1'], // z0
+    ];
+
+    const pitch = [
+      ['Math.cos(b)', '0', 'Math.sin(b)'], // x0
+      ['0', '1', '0'], // y0
+      ['-Math.sin(b)', '0', 'cos(b)'], // z0
+    ];
+
+    const roll = [
+      ['1', '0', '0'], // x0
+      ['0', 'Math.cos(b)', '-Math.sin(b)'], // y0
+      ['0', 'Math.sin(b)', 'Math.cos(b)'], // z0
+    ];
+
+    const zx = matrixDotString(yaw, pitch);
+    const zxz = matrixDotString(zx, roll);
+
+    // console.table(zxz);
+
+    // expect(result).toEqual(expected);
+  });
+
+  it('should generate ZXZs', () => {
+    const z_matrix_rotation1 = [
+      ['Math.cos(a)', '-Math.sin(a)', '0'], // x0
+      ['Math.sin(a)', 'Math.cos(a)', '0'], // y0
+      ['0', '0', '1'], // z0
+    ];
+
+    const x_matrix_rotation = [
+      ['1', '0', '0'], // x0
+      ['0', 'Math.cos(b)', '-Math.sin(b)'], // y0
+      ['0', 'Math.sin(b)', 'Math.cos(b)'], // z0
+    ];
+
+    const z_matrix_rotation2 = [
+      ['Math.cos(c)', '-Math.sin(c)', '0'], // x0
+      ['Math.sin(c)', 'Math.cos(c)', '0'], // y0
+      ['0', '0', '1'], // z0
+    ];
+
+    const zx = matrixDotString(z_matrix_rotation1, x_matrix_rotation);
+    const zxz = matrixDotString(zx, z_matrix_rotation2);
+
+    // console.table(zxz);
+
+    // printMatrixJS(zxz);
+
+    // expect(result).toEqual(expected);
   });
 });
