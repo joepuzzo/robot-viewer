@@ -58,8 +58,8 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
           far: 1000,
-          position: [8, 10, 10],
-          zoom: 0.6,
+          position: [8, 12, 10],
+          zoom: 1,
         }}
         // camera={{ fov: 35, aspect: window.innerWidth / window.innerHeight, near: 1, far: 1000 }}
         // camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000)
