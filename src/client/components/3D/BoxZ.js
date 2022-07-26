@@ -348,12 +348,12 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
 
   const [selected, setSelected] = useState();
 
-  const jointGrid = true;
+  const jointGrid = false;
   const vertexGrid = false;
 
   return (
     <group rotation={[Math.PI * -0.5, 0, 0]}>
-      <Grid size={20} />
+      <Grid size={10} />
       <Component
         name="base"
         setSelected={setSelected}

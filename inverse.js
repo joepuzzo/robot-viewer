@@ -288,6 +288,15 @@ const computeT3 = (p3) => {
 
 // -------- Inverse Function ---------
 
+/**
+ * https://www.youtube.com/watch?v=D93iQVoSScQ
+ *
+ * @param {*} x
+ * @param {*} y
+ * @param {*} z
+ * @param {*} robotConfig
+ * @returns
+ */
 const inverse1_3 = (x, y, z, robotConfig) => {
   const { a1, a2, a3 } = robotConfig;
 
@@ -313,6 +322,15 @@ const inverse1_3 = (x, y, z, robotConfig) => {
 
 // ---------------------------- Now we have everything we need to write our inverse function!!!
 
+/**
+ * https://www.youtube.com/watch?v=ZM9GOENJcuo
+ *
+ * @param {*} x
+ * @param {*} y
+ * @param {*} z
+ * @param {*} robotConfig
+ * @returns
+ */
 export const inverse = (x, y, z, robotConfig) => {
   // Fixed for now ( up )
   const r0_6 = [
@@ -325,6 +343,8 @@ export const inverse = (x, y, z, robotConfig) => {
   const { a1, a2, a3, a4, a5, a6 } = robotConfig;
 
   /**
+   *  https://youtu.be/NDEEKGEQylg?t=1439
+   *  https://www.youtube.com/watch?v=Is50EWYF99I&t=570s
    *
    * First we need fo find the x0_3, y0_3 and Z0_3
    *
