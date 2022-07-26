@@ -8,6 +8,7 @@
     "test": "jest",
     "start": "node build/index.js",
     "test:watch": "jest --watch",
+    "test:watch:debug": "DEBUG='ik:.*' jest --watch",
     "build": "webpack --config src/client/webpack/webpack.prod.cjs",
     "start:dev": "concurrently --raw \"npm run client:local\" \"npm run server:local\"",
     "client:local": "webpack serve --hot --config src/client/webpack/webpack.dev.cjs",

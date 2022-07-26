@@ -7,7 +7,7 @@ import Input from '../Informed/Input';
 import InputSlider from '../Informed/InputSlider';
 import Form from '../Informed/Form';
 import { Button } from '@adobe/react-spectrum';
-import { inverse } from '../../../../inverse';
+import { inverse } from '../../../lib/inverse';
 
 // Hooks
 import useApp from '../../hooks/useApp';

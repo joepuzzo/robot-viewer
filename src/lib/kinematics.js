@@ -842,40 +842,6 @@ const buildHomogeneousDenavitStringForRow = (row) => {
     [`0`, `${sinAlpha}`, `${cosAlpha}`, `${d}`],
     [`0`, `0`, `0`, `1`],
   ];
-
-  // return [
-  //   [
-  //     `Math.cos(${theta})`,
-  //     `-Math.sin(${theta}) * Math.cos(${alpha})`,
-  //     `Math.sin(${theta}) * Math.sin(${alpha})`,
-  //     `${r} * Math.cos(${theta})`,
-  //   ],
-  //   [
-  //     `Math.sin(${theta})`,
-  //     `Math.cos(${theta}) * Math.cos(${alpha})`,
-  //     `-Math.cos(${theta}) * Math.sin(${alpha})`,
-  //     `${r} * Math.sin(${theta})`,
-  //   ],
-  //   [`0`, `Math.sin(${alpha})`, `Math.cos(${alpha})`, `${d}`],
-  //   [`0`, `0`, `0`, `1`],
-  // ];
-
-  // return [
-  //   [
-  //     `C(${theta})`,
-  //     `-S(${theta}) * C(${alpha})`,
-  //     `S(${theta}) * S(${alpha})`,
-  //     `${r} * C(${theta})`,
-  //   ],
-  //   [
-  //     `S(${theta})`,
-  //     `C(${theta}) * C(${alpha})`,
-  //     `-C(${theta}) * S(${alpha})`,
-  //     `${r} * S(${theta})`,
-  //   ],
-  //   [`0`, `S(${alpha})`, `C(${alpha})`, `${d}`],
-  //   [`0`, `0`, `0`, `1`],
-  // ];
 };
 
 const buildHomogeneousDenavitStringForTable = (pt) => {

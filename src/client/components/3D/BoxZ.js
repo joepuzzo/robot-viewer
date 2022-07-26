@@ -2,7 +2,7 @@ import { useFormState } from 'informed';
 import { useThree, useFrame } from '@react-three/fiber';
 // import { useDrag } from '@use-gesture/react';
 
-import { inverse } from '../../../../inverse';
+import { inverse } from '../../../lib/inverse';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
