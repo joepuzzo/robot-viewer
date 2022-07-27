@@ -3,7 +3,7 @@ import { Flex } from '@adobe/react-spectrum';
 import Contrast from '@spectrum-icons/workflow/Contrast';
 import { ActionButton } from '@adobe/react-spectrum';
 
-import Input from '../Informed/Input';
+import Switch from '../Informed/Switch';
 import InputSlider from '../Informed/InputSlider';
 import Form from '../Informed/Form';
 import { Button } from '@adobe/react-spectrum';
@@ -255,6 +255,10 @@ export const Nav = () => {
           maxValue={5}
           step={0.01}
         />
+        <br />
+        <Switch name="mainGrid" label="Main Grid" initialValue={true} />
+        <br />
+        <Switch name="jointGrid" label="Joint Grids" />
       </ul>
     </nav>
   );

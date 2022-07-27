@@ -344,16 +344,16 @@ const Component = ({
 };
 
 export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
-  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5 } = values;
+  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5, jointGrid, mainGrid } = values;
 
   const [selected, setSelected] = useState();
 
-  const jointGrid = false;
+  // const jointGrid = false;
   const vertexGrid = false;
 
   return (
     <group rotation={[Math.PI * -0.5, 0, 0]}>
-      <Grid size={10} />
+      {mainGrid ? <Grid size={10} /> : null}
       <Component
         name="base"
         setSelected={setSelected}
