@@ -73,7 +73,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
 
   const rotatedVector = matrixDot(r0_6, [[0], [0], [a5 + a6]]);
 
-  logger('rotatedVector', rotatedVector);
+  logger('rotatedVector', JSON.stringify(rotatedVector));
 
   const x0_3 = x - rotatedVector[0][0];
   const y0_3 = y - rotatedVector[1][0];
@@ -92,7 +92,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   const [angle1, angle2, angle3] = inverse1_3(x0_3, y0_3, z0_3, robotConfig1_3);
 
   logger('inverse1_3 --------------------------------------------------');
-  logger('Angles:', [angle1, angle2, angle3]);
+  logger('inverse1_3_angles', [angle1, angle2, angle3]);
 
   // ----------------------------------------------------------------
   // Step3 build the transformatin matrix for 1-3
@@ -152,6 +152,46 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
    *    [Math.sin(t5) * Math.cos(t6),Math.sin(t5) * -Math.sin(t6),Math.cos(t5)],
    *  ]
    *
+   * therefore
+   *
+   * https://www.youtube.com/watch?v=NDEEKGEQylg&t=2724s
+   *
+   * --------------------- angle4 ----------------------
+   *
+   * c = Math.cos(t4) * -Math.sin(t5)
+   * f = Math.sin(t4) * -Math.sin(t5)
+   *
+   * f/c = ( Math.sin(t4) * -Math.sin(t5) ) / ( Math.cos(t4) * -Math.sin(t5) )
+   *
+   * -Math.sin(t5) cancel out so we are left with
+   *
+   * f/c =  Math.sin(t4) / Math.cos(t4)
+   *
+   * remember because all sides equal 1
+   *
+   * sin(t)	= opposite
+   * cos(t)	= adjacent
+   * tan(t)	= opposite / adjacent
+   *
+   * Math.tan( t4 ) = f / c
+   *
+   * t4 = Math.atan2(c, f)
+   *
+   *
+   * --------------------- angle5 ----------------------
+   *
+   *
+   * Math.atan2( Math.sqrt( Math.pow( c, 2 ) +  Math.pow( f, 2 ) ), i )
+   *
+   *
+   * --------------------- angle6 ----------------------
+   *
+   * -h / g = -Math.sin(t6) / Math.cos(t6)
+   *
+   * t6 = Math.atan2( -h, g );
+   *
+   * ------ Old Below ------
+   *
    *  therefore
    *
    *  i = Math.cos(t5)
@@ -174,20 +214,41 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
    *
    */
 
-  const angle5 = Math.acos(r3_6[2][2]);
+  /**
+   * const r3_6 = [
+   *    [ a, b, c ],
+   *    [ d, e, f ],
+   *    [ g, h, i ]
+   *  ]
+   */
 
-  logger('r3_6[2][0]', r3_6[2][0]);
-  logger(`Math.sin(${angle5})'`, Math.sin(angle5));
-  logger(
-    'Math.acos(roundOne(r3_6[2][0] / Math.sin(angle5)))',
-    Math.sin(angle5) === 0 ? 0 : Math.acos(roundOne(r3_6[2][0] / Math.sin(angle5)))
-  );
+  const c = r3_6[0][2];
+  const f = r3_6[1][2];
+  const i = r3_6[2][2];
+  const g = r3_6[2][0];
+  const h = r3_6[2][1];
 
-  const angle6 = Math.sin(angle5) === 0 ? 0 : Math.acos(roundOne(r3_6[2][0] / Math.sin(angle5)));
-  const angle4 = Math.sin(angle5) === 0 ? 0 : Math.acos(roundOne(r3_6[0][2] / -Math.sin(angle5)));
+  logger('---------------------- CALC THETA 5 ------------------------------');
+  // let angle5 = Math.acos(r3_6[2][2]); // OLD
+
+  const angle5 = -Math.atan2(Math.sqrt(Math.pow(c, 2) + Math.pow(f, 2)), i);
+
+  logger('angle5', angle5);
+
+  logger('---------------------- CALC THETA 4 ------------------------------');
+  // angle4 = Math.acos( c / -Math.sin(t5) ) // OLD
+  const angle4 = Math.atan2(f, c);
+
+  logger('angle4', angle4);
+
+  logger('---------------------- CALC THETA 6 ------------------------------');
+  // let angle6 = Math.sin(angle5) === 0 ? 0 : Math.acos(roundOne(r3_6[2][0] / -Math.sin(angle5))); // OLD
+
+  const angle6 = Math.atan2(-h, g);
+
+  logger('angle6', angle6);
 
   // Check r3_6
-
   const r3_6_check = [
     [
       Math.cos(angle4) * Math.cos(angle5) * Math.cos(angle6) + -Math.sin(angle4) * Math.sin(angle6),
@@ -204,9 +265,10 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   ];
 
   // logger('r3_6_check --------------------------------------------------');
-  // printMatrix(r3_6_check);
+  // console.table(r3_6_check);
   // TODO maybe actually check this
 
   // Return angles removing negative zeros
-  return [angle1, angle2, angle3, angle4, angle5, angle6].map((a) => (Object.is(a, -0) ? 0 : a));
+  logger('Angles', [angle1, angle2, angle3, angle4, angle5, angle6]);
+  return [angle1, angle2, angle3, angle4, angle5, angle6]; //.map((a) => (Object.is(a, -0) ? 0 : a));
 };

@@ -15,8 +15,9 @@ import useApp from '../../hooks/useApp';
 import useOutsideAlerter from '../../hooks/useOutsideAlerter';
 
 import { useFormApi } from 'informed';
+import { toRadians } from '../../../lib/toRadians';
 
-const triggers = ['x', 'y', 'z'];
+const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
 export const Nav = () => {
   const { toggleColorScheme, navOpen, closeNav, setConfig, RobotKin } = useApp();
@@ -38,11 +39,16 @@ export const Nav = () => {
 
         if (triggers.includes(name)) {
           // Get pos
-          const { x, y, z, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+          const { x, y, z, r1, r2, r3, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
           const pos = [x, y, z];
 
+          // We give in degrees so turn into rads
+          const ro1 = toRadians(r1);
+          const ro2 = toRadians(r2);
+          const ro3 = toRadians(r3);
+
           console.log('Getting angles for', pos);
-          const angles = inverse(x, y, z, 0, 0, 0, {
+          const angles = inverse(x, y, z, ro1, ro2, ro3, {
             a1: v0 + 1.5, // 2.5
             a2: v1 + 2, // 3
             a3: v2 + 1.5, // 2.5
@@ -78,6 +84,114 @@ export const Nav = () => {
         </ActionButton>
       </Flex>
       <ul className="spectrum-SideNav">
+        <InputSlider
+          name="x"
+          onNativeChange={onValueChange('x')}
+          label="X"
+          type="number"
+          minValue={-10}
+          maxValue={10}
+          step={0.1}
+        />
+        <InputSlider
+          name="y"
+          onNativeChange={onValueChange('y')}
+          label="Y"
+          type="number"
+          minValue={-10}
+          maxValue={10}
+          step={0.1}
+        />
+        <InputSlider
+          name="z"
+          onNativeChange={onValueChange('z')}
+          label="Z"
+          type="number"
+          minValue={-15}
+          maxValue={15}
+          step={0.1}
+        />
+        <InputSlider
+          name="r1"
+          onNativeChange={onValueChange('r1')}
+          label="R1"
+          type="number"
+          minValue={-180}
+          maxValue={180}
+          step={0.1}
+        />
+        <InputSlider
+          name="r2"
+          onNativeChange={onValueChange('r2')}
+          label="R2"
+          type="number"
+          minValue={-180}
+          maxValue={180}
+          step={0.1}
+        />
+        <InputSlider
+          name="r3"
+          onNativeChange={onValueChange('r3')}
+          label="R3"
+          type="number"
+          minValue={-180}
+          maxValue={180}
+          step={0.1}
+        />
+        <InputSlider
+          name="j0"
+          // onValueChange={onValueChange('v5')}
+          label="J0"
+          type="number"
+          minValue={-Math.PI}
+          maxValue={Math.PI}
+          step={0.01}
+        />
+        <InputSlider
+          name="j1"
+          // onValueChange={onValueChange('j1')}
+          label="J1"
+          type="number"
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j2"
+          // onValueChange={onValueChange('j2')}
+          label="J2"
+          type="number"
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j3"
+          // onValueChange={onValueChange('j3')}
+          label="J3"
+          type="number"
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j4"
+          // onValueChange={onValueChange('j4')}
+          label="J4"
+          type="number"
+          minValue={-Math.PI / 2}
+          maxValue={Math.PI / 2}
+          step={0.01}
+        />
+        <InputSlider
+          name="j5"
+          // onValueChange={onValueChange('j5')}
+          label="J5"
+          type="number"
+          minValue={-Math.PI}
+          maxValue={Math.PI}
+          step={0.01}
+        />
         <InputSlider
           name="base"
           // onValueChange={onValueChange('base')}
@@ -140,87 +254,6 @@ export const Nav = () => {
           minValue={0}
           maxValue={5}
           step={0.01}
-        />
-        <InputSlider
-          name="j0"
-          // onValueChange={onValueChange('v5')}
-          label="J0"
-          type="number"
-          minValue={-Math.PI}
-          maxValue={Math.PI}
-          step={0.01}
-        />
-        <InputSlider
-          name="j1"
-          // onValueChange={onValueChange('j1')}
-          label="J1"
-          type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
-        />
-        <InputSlider
-          name="j2"
-          // onValueChange={onValueChange('j2')}
-          label="J2"
-          type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
-        />
-        <InputSlider
-          name="j3"
-          // onValueChange={onValueChange('j3')}
-          label="J3"
-          type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
-        />
-        <InputSlider
-          name="j4"
-          // onValueChange={onValueChange('j4')}
-          label="J4"
-          type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
-        />
-        <InputSlider
-          name="j5"
-          // onValueChange={onValueChange('j5')}
-          label="J5"
-          type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
-        />
-        <InputSlider
-          name="x"
-          onNativeChange={onValueChange('x')}
-          label="X"
-          type="number"
-          minValue={-10}
-          maxValue={10}
-          step={0.1}
-        />
-        <InputSlider
-          name="y"
-          onNativeChange={onValueChange('y')}
-          label="Y"
-          type="number"
-          minValue={-10}
-          maxValue={10}
-          step={0.1}
-        />
-        <InputSlider
-          name="z"
-          onNativeChange={onValueChange('z')}
-          label="Z"
-          type="number"
-          minValue={-15}
-          maxValue={15}
-          step={0.1}
         />
       </ul>
     </nav>

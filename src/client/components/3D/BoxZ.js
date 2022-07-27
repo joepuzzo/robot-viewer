@@ -6,6 +6,7 @@ import { inverse } from '../../../lib/inverse';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
+import { toRadians } from '../../../lib/toRadians';
 
 // export const Box = ({ config }) => {
 //   const { x, y, z } = config;
@@ -102,11 +103,16 @@ const Pos = ({
   const updateRobot = (x, y, z) => {
     const pos = [x, y, z];
 
-    const { v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+    const { v0, v1, v2, v3, v4, v5, r1, r2, r3 } = formApi.getFormState().values;
+
+    // We give in degrees so turn into rads
+    const ro1 = toRadians(r1);
+    const ro2 = toRadians(r2);
+    const ro3 = toRadians(r3);
 
     console.log('Updating robot to', pos);
     console.log('Getting angles for', pos);
-    const angles = inverse(x, y, z, 0, 0, 0, {
+    const angles = inverse(x, y, z, ro1, ro2, ro3, {
       a1: v0 + 1.5, // 2.5
       a2: v1 + 2, // 3
       a3: v2 + 1.5, // 2.5
@@ -457,7 +463,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
           </Component>
         </Component>
       </Component>
-      <Pos
+      {/* <Pos
         name="pos"
         setSelected={setSelected}
         selected={selected}
@@ -466,7 +472,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
-      />
+      /> */}
     </group>
   );
 }
