@@ -118,7 +118,7 @@ export const Nav = () => {
           type="number"
           minValue={-180}
           maxValue={180}
-          step={0.1}
+          step={1}
         />
         <InputSlider
           name="r2"
@@ -127,7 +127,7 @@ export const Nav = () => {
           type="number"
           minValue={-180}
           maxValue={180}
-          step={0.1}
+          step={1}
         />
         <InputSlider
           name="r3"
@@ -136,7 +136,7 @@ export const Nav = () => {
           type="number"
           minValue={-180}
           maxValue={180}
-          step={0.1}
+          step={1}
         />
         <InputSlider
           name="j0"

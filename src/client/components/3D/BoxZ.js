@@ -98,15 +98,14 @@ const Pos = ({
 
   const ref = useRef();
   const [position, setPosition] = useState(() => {
-    const { x, y, z } = formApi.getFormState().values;
-    return [x, y, z];
+    const { x, y, z, r1, r2, r3 } = formApi.getFormState().values;
+    return [x, y, z, r1, r2, r3];
   });
-  const { size, viewport } = useThree();
 
-  const updateRobot = (x, y, z) => {
-    const pos = [x, y, z];
+  const updateRobot = (x, y, z, r1, r2, r3) => {
+    const pos = [x, y, z, r1, r2, r3];
 
-    const { v0, v1, v2, v3, v4, v5, r1, r2, r3 } = formApi.getFormState().values;
+    const { v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
 
     // We give in degrees so turn into rads
     const ro1 = toRadians(r1);
@@ -137,6 +136,9 @@ const Pos = ({
         x,
         y,
         z,
+        r1,
+        r2,
+        r3,
       });
     }
   };
@@ -152,27 +154,50 @@ const Pos = ({
       const step = 0.1;
 
       if (key === 'ArrowUp') {
-        setPosition(([x, y, z]) => {
+        setPosition(([x, y, z, r1, r2, r3]) => {
           if (spacePress) {
-            return [x, y, z + step];
+            return [x, y, z + step, r1, r2, r3];
           }
-          return [x, y + step, z];
+          return [x, y + step, z, r1, r2, r3];
         });
       } else if (key === 'ArrowDown') {
-        setPosition(([x, y, z]) => {
+        setPosition(([x, y, z, r1, r2, r3]) => {
           if (spacePress) {
-            return [x, y, z - step];
+            return [x, y, z - step, r1, r2, r3];
           }
-          return [x, y - step, z];
+          return [x, y - step, z, r1, r2, r3];
         });
       } else if (key === 'ArrowLeft') {
-        setPosition(([x, y, z]) => {
-          return [x - step, y, z];
+        setPosition(([x, y, z, r1, r2, r3]) => {
+          return [x - step, y, z, r1, r2, r3];
         });
       } else if (key === 'ArrowRight') {
-        setPosition(([x, y, z]) => {
-          return [x + step, y, z];
+        setPosition(([x, y, z, r1, r2, r3]) => {
+          return [x + step, y, z, r1, r2, r3];
         });
+      }
+
+      switch (keyCode) {
+        case 68: //d
+          setPosition(([x, y, z, r1, r2, r3]) => {
+            return spacePress ? [x, y, z, r1, r2, r3 + 1] : [x, y, z, r1, r2 + 1, r3];
+          });
+          break;
+        case 83: //s
+          setPosition(([x, y, z, r1, r2, r3]) => {
+            return [x, y, z, r1 + 1, r2, r3];
+          });
+          break;
+        case 65: //a
+          setPosition(([x, y, z, r1, r2, r3]) => {
+            return spacePress ? [x, y, z, r1, r2, r3 - 1] : [x, y, z, r1, r2 - 1, r3];
+          });
+          break;
+        case 87: //w
+          setPosition(([x, y, z, r1, r2, r3]) => {
+            return [x, y, z, r1 - 1, r2, r3];
+          });
+          break;
       }
 
       // console.log('KEY', key, keyCode);
@@ -195,7 +220,7 @@ const Pos = ({
     <group
       ref={ref}
       {...props}
-      position={[position[0], position[1], position[2] + 1]}
+      position={[position[0], position[1], position[2]]}
       // position={[-position.x, position.y, position.z]}
       // position={[2, 2, 2]}
     >
@@ -333,7 +358,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         name="base"
         setSelected={setSelected}
         selected={selected}
-        position={[0, 0, 0]}
+        position={[0, 0, -1]}
         args={[1, 1.5, base, 32]}
         rotation={[Math.PI * 0.5, 0, 0]}
         // grid
