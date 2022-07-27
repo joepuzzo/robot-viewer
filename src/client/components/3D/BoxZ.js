@@ -97,7 +97,10 @@ const Pos = ({
   const spacePress = useKeyPress({ targetKeyCode: 32 });
 
   const ref = useRef();
-  const [position, setPosition] = useState([5, 0, 10]);
+  const [position, setPosition] = useState(() => {
+    const { x, y, z } = formApi.getFormState().values;
+    return [x, y, z];
+  });
   const { size, viewport } = useThree();
 
   const updateRobot = (x, y, z) => {
@@ -463,7 +466,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
           </Component>
         </Component>
       </Component>
-      {/* <Pos
+      <Pos
         name="pos"
         setSelected={setSelected}
         selected={selected}
@@ -472,7 +475,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
-      /> */}
+      />
     </group>
   );
 }

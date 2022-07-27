@@ -1,6 +1,6 @@
 import { inv } from 'mathjs';
 import { toRadians } from './toRadians';
-import { roundOne } from './round';
+import { round, roundOne } from './round';
 import { matrixSubset } from './matrixSubset';
 import { matrixDot } from './matrixDot';
 import { buildHomogeneousDenavitForTable } from './denavitHartenberg';
@@ -237,7 +237,10 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
 
   logger('---------------------- CALC THETA 4 ------------------------------');
   // angle4 = Math.acos( c / -Math.sin(t5) ) // OLD
-  const angle4 = Math.atan2(f, c);
+  let angle4 = Math.atan2(f, c);
+
+  // Issue where it jumps from pi to negative pi sometimes
+  angle4 = angle4 < 0 && round(angle4, 10000) === -round(Math.PI, 10000) ? Math.PI : angle4;
 
   logger('angle4', angle4);
 
@@ -270,5 +273,5 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
 
   // Return angles removing negative zeros
   logger('Angles', [angle1, angle2, angle3, angle4, angle5, angle6]);
-  return [angle1, angle2, angle3, angle4, angle5, angle6]; //.map((a) => (Object.is(a, -0) ? 0 : a));
+  return [angle1, angle2, angle3, angle4, angle5, angle6].map((a) => (Object.is(a, -0) ? 0 : a));
 };

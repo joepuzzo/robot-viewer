@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { defaultTheme, Provider } from '@adobe/react-spectrum';
 import { OrbitControls } from '@react-three/drei';
 import { Debug, FormProvider, useFormApi, useFormState } from 'informed';
@@ -14,6 +14,8 @@ import { Canvas } from '@react-three/fiber';
 import { Box } from '../3D/Box';
 import { BoxZ } from '../3D/BoxZ';
 import { Arm } from '../3D/Arm';
+import { inverse } from '../../../lib/inverse';
+import { toRadians } from '../../../lib/toRadians';
 
 const toDeg = (rad) => {
   return 180 * (rad / Math.PI);
@@ -83,6 +85,34 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
 const App = () => {
   const { colorScheme, config, orbitEnabled, toggleOrbital } = useApp();
 
+  const initialValues = useMemo(() => {
+    // We give in degrees so turn into rads
+    const ro1 = toRadians(config.r1);
+    const ro2 = toRadians(config.r2);
+    const ro3 = toRadians(config.r3);
+
+    console.log('Initial getting angles for', [config.x, config.y, config.z, ro1, ro2, ro3]);
+
+    const angles = inverse(config.x, config.y, config.z, ro1, ro2, ro3, {
+      a1: config.v0 + 1.5, // 2.5
+      a2: config.v1 + 2, // 3
+      a3: config.v2 + 1.5, // 2.5
+      a4: config.v3 + 1.5, // 2.5
+      a5: config.v4 + 1.5, // 2.5
+      a6: config.v5 + 1, // 2
+    });
+
+    return {
+      ...config,
+      j0: angles[0],
+      j1: angles[1],
+      j2: angles[2],
+      j3: angles[3],
+      j4: angles[4],
+      j5: angles[5],
+    };
+  }, []);
+
   const { loading, error, data } = useGet({
     url: '/health',
   });
@@ -97,7 +127,7 @@ const App = () => {
 
   return (
     <Provider theme={defaultTheme} colorScheme={colorScheme}>
-      <FormProvider initialValues={config}>
+      <FormProvider initialValues={initialValues}>
         <Header />
         <Nav />
         <main>

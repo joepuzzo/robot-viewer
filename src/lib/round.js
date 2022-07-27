@@ -1,4 +1,4 @@
-export const round = (n) => Math.round(n * 1000000) / 1000000;
+export const round = (n, to = 1000000) => Math.round(n * to) / to;
 
 export const roundOne = (n) => {
   let r = n;

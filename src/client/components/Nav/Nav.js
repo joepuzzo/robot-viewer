@@ -170,8 +170,8 @@ export const Nav = () => {
           // onValueChange={onValueChange('j3')}
           label="J3"
           type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
+          minValue={-Math.PI}
+          maxValue={Math.PI}
           step={0.01}
         />
         <InputSlider
