@@ -7,6 +7,7 @@ import { inverse } from '../../../lib/inverse';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
 import { toRadians } from '../../../lib/toRadians';
+import { toDeg } from '../../../lib/toDeg';
 
 // export const Box = ({ config }) => {
 //   const { x, y, z } = config;
@@ -130,12 +131,12 @@ const Pos = ({
 
     if (!angles.find((a) => isNaN(a))) {
       formApi.setTheseValues({
-        j0: angles[0],
-        j1: angles[1],
-        j2: angles[2],
-        j3: angles[3],
-        j4: angles[4],
-        j5: angles[5],
+        j0: toDeg(angles[0]),
+        j1: toDeg(angles[1]),
+        j2: toDeg(angles[2]),
+        j3: toDeg(angles[3]),
+        j4: toDeg(angles[4]),
+        j5: toDeg(angles[5]),
         x,
         y,
         z,
@@ -347,8 +348,14 @@ const Component = ({
 };
 
 export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
-  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5, jointGrid, mainGrid, gridSize } =
-    values;
+  const { base, v0, v1, v2, v3, v4, jointGrid, mainGrid, gridSize } = values;
+
+  const j0 = toRadians(values.j0);
+  const j1 = toRadians(values.j1);
+  const j2 = toRadians(values.j2);
+  const j3 = toRadians(values.j3);
+  const j4 = toRadians(values.j4);
+  const j5 = toRadians(values.j5);
 
   const [selected, setSelected] = useState();
 

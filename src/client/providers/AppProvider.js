@@ -50,32 +50,29 @@ const AppProvider = ({ children }) => {
     v3: 1,
     v4: 1,
     v5: 1,
-    // Below is default
-    // j0: 0,
-    // j1: 0,
-    // j2: -Math.PI / 2,
-    // j3: 0,
-    // j4: Math.PI / 2,
-    // j5: Math.PI,
+    // Below is for top testing
     // x: 5,
     // y: 0,
-    // z: 10,
+    // z: 11.5,
     // r1: 0,
     // r2: 0,
     // r3: 0,
     // Below is for sideways testing
-    // j0: 0,
-    // j1: 0,
-    // j2: -Math.PI / 2,
-    // j3: 0,
-    // j4: 0,
-    // j5: 0,
     // x: 9.5,
     // y: 0,
-    // z: 5.5,
+    // z: 7,
     // r1: -90,
     // r2: -90,
     // r3: 0,
+
+    // Below is for down direction
+    // x: 5,
+    // y: 0,
+    // z: 0,
+    // r1: -90,
+    // r2: -180,
+    // r3: 0,
+    // Below is show off direction
     x: 7,
     y: -1,
     z: 9.5,
@@ -83,6 +80,7 @@ const AppProvider = ({ children }) => {
     r2: -90,
     r3: 0,
     // For other dims
+    // rangej0: [],
   });
 
   const toggleColorScheme = () => {

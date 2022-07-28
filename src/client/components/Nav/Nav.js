@@ -16,6 +16,7 @@ import useOutsideAlerter from '../../hooks/useOutsideAlerter';
 
 import { useFormApi } from 'informed';
 import { toRadians } from '../../../lib/toRadians';
+import { toDeg } from '../../../lib/toDeg';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -61,12 +62,12 @@ export const Nav = () => {
 
           if (!angles.find((a) => isNaN(a))) {
             formApi.setTheseValues({
-              j0: angles[0],
-              j1: angles[1],
-              j2: angles[2],
-              j3: angles[3],
-              j4: angles[4],
-              j5: angles[5],
+              j0: toDeg(angles[0]),
+              j1: toDeg(angles[1]),
+              j2: toDeg(angles[2]),
+              j3: toDeg(angles[3]),
+              j4: toDeg(angles[4]),
+              j5: toDeg(angles[5]),
             });
 
             // // Update ball pos
@@ -148,54 +149,54 @@ export const Nav = () => {
           // onValueChange={onValueChange('v5')}
           label="J0"
           type="number"
-          minValue={-Math.PI}
-          maxValue={Math.PI}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="j1"
           // onValueChange={onValueChange('j1')}
           label="J1"
           type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="j2"
           // onValueChange={onValueChange('j2')}
           label="J2"
           type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="j3"
           // onValueChange={onValueChange('j3')}
           label="J3"
           type="number"
-          minValue={-Math.PI}
-          maxValue={Math.PI}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="j4"
           // onValueChange={onValueChange('j4')}
           label="J4"
           type="number"
-          minValue={-Math.PI / 2}
-          maxValue={Math.PI / 2}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="j5"
           // onValueChange={onValueChange('j5')}
           label="J5"
           type="number"
-          minValue={-Math.PI}
-          maxValue={Math.PI}
-          step={0.01}
+          minValue={-180}
+          maxValue={180}
+          step={1}
         />
         <InputSlider
           name="base"

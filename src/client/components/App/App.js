@@ -16,10 +16,7 @@ import { BoxZ } from '../3D/BoxZ';
 import { Arm } from '../3D/Arm';
 import { inverse } from '../../../lib/inverse';
 import { toRadians } from '../../../lib/toRadians';
-
-const toDeg = (rad) => {
-  return 180 * (rad / Math.PI);
-};
+import { toDeg } from '../../../lib/toDeg';
 
 const round = (n) => Math.round(n * 100) / 100;
 
@@ -105,12 +102,12 @@ const App = () => {
 
     return {
       ...config,
-      j0: angles[0],
-      j1: angles[1],
-      j2: angles[2],
-      j3: angles[3],
-      j4: angles[4],
-      j5: angles[5],
+      j0: toDeg(angles[0]),
+      j1: toDeg(angles[1]),
+      j2: toDeg(angles[2]),
+      j3: toDeg(angles[3]),
+      j4: toDeg(angles[4]),
+      j5: toDeg(angles[5]),
     };
   }, []);
 
