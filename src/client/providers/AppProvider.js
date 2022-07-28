@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AppContext from '../context/AppContext';
 import Kinematics from 'kinematics';
 
@@ -36,6 +36,12 @@ const AppProvider = ({ children }) => {
   const [navOpen, setNavOpen] = useState(false);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
+  const setBall = useRef();
+
+  const control = {
+    setBall,
+  };
+
   const [config, setConfig] = useState({
     base: 1,
     v0: 1,
@@ -72,10 +78,11 @@ const AppProvider = ({ children }) => {
     // r3: 0,
     x: 7,
     y: -1,
-    z: 8,
+    z: 9.5,
     r1: -90,
     r2: -90,
     r3: 0,
+    // For other dims
   });
 
   const toggleColorScheme = () => {
@@ -108,6 +115,7 @@ const AppProvider = ({ children }) => {
     RobotKin,
     orbitEnabled,
     toggleOrbital,
+    control,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

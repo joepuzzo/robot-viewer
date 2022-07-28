@@ -26,7 +26,7 @@ const round = (n) => Math.round(n * 100) / 100;
 const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
-  const { RobotKin } = useApp();
+  const { RobotKin, control } = useApp();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
@@ -61,7 +61,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
           near: 0.1,
           far: 1000,
           position: [8, 12, 10],
-          zoom: 1,
+          zoom: 0.8,
         }}
         // camera={{ fov: 35, aspect: window.innerWidth / window.innerHeight, near: 1, far: 1000 }}
         // camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000)
@@ -71,6 +71,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <BoxZ
+            control={control}
             values={values}
             formApi={formApi}
             RobotKin={RobotKin}
@@ -94,12 +95,12 @@ const App = () => {
     console.log('Initial getting angles for', [config.x, config.y, config.z, ro1, ro2, ro3]);
 
     const angles = inverse(config.x, config.y, config.z, ro1, ro2, ro3, {
-      a1: config.v0 + 1.5, // 2.5
+      a1: config.base + 0.5 + config.v0 + 1.5, // 2.5
       a2: config.v1 + 2, // 3
       a3: config.v2 + 1.5, // 2.5
       a4: config.v3 + 1.5, // 2.5
-      a5: config.v4 + 1.5, // 2.5
-      a6: config.v5 + 1, // 2
+      a5: config.v4 + 1, // 2.5
+      a6: config.v5 + 1.5, // 2
     });
 
     return {

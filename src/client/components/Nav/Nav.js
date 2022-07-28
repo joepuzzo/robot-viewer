@@ -20,10 +20,9 @@ import { toRadians } from '../../../lib/toRadians';
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
 export const Nav = () => {
-  const { toggleColorScheme, navOpen, closeNav, setConfig, RobotKin } = useApp();
+  const { toggleColorScheme, navOpen, closeNav, setConfig, control } = useApp();
 
   const navRef = useRef();
-  const triggerElem = useRef();
 
   const formApi = useFormApi();
 
@@ -39,7 +38,8 @@ export const Nav = () => {
 
         if (triggers.includes(name)) {
           // Get pos
-          const { x, y, z, r1, r2, r3, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+          const { x, y, z, r1, r2, r3, base, v0, v1, v2, v3, v4, v5 } =
+            formApi.getFormState().values;
           const pos = [x, y, z];
 
           // We give in degrees so turn into rads
@@ -49,12 +49,12 @@ export const Nav = () => {
 
           console.log('Getting angles for', pos);
           const angles = inverse(x, y, z, ro1, ro2, ro3, {
-            a1: v0 + 1.5, // 2.5
+            a1: base + 0.5 + v0 + 1.5, // base + 2.5
             a2: v1 + 2, // 3
             a3: v2 + 1.5, // 2.5
             a4: v3 + 1.5, // 2.5
-            a5: v4 + 1.5, // 2.5
-            a6: v5 + 1, // 2
+            a5: v4 + 1, // 2.5
+            a6: v5 + 1.5, // 2
           });
 
           console.log('Setting angles to', angles);
@@ -68,6 +68,11 @@ export const Nav = () => {
               j4: angles[4],
               j5: angles[5],
             });
+
+            // // Update ball pos
+            // if (control.setBall.current) {
+            //   control.setBall.current([x, y, z, r1, r2, r3]);
+            // }
           }
         }
 
@@ -254,6 +259,16 @@ export const Nav = () => {
           minValue={0}
           maxValue={5}
           step={0.01}
+        />
+        <InputSlider
+          name="gridSize"
+          initialValue={10}
+          // onValueChange={onValueChange('v4')}
+          label="Grid Size"
+          type="number"
+          minValue={0}
+          maxValue={40}
+          step={1}
         />
         <br />
         <Switch name="mainGrid" label="Main Grid" initialValue={true} />

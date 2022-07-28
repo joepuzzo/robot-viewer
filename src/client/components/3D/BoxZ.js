@@ -87,6 +87,7 @@ const Pos = ({
   formApi,
   RobotKin,
   toggleOrbital,
+  control,
   ...props
 }) => {
   // Set up state for the hovered and active state
@@ -102,10 +103,12 @@ const Pos = ({
     return [x, y, z, r1, r2, r3];
   });
 
+  control.setBall.current = setPosition;
+
   const updateRobot = (x, y, z, r1, r2, r3) => {
     const pos = [x, y, z, r1, r2, r3];
 
-    const { v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+    const { base, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
 
     // We give in degrees so turn into rads
     const ro1 = toRadians(r1);
@@ -115,12 +118,12 @@ const Pos = ({
     console.log('Updating robot to', pos);
     console.log('Getting angles for', pos);
     const angles = inverse(x, y, z, ro1, ro2, ro3, {
-      a1: v0 + 1.5, // 2.5
+      a1: base + 0.5 + v0 + 1.5, // 2.5
       a2: v1 + 2, // 3
       a3: v2 + 1.5, // 2.5
       a4: v3 + 1.5, // 2.5
-      a5: v4 + 1.5, // 2.5
-      a6: v5 + 1, // 2
+      a5: v4 + 1, // 2.5
+      a6: v5 + 1.5, // 2
     });
 
     console.log('Setting angles to', angles);
@@ -343,8 +346,9 @@ const Component = ({
   }
 };
 
-export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
-  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5, jointGrid, mainGrid } = values;
+export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
+  const { base, v0, v1, v2, v3, v4, j0, j1, j2, j3, j4, j5, jointGrid, mainGrid, gridSize } =
+    values;
 
   const [selected, setSelected] = useState();
 
@@ -353,12 +357,12 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
 
   return (
     <group rotation={[Math.PI * -0.5, 0, 0]}>
-      {mainGrid ? <Grid size={10} /> : null}
+      {mainGrid ? <Grid size={gridSize} /> : null}
       <Component
         name="base"
         setSelected={setSelected}
         selected={selected}
-        position={[0, 0, -1]}
+        position={[0, 0, base / 2]}
         args={[1, 1.5, base, 32]}
         rotation={[Math.PI * 0.5, 0, 0]}
         // grid
@@ -497,6 +501,7 @@ export function BoxZ({ values, formApi, RobotKin, toggleOrbital }) {
         selected={selected}
         args={[0.5, 30, 30]}
         grid
+        control={control}
         formApi={formApi}
         RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
