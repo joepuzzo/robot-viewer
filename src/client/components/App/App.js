@@ -69,6 +69,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
         <Suspense fallback={null}>
           <BoxZ
             control={control}
+            config={config}
             values={values}
             formApi={formApi}
             RobotKin={RobotKin}
@@ -92,12 +93,18 @@ const App = () => {
     console.log('Initial getting angles for', [config.x, config.y, config.z, ro1, ro2, ro3]);
 
     const angles = inverse(config.x, config.y, config.z, ro1, ro2, ro3, {
-      a1: config.base + 0.5 + config.v0 + 1.5, // 2.5
-      a2: config.v1 + 2, // 3
-      a3: config.v2 + 1.5, // 2.5
-      a4: config.v3 + 1.5, // 2.5
-      a5: config.v4 + 1, // 2.5
-      a6: config.v5 + 1.5, // 2
+      // a1: config.base + 0.5 + config.v0 + 1.5, // 4
+      // a2: config.v1 + 2, // 3
+      // a3: config.v2 + 1.5, // 2.5
+      // a4: config.v3 + 1.5, // 2.5
+      // a5: config.v4 + 1, // 2.5
+      // a6: config.v5 + 1.5, // 2.5
+      a1: config.base + config.v0,
+      a2: config.v1,
+      a3: config.v2,
+      a4: config.v3,
+      a5: config.v4,
+      a6: config.v5,
     });
 
     return {

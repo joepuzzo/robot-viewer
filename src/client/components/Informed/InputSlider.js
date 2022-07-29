@@ -7,8 +7,9 @@ const Input = (props) => {
     type: 'number',
     ...props,
   });
-  const { required } = userProps;
+  const { required, trackGradient } = userProps;
   const { error, showError } = fieldState;
+
   return render(
     <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
       <NumberField
@@ -25,13 +26,13 @@ const Input = (props) => {
       />
       <Slider
         maxWidth={120}
-        trackGradient={['white', 'rgba(177,141,32,1)']}
         ref={ref}
         validationState={!error ? null : 'invalid'}
         errorMessage={showError ? error : undefined}
         isRequired={required}
         {...userProps}
         {...informed}
+        trackGradient={['white', trackGradient ?? 'rgba(177,141,32,1)']}
         label={' '}
         onChange={(v) => fieldApi.setValue(v, {})}
       />

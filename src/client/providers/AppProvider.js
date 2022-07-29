@@ -43,13 +43,20 @@ const AppProvider = ({ children }) => {
   };
 
   const [config, setConfig] = useState({
-    base: 1,
-    v0: 1,
-    v1: 1,
-    v2: 1,
-    v3: 1,
-    v4: 1,
-    v5: 1,
+    // base: 1,
+    // v0: 1,
+    // v1: 1,
+    // v2: 1,
+    // v3: 1,
+    // v4: 1,
+    // v5: 1,
+    base: 1.5,
+    v0: 2.5,
+    v1: 3,
+    v2: 2.5,
+    v3: 2.5,
+    v4: 2.5,
+    v5: 2,
     // Below is for top testing
     // x: 5,
     // y: 0,
@@ -64,7 +71,6 @@ const AppProvider = ({ children }) => {
     // r1: -90,
     // r2: -90,
     // r3: 0,
-
     // Below is for down direction
     // x: 5,
     // y: 0,
@@ -80,7 +86,12 @@ const AppProvider = ({ children }) => {
     r2: -90,
     r3: 0,
     // For other dims
-    // rangej0: [],
+    rangej0: [-179, 179],
+    rangej1: [-140, 140],
+    rangej2: [-115, 115],
+    rangej3: [-179, 179],
+    rangej4: [-90, 90],
+    rangej5: [-179, 179],
   });
 
   const toggleColorScheme = () => {

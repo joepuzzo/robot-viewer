@@ -4,7 +4,7 @@ main {
   box-sizing: border-box;
   /* min-height: 100vh; */
   flex-direction: column;
-  margin-left: 256px;
+  margin-left: 280px;
   margin-right: 180px;
   padding: 40px 52px 0;
   display: flex;
@@ -24,7 +24,7 @@ main {
 /* ---------- Nav ---------- */
 
 .sidenav {
-  width: 256px;
+  width: 280px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;

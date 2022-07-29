@@ -1,6 +1,7 @@
 import { useFormState } from 'informed';
 import { useThree, useFrame } from '@react-three/fiber';
 // import { useDrag } from '@use-gesture/react';
+import { Line } from '@react-three/drei';
 
 import { inverse } from '../../../lib/inverse';
 
@@ -119,12 +120,18 @@ const Pos = ({
     console.log('Updating robot to', pos);
     console.log('Getting angles for', pos);
     const angles = inverse(x, y, z, ro1, ro2, ro3, {
-      a1: base + 0.5 + v0 + 1.5, // 2.5
-      a2: v1 + 2, // 3
-      a3: v2 + 1.5, // 2.5
-      a4: v3 + 1.5, // 2.5
-      a5: v4 + 1, // 2.5
-      a6: v5 + 1.5, // 2
+      // a1: base + 0.5 + v0 + 1.5, // 4
+      // a2: v1 + 2, // 3
+      // a3: v2 + 1.5, // 2.5
+      // a4: v3 + 1.5, // 2.5
+      // a5: v4 + 1, // 2.5
+      // a6: v5 + 1.5, // 2.5
+      a1: base + v0,
+      a2: v1,
+      a3: v2,
+      a4: v3,
+      a5: v4,
+      a6: v5,
     });
 
     console.log('Setting angles to', angles);
@@ -272,6 +279,15 @@ const Tool = ({
   );
 };
 
+const ErrorBall = () => {
+  return (
+    <mesh>
+      <sphereBufferGeometry args={[2, 30, 30]} />
+      <meshStandardMaterial color="#880808" opacity={0.4} transparent />
+    </mesh>
+  );
+};
+
 const Component = ({
   children,
   name,
@@ -279,10 +295,16 @@ const Component = ({
   selected,
   args,
   grid,
+  actual,
   position,
   rotation,
   jointRotation,
   doubleV,
+  error,
+  hide,
+  lineColor,
+  lineOffset1: userLineOffset1,
+  lineOffset2: userLineOffset2,
   ...props
 }) => {
   // This reference will give us direct access to the mesh
@@ -293,11 +315,18 @@ const Component = ({
 
   let color = joint ? 'rgb(229, 149, 38)' : 'rgb(54, 54, 54)';
 
-  // if (selected === name) {
-  //   color = 'rgb(15, 67, 142)';
-  // } else if (hovered) {
-  //   color = 'rgb(99, 99, 97)';
-  // }
+  if (error) {
+    color = '#880808';
+  }
+
+  const lineOffset1 = userLineOffset1 ?? 0.25;
+  const lineOffset2 = userLineOffset2 ?? 0.25;
+
+  let opacity = 1;
+  let transparent = true;
+  if (hide) {
+    opacity = 0.02;
+  }
 
   if (vertex) {
     return (
@@ -305,12 +334,12 @@ const Component = ({
         <group rotation={rotation}>
           <mesh>
             <cylinderGeometry args={args} />
-            <meshStandardMaterial color={color} />
+            <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
           </mesh>
           {!doubleV ? (
             <mesh position={[0, args[2] / 2 + 1, -0.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
               <cylinderGeometry args={[1, 1, 0.5, 32]} />
-              <meshStandardMaterial color={color} />
+              <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
             </mesh>
           ) : null}
           {doubleV ? (
@@ -320,17 +349,30 @@ const Component = ({
                 rotation={[0, Math.PI / 2, Math.PI / 2]}
               >
                 <cylinderGeometry args={[1, 1, 0.5, 32]} />
-                <meshStandardMaterial color={color} />
+                <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
               </mesh>
               <mesh position={[0, args[2] / 2 + 1, 0.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
                 <cylinderGeometry args={[1, 1, 0.5, 32]} />
-                <meshStandardMaterial color={color} />
+                <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
               </mesh>
             </>
           ) : null}
         </group>
         {children}
         {grid ? <Grid size={3} /> : null}
+        {hide && actual ? (
+          <>
+            <Line
+              rotation={rotation}
+              points={[
+                [0, actual / 2 + lineOffset1, 0],
+                [0, -actual / 2 + lineOffset2, 0],
+              ]}
+              color={lineColor}
+              lineWidth={1}
+            />
+          </>
+        ) : null}
       </group>
     );
   } else {
@@ -338,17 +380,40 @@ const Component = ({
       <group ref={mesh} position={position} rotation={jointRotation} {...props}>
         <mesh rotation={rotation}>
           <cylinderGeometry args={args} />
-          <meshStandardMaterial color={color} />
+          <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
         </mesh>
         {children}
         {grid ? <Grid size={3} /> : null}
+        {error ? <ErrorBall /> : null}
+        {hide && actual ? (
+          <Line
+            rotation={rotation}
+            points={[
+              [0, -actual / 2 + 0.25, 0],
+              [0, actual / 2, 0],
+            ]}
+            color={lineColor}
+            lineWidth={1}
+          />
+        ) : null}
       </group>
     );
   }
 };
 
-export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
-  const { base, v0, v1, v2, v3, v4, jointGrid, mainGrid, gridSize } = values;
+/**
+ *
+ * @param {*} a angle in radians
+ * @param {*} [l, h] low and high
+ * @returns if its outside the bounds
+ */
+const outside = (a, [l, h]) => {
+  const deg = toDeg(a);
+  return deg < l || deg > h;
+};
+
+export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital }) {
+  const { jointGrid, mainGrid, gridSize, hide } = values;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -356,6 +421,14 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
   const j3 = toRadians(values.j3);
   const j4 = toRadians(values.j4);
   const j5 = toRadians(values.j5);
+
+  // Take off extras
+  const base = values.base - 0.5;
+  const v0 = values.v0 - 1.5;
+  const v1 = values.v1 - 2;
+  const v2 = values.v2 - 1.5;
+  const v3 = values.v3 - 1.5;
+  const v4 = values.v4 - 1.5;
 
   const [selected, setSelected] = useState();
 
@@ -372,6 +445,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
         position={[0, 0, base / 2]}
         args={[1, 1.5, base, 32]}
         rotation={[Math.PI * 0.5, 0, 0]}
+        actual={values.base}
+        hide={hide}
         // grid
       >
         <Component
@@ -379,20 +454,26 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
           setSelected={setSelected}
           selected={selected}
           args={[1, 1, 1, 32]}
+          error={outside(j0, config.rangej0)}
           rotation={[Math.PI * 0.5, 0, 0]}
           jointRotation={[0, 0, j0]}
           position={[0, 0, base / 2 + 0.5]}
           grid={jointGrid}
+          hide={hide}
         >
           <Component
             name="v0"
             setSelected={setSelected}
             selected={selected}
             radius={0.1}
+            actual={values.v0}
             args={[1, 1, v0, 32]}
             position={[0, 0, v0 / 2 + 0.5]}
             rotation={[Math.PI * 0.5, 0, 0]}
             grid={vertexGrid}
+            hide={hide}
+            lineColor="red"
+            lineOffset2={0}
           >
             <Component
               name="j1"
@@ -403,6 +484,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
               args={[1, 1, 1, 32]}
               position={[0, 0, v0 / 2 + 1]}
               grid={jointGrid}
+              error={outside(j1, config.rangej1)}
+              hide={hide}
             >
               <Component
                 name="v1"
@@ -413,6 +496,11 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                 position={[0, v1 / 2 + 1, 0]}
                 doubleV
                 grid={vertexGrid}
+                actual={values.v1}
+                hide={hide}
+                lineColor="green"
+                lineOffset1={0}
+                lineOffset2={0}
               >
                 <Component
                   name="j2"
@@ -423,6 +511,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                   args={[1, 1, 1, 32]}
                   position={[0, v1 / 2 + 1, 0]}
                   grid={jointGrid}
+                  error={outside(j2, config.rangej2)}
+                  hide={hide}
                 >
                   <Component
                     name="v2"
@@ -432,6 +522,9 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                     args={[1, 1, v2, 32]}
                     position={[v2 / 2 + 1, 0, 0]}
                     grid={vertexGrid}
+                    actual={values.v2}
+                    hide={hide}
+                    lineColor="blue"
                   >
                     <Component
                       name="j3"
@@ -442,6 +535,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                       args={[1, 1, 1, 32]}
                       position={[v2 / 2 + 0.5, 0, 0]}
                       grid={jointGrid}
+                      error={outside(j3, config.rangej3)}
+                      hide={hide}
                     >
                       <Component
                         name="v3"
@@ -451,6 +546,9 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                         args={[1, 1, v3, 32]}
                         position={[0, 0, v3 / 2 + 0.5]}
                         grid={vertexGrid}
+                        actual={values.v3}
+                        hide={hide}
+                        lineColor="orange"
                       >
                         <Component
                           name="j4"
@@ -461,6 +559,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                           args={[1, 1, 1, 32]}
                           position={[0, 0, v3 / 2 + 1]}
                           grid={jointGrid}
+                          error={outside(j4, config.rangej4)}
+                          hide={hide}
                         >
                           <Component
                             name="v4"
@@ -470,6 +570,9 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                             args={[1, 1, v4, 32]}
                             position={[0, v4 / 2 + 1, 0]}
                             grid={vertexGrid}
+                            actual={values.v4}
+                            hide={hide}
+                            lineColor="purple"
                           >
                             <Component
                               name="j5"
@@ -479,6 +582,8 @@ export function BoxZ({ control, values, formApi, RobotKin, toggleOrbital }) {
                               selected={selected}
                               args={[1, 1, 1, 32]}
                               position={[0, v4 / 2 + 0.5, 0]}
+                              error={outside(j5, config.rangej5)}
+                              hide={hide}
                               // grid={jointGrid}
                             >
                               <Tool
