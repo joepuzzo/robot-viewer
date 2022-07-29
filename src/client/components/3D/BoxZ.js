@@ -366,7 +366,7 @@ const Component = ({
           ) : null}
         </group>
         {children}
-        {grid ? <Grid size={3} /> : null}
+        {grid ? <Grid size={hide ? 1 : 3} /> : null}
         {hide && actual ? (
           <>
             <Line
@@ -390,7 +390,7 @@ const Component = ({
           <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
         </mesh>
         {children}
-        {grid ? <Grid size={3} /> : null}
+        {grid ? <Grid size={hide ? 1 : 3} /> : null}
         {error ? <ErrorBall /> : null}
         {hide && actual ? (
           <Line
@@ -596,7 +596,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                               position={[0, v4 / 2 + 0.5, 0]}
                               error={outside(j5, config.rangej5)}
                               hide={hide}
-                              // grid={jointGrid}
+                              grid={jointGrid}
                             >
                               <Tool
                                 name="tool"
