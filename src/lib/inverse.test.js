@@ -58,8 +58,7 @@ describe('inverse', () => {
    *                   |
    *                  [ ]
    */
-  it.only('should take inverse of -5, 0, 10, 0, 0, 0', () => {
-    console.table(inverse(-5, 0, 10, 0, 0, 0, robotConfig));
+  it('should take inverse of -5, 0, 10, 0, 0, 0', () => {
     // prettier-ignore
     expect(inverse(-5, 0, 10, 0, 0, 0, robotConfig)).toEqual([Math.PI, 0, -Math.PI / 2, Math.PI, -Math.PI/2, -Math.PI]);
   });
