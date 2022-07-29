@@ -183,6 +183,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej0[0]}
           maxValue={rangej0[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -193,6 +195,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej1[0]}
           maxValue={rangej1[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -203,6 +207,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej2[0]}
           maxValue={rangej2[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -213,6 +219,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej3[0]}
           maxValue={rangej3[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -223,6 +231,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej4[0]}
           maxValue={rangej4[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -233,6 +243,8 @@ export const Nav = () => {
           type="number"
           minValue={rangej5[0]}
           maxValue={rangej5[1]}
+          validateOn="change"
+          showErrorIfError
           // minValue={-180}
           // maxValue={180}
           step={1}
@@ -307,6 +319,8 @@ export const Nav = () => {
         <Switch name="jointGrid" label="Joint Grids" />
         <br />
         <Switch name="hide" label="Hide Robot" />
+        <br />
+        <Switch name="linkColor" label="Show Link Color" />
       </ul>
     </nav>
   );

@@ -305,6 +305,7 @@ const Component = ({
   lineColor,
   lineOffset1: userLineOffset1,
   lineOffset2: userLineOffset2,
+  linkColor,
   ...props
 }) => {
   // This reference will give us direct access to the mesh
@@ -336,6 +337,12 @@ const Component = ({
             <cylinderGeometry args={args} />
             <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
           </mesh>
+          {linkColor ? (
+            <mesh>
+              <cylinderGeometry args={[1.01, 1.01, 0.02, 32]} />
+              <meshStandardMaterial color={lineColor} opacity={opacity} transparent={transparent} />
+            </mesh>
+          ) : null}
           {!doubleV ? (
             <mesh position={[0, args[2] / 2 + 1, -0.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
               <cylinderGeometry args={[1, 1, 0.5, 32]} />
@@ -413,7 +420,7 @@ const outside = (a, [l, h]) => {
 };
 
 export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital }) {
-  const { jointGrid, mainGrid, gridSize, hide } = values;
+  const { jointGrid, mainGrid, gridSize, hide, linkColor } = values;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -474,6 +481,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
             hide={hide}
             lineColor="red"
             lineOffset2={0}
+            linkColor={linkColor}
           >
             <Component
               name="j1"
@@ -501,6 +509,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                 lineColor="green"
                 lineOffset1={0}
                 lineOffset2={0}
+                linkColor={linkColor}
               >
                 <Component
                   name="j2"
@@ -525,6 +534,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                     actual={values.v2}
                     hide={hide}
                     lineColor="blue"
+                    linkColor={linkColor}
                   >
                     <Component
                       name="j3"
@@ -549,6 +559,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                         actual={values.v3}
                         hide={hide}
                         lineColor="orange"
+                        linkColor={linkColor}
                       >
                         <Component
                           name="j4"
@@ -573,6 +584,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                             actual={values.v4}
                             hide={hide}
                             lineColor="purple"
+                            linkColor={linkColor}
                           >
                             <Component
                               name="j5"

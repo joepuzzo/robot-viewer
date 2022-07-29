@@ -2,9 +2,18 @@ import React from 'react';
 import { useField } from 'informed';
 import { Flex, Slider, NumberField } from '@adobe/react-spectrum';
 
+const outside = (a, [l, h]) => {
+  return a < l || a > h;
+};
+
 const Input = (props) => {
+  const validate = (value) => {
+    return outside(value, [props.minValue, props.maxValue]) ? 'Too far!' : undefined;
+  };
+
   const { render, informed, fieldState, fieldApi, userProps, ref } = useField({
     type: 'number',
+    validate,
     ...props,
   });
   const { required, trackGradient } = userProps;
@@ -15,7 +24,7 @@ const Input = (props) => {
       <NumberField
         ref={ref}
         validationState={!error ? null : 'invalid'}
-        errorMessage={showError ? error : undefined}
+        // errorMessage={showError ? error : undefined}
         isRequired={required}
         {...userProps}
         {...informed}
