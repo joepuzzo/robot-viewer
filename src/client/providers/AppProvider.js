@@ -86,12 +86,12 @@ const AppProvider = ({ children }) => {
     r2: -90,
     r3: 0,
     // For other dims
-    rangej0: [-179, 179],
+    rangej0: [-180, 180],
     rangej1: [-140, 140],
     rangej2: [-115, 115],
-    rangej3: [-179, 179],
+    rangej3: [-180, 180],
     rangej4: [-90, 90],
-    rangej5: [-179, 179],
+    rangej5: [-180, 180],
   });
 
   const toggleColorScheme = () => {

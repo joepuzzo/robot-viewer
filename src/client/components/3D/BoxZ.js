@@ -2,6 +2,7 @@ import { useFormState } from 'informed';
 import { useThree, useFrame } from '@react-three/fiber';
 // import { useDrag } from '@use-gesture/react';
 import { Line } from '@react-three/drei';
+import { useSpring, animated } from '@react-spring/three';
 
 import { inverse } from '../../../lib/inverse';
 
@@ -90,6 +91,7 @@ const Pos = ({
   RobotKin,
   toggleOrbital,
   control,
+  animate,
   ...props
 }) => {
   // Set up state for the hovered and active state
@@ -103,6 +105,16 @@ const Pos = ({
   const [position, setPosition] = useState(() => {
     const { x, y, z, r1, r2, r3 } = formApi.getFormState().values;
     return [x, y, z, r1, r2, r3];
+  });
+
+  const { position: animatedPos } = useSpring({
+    position: [position[0], position[1], position[2]],
+    config: {
+      clamp: true,
+      tension: 70,
+      // friction: 0,
+    },
+    immediate: !animate,
   });
 
   control.setBall.current = setPosition;
@@ -228,10 +240,10 @@ const Pos = ({
 
   // ...bind
   return (
-    <group
+    <animated.group
       ref={ref}
       {...props}
-      position={[position[0], position[1], position[2]]}
+      position={animatedPos}
       // position={[-position.x, position.y, position.z]}
       // position={[2, 2, 2]}
     >
@@ -240,7 +252,7 @@ const Pos = ({
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
       {grid ? <Grid size={1} /> : null}
-    </group>
+    </animated.group>
   );
 };
 
@@ -298,7 +310,7 @@ const Component = ({
   actual,
   position,
   rotation,
-  jointRotation,
+  jointRotation: userJointRotation,
   doubleV,
   error,
   hide,
@@ -306,8 +318,19 @@ const Component = ({
   lineOffset1: userLineOffset1,
   lineOffset2: userLineOffset2,
   linkColor,
+  animate,
   ...props
 }) => {
+  const { rotation: jointRotation } = useSpring({
+    rotation: userJointRotation,
+    config: {
+      clamp: true,
+      tension: 70,
+      // friction: 0,
+    },
+    immediate: !animate,
+  });
+
   // This reference will give us direct access to the mesh
   const mesh = useRef();
 
@@ -384,7 +407,7 @@ const Component = ({
     );
   } else {
     return (
-      <group ref={mesh} position={position} rotation={jointRotation} {...props}>
+      <animated.group ref={mesh} position={position} rotation={jointRotation} {...props}>
         <mesh rotation={rotation}>
           <cylinderGeometry args={args} />
           <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
@@ -403,7 +426,7 @@ const Component = ({
             lineWidth={1}
           />
         ) : null}
-      </group>
+      </animated.group>
     );
   }
 };
@@ -420,7 +443,7 @@ const outside = (a, [l, h]) => {
 };
 
 export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital }) {
-  const { jointGrid, mainGrid, gridSize, hide, linkColor } = values;
+  const { jointGrid, mainGrid, gridSize, hide, linkColor, animate } = values;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -454,6 +477,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
         rotation={[Math.PI * 0.5, 0, 0]}
         actual={values.base}
         hide={hide}
+        animate={animate}
         // grid
       >
         <Component
@@ -467,6 +491,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
           position={[0, 0, base / 2 + 0.5]}
           grid={jointGrid}
           hide={hide}
+          animate={animate}
         >
           <Component
             name="v0"
@@ -482,6 +507,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
             lineColor="red"
             lineOffset2={0}
             linkColor={linkColor}
+            animate={animate}
           >
             <Component
               name="j1"
@@ -494,6 +520,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
               grid={jointGrid}
               error={outside(j1, config.rangej1)}
               hide={hide}
+              animate={animate}
             >
               <Component
                 name="v1"
@@ -510,6 +537,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                 lineOffset1={0}
                 lineOffset2={0}
                 linkColor={linkColor}
+                animate={animate}
               >
                 <Component
                   name="j2"
@@ -522,6 +550,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                   grid={jointGrid}
                   error={outside(j2, config.rangej2)}
                   hide={hide}
+                  animate={animate}
                 >
                   <Component
                     name="v2"
@@ -535,6 +564,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                     hide={hide}
                     lineColor="blue"
                     linkColor={linkColor}
+                    animate={animate}
                   >
                     <Component
                       name="j3"
@@ -547,6 +577,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                       grid={jointGrid}
                       error={outside(j3, config.rangej3)}
                       hide={hide}
+                      animate={animate}
                     >
                       <Component
                         name="v3"
@@ -560,6 +591,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                         hide={hide}
                         lineColor="orange"
                         linkColor={linkColor}
+                        animate={animate}
                       >
                         <Component
                           name="j4"
@@ -572,6 +604,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                           grid={jointGrid}
                           error={outside(j4, config.rangej4)}
                           hide={hide}
+                          animate={animate}
                         >
                           <Component
                             name="v4"
@@ -585,6 +618,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                             hide={hide}
                             lineColor="purple"
                             linkColor={linkColor}
+                            animate={animate}
                           >
                             <Component
                               name="j5"
@@ -597,6 +631,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                               error={outside(j5, config.rangej5)}
                               hide={hide}
                               grid={jointGrid}
+                              animate={animate}
                             >
                               <Tool
                                 name="tool"
@@ -625,6 +660,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
         selected={selected}
         args={[0.5, 30, 30]}
         grid
+        animate={animate}
         control={control}
         formApi={formApi}
         RobotKin={RobotKin}

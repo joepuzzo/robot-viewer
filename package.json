@@ -33,6 +33,7 @@
   "devDependencies": {
     "@adobe/react-spectrum": "^3.19.0",
     "@babel/plugin-transform-runtime": "^7.11.0",
+    "@react-spring/three": "^9.5.2",
     "@react-three/drei": "^9.17.1",
     "@react-three/fiber": "^8.2.0",
     "@spectrum-css/page": "^5.0.11",
