@@ -1,10 +1,18 @@
-import React, { Suspense, useMemo } from 'react';
-import { ActionButton, Button, defaultTheme, Flex, Provider } from '@adobe/react-spectrum';
+import React, { Suspense, useCallback, useMemo } from 'react';
+import { ActionButton, Button, defaultTheme, Flex, Provider, View } from '@adobe/react-spectrum';
 import { OrbitControls } from '@react-three/drei';
-import { Debug, FormProvider, useFormApi, useFormState } from 'informed';
+import {
+  ArrayField,
+  Debug,
+  FormProvider,
+  useFormApi,
+  useFormState,
+  useArrayFieldState,
+} from 'informed';
 
 // Hooks
 import useApp from '../../hooks/useApp';
+import useRobotController from '../../hooks/useRobotController';
 import useGet from '../../hooks/useGet';
 
 // Components
@@ -46,7 +54,7 @@ const getZXZ = (orientation) => {
   }
 };
 
-const XYZ = () => {
+const Control = () => {
   const { values } = useFormState();
   const formApi = useFormApi();
 
@@ -123,7 +131,7 @@ const XYZ = () => {
           step={0.1}
           initialValue={9}
         />
-        <ActionButton type="button" onPress={updateRobot} minWidth="100">
+        <ActionButton title="Go" aria-label="Go" type="button" onPress={updateRobot} minWidth="100">
           Go
         </ActionButton>
         <Switch name="animate" label="Animate" initialValue />
@@ -133,6 +141,7 @@ const XYZ = () => {
         initialValue="x"
         orientation="horizontal"
         name="orientation"
+        aria-label="Select Oriantaion"
         options={[
           { label: 'X', value: 'x' },
           { label: '-X', value: '-x' },
@@ -146,20 +155,84 @@ const XYZ = () => {
   );
 };
 
+const ArrayButtons = ({ index, add, remove }) => {
+  const { fields } = useArrayFieldState();
+
+  if (index === fields.length - 1) {
+    return (
+      <ActionButton
+        onClick={() => {
+          add();
+        }}
+        type="button"
+        minWidth={60}
+        title="Add Waypoint"
+        aria-label="Add Waypoint"
+      >
+        Add
+      </ActionButton>
+    );
+  }
+
+  return (
+    <ActionButton
+      title="Remove Waypoint"
+      aria-label="Remove Waypoint"
+      type="button"
+      onClick={remove}
+      minWidth={60}
+    >
+      Remove
+    </ActionButton>
+  );
+};
+
+export const Waypoints = () => {
+  const run = useCallback(() => {}, []);
+
+  return (
+    <div className="waypoints">
+      <ActionButton title="Go" aria-label="Go" type="button" onPress={run} minWidth="100">
+        Run Simulation
+      </ActionButton>
+      <br />
+      <br />
+      <ArrayField name="waypoints" initialValue={[{}]}>
+        {({ add }) => {
+          return (
+            <Flex direction="column" alignItems="center" gap="size-100">
+              <ArrayField.Items>
+                {({ remove, name, index }) => (
+                  <Flex direction="row" alignItems="end" gap="size-100" width={400}>
+                    <NumberInput name="x" label="X" hideStepper />
+                    <NumberInput name="y" label="Y" hideStepper />
+                    <NumberInput name="z" label="Z" hideStepper />
+                    <NumberInput name="a" label="a" hideStepper />
+                    <NumberInput name="b" label="b" hideStepper />
+                    <NumberInput name="c" label="c" hideStepper />
+                    <ArrayButtons index={index} add={add} remove={remove} />
+                  </Flex>
+                )}
+              </ArrayField.Items>
+            </Flex>
+          );
+        }}
+      </ArrayField>
+    </div>
+  );
+};
+
 const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
-  const { RobotKin, control } = useApp();
+  const robotController = useRobotController();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
   const angles = [j0, j1, j2, j3, j4, j5];
 
-  // const pos = RobotKin.forward(...angles)[5].map((a) => Math.round(a));
-
   return (
     <>
-      {/* <h3>{JSON.stringify(pos)}</h3> */}
       <h3>
         Angles:{' '}
         {JSON.stringify(
@@ -168,17 +241,9 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
           2
         )}
       </h3>
-      <XYZ />
+      {/* <h4>Movements: {robot.movements}</h4> */}
+      <Control />
       <Canvas
-        // orthographic
-        // camera={{
-        //   position: [25, 25, 25],
-        //   zoom: 40,
-        //   left: window.innerWidth / -2,
-        //   right: window.innerWidth / 2,
-        //   top: window.innerHeight / 2,
-        //   bottom: window.innerHeight / -2,
-        // }}
         camera={{
           fov: 75,
           aspect: window.innerWidth / window.innerHeight,
@@ -187,19 +252,16 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
           position: [8, 12, 10],
           zoom: 0.8,
         }}
-        // camera={{ fov: 35, aspect: window.innerWidth / window.innerHeight, near: 1, far: 1000 }}
-        // camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 10000)
       >
         <OrbitControls enabled={orbitEnabled} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <BoxZ
-            control={control}
+            robotController={robotController}
             config={config}
             values={values}
             formApi={formApi}
-            RobotKin={RobotKin}
             toggleOrbital={toggleOrbital}
           />
         </Suspense>
@@ -209,7 +271,7 @@ const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
 };
 
 const App = () => {
-  const { colorScheme, config, orbitEnabled, toggleOrbital } = useApp();
+  const { colorScheme, config, orbitEnabled, toggleOrbital, extraOpen } = useApp();
 
   const initialValues = useMemo(() => {
     // We give in degrees so turn into rads
@@ -262,19 +324,8 @@ const App = () => {
       <FormProvider initialValues={initialValues}>
         <Header />
         <Nav />
-        <main>
-          {/* <h1>Robot Viewer</h1>
-          <h2>Health Check {data.status}</h2> */}
-          {/* <Debug /> */}
+        <main className={extraOpen ? 'extra' : ''}>
           <Robot config={config} orbitEnabled={orbitEnabled} toggleOrbital={toggleOrbital} />
-          {/* <Canvas>
-          <Suspense fallback={null}>
-            <ambientLight intensity={0.5} />
-            <directionalLight intensity={2} />
-            <OrbitControls />
-            <Arm />
-          </Suspense>
-        </Canvas> */}
         </main>
       </FormProvider>
     </Provider>

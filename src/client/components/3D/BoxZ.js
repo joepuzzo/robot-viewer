@@ -88,9 +88,7 @@ const Pos = ({
   args,
   grid,
   formApi,
-  RobotKin,
   toggleOrbital,
-  control,
   animate,
   ...props
 }) => {
@@ -117,11 +115,9 @@ const Pos = ({
     immediate: !animate,
   });
 
-  control.setBall.current = setPosition;
+  // control.setBall.current = setPosition;
 
   const updateRobot = (x, y, z, r1, r2, r3) => {
-    const pos = [x, y, z, r1, r2, r3];
-
     const { base, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
 
     // We give in degrees so turn into rads
@@ -129,8 +125,6 @@ const Pos = ({
     const ro2 = toRadians(r2);
     const ro3 = toRadians(r3);
 
-    console.log('Updating robot to', pos);
-    console.log('Getting angles for', pos);
     const angles = inverse(x, y, z, ro1, ro2, ro3, {
       // a1: base + 0.5 + v0 + 1.5, // 4
       // a2: v1 + 2, // 3
@@ -263,7 +257,6 @@ const Tool = ({
   args,
   grid,
   formApi,
-  RobotKin,
   toggleOrbital,
   position,
   rotation,
@@ -319,6 +312,7 @@ const Component = ({
   lineOffset2: userLineOffset2,
   linkColor,
   animate,
+  updateMotion,
   ...props
 }) => {
   const { rotation: jointRotation } = useSpring({
@@ -329,6 +323,12 @@ const Component = ({
       // friction: 0,
     },
     immediate: !animate,
+    onStart: () => {
+      if (animate) updateMotion(name, 'move');
+    },
+    onRest: () => {
+      if (animate) updateMotion(name, 'stop');
+    },
   });
 
   // This reference will give us direct access to the mesh
@@ -442,8 +442,10 @@ const outside = (a, [l, h]) => {
   return deg < l || deg > h;
 };
 
-export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital }) {
+export function BoxZ({ robotController, config, values, formApi, toggleOrbital }) {
   const { jointGrid, mainGrid, gridSize, hide, linkColor, animate } = values;
+
+  const { updateMotion } = robotController;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -492,6 +494,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
           grid={jointGrid}
           hide={hide}
           animate={animate}
+          updateMotion={updateMotion}
         >
           <Component
             name="v0"
@@ -521,6 +524,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
               error={outside(j1, config.rangej1)}
               hide={hide}
               animate={animate}
+              updateMotion={updateMotion}
             >
               <Component
                 name="v1"
@@ -551,6 +555,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                   error={outside(j2, config.rangej2)}
                   hide={hide}
                   animate={animate}
+                  updateMotion={updateMotion}
                 >
                   <Component
                     name="v2"
@@ -578,6 +583,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                       error={outside(j3, config.rangej3)}
                       hide={hide}
                       animate={animate}
+                      updateMotion={updateMotion}
                     >
                       <Component
                         name="v3"
@@ -605,6 +611,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                           error={outside(j4, config.rangej4)}
                           hide={hide}
                           animate={animate}
+                          updateMotion={updateMotion}
                         >
                           <Component
                             name="v4"
@@ -632,6 +639,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
                               hide={hide}
                               grid={jointGrid}
                               animate={animate}
+                              updateMotion={updateMotion}
                             >
                               <Tool
                                 name="tool"
@@ -661,9 +669,7 @@ export function BoxZ({ control, config, values, formApi, RobotKin, toggleOrbital
         args={[0.5, 30, 30]}
         grid
         animate={animate}
-        control={control}
         formApi={formApi}
-        RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
       />
     </group>

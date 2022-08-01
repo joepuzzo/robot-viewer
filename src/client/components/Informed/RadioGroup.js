@@ -22,7 +22,7 @@ const Input = (props) => {
       onChange={(v) => fieldApi.setValue(v)}
     >
       {options.map((option) => (
-        <Radio key={option.value} value={option.value}>
+        <Radio key={option.value} value={option.value} label={option.label}>
           {option.label}
         </Radio>
       ))}

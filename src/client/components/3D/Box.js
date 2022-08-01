@@ -75,17 +75,7 @@ function useKeyPress({ targetKey, targetKeyCode }) {
   return keyPressed;
 }
 
-const Pos = ({
-  name,
-  setSelected,
-  selected,
-  args,
-  grid,
-  formApi,
-  RobotKin,
-  toggleOrbital,
-  ...props
-}) => {
+const Pos = ({ name, setSelected, selected, args, grid, formApi, toggleOrbital, ...props }) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
@@ -159,7 +149,6 @@ const Tool = ({
   args,
   grid,
   formApi,
-  RobotKin,
   toggleOrbital,
   position,
   ...props
@@ -399,7 +388,6 @@ export function Box({ values, formApi, RobotKin, toggleOrbital }) {
         position={[0, -1, 0]}
         grid
         formApi={formApi}
-        RobotKin={RobotKin}
         toggleOrbital={toggleOrbital}
       />
     </>

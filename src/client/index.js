@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import App from './components/App/App.js';
 import AppProvider from './providers/AppProvider.js';
+import RobotProvider from './providers/RobotProvider.js';
 
 /* ---- Include global variables first ---- */
 import '@spectrum-css/vars/dist/spectrum-global.css';
@@ -24,7 +25,9 @@ import './index.css';
 
 render(
   <AppProvider>
-    <App />
+    <RobotProvider>
+      <App />
+    </RobotProvider>
   </AppProvider>,
   document.getElementById('root')
 );

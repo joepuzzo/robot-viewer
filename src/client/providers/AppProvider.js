@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AppContext from '../context/AppContext';
-import Kinematics from 'kinematics';
+import RobotContext from '../context/RobotContext';
 
 const geometry = [
   [0, 2, 0], // V0: 0x 2y
@@ -26,18 +26,18 @@ const geometry = [
 //   [0, 2, 0], // V4: 0x 2y
 // ];
 
-const RobotKin = new Kinematics.default(geometry);
-
 /**
  * Provide any application specific data
  */
 const AppProvider = ({ children }) => {
   const [colorScheme, setColorScheme] = useState('dark');
   const [navOpen, setNavOpen] = useState(false);
+  const [extraOpen, setExtraOpen] = useState(true);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
   const setBall = useRef();
 
+  // Define control
   const control = {
     setBall,
   };
@@ -112,6 +112,10 @@ const AppProvider = ({ children }) => {
     setOrbitalEnabled((prev) => !prev);
   };
 
+  const toggleExtra = () => {
+    setExtraOpen((prev) => !prev);
+  };
+
   const value = {
     colorScheme,
     setColorScheme,
@@ -121,12 +125,12 @@ const AppProvider = ({ children }) => {
     toggleNav,
     config,
     setConfig,
-    RobotKin,
     orbitEnabled,
     toggleOrbital,
     control,
+    extraOpen,
+    toggleExtra,
   };
-
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
