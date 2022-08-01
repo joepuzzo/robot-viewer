@@ -153,3 +153,7 @@ canvas {
   position: absolute;
   right: 0px;
 } */
+
+.highlight {
+  border-bottom: 2px solid #880808;
+}

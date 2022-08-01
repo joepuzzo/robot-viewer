@@ -1,30 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AppContext from '../context/AppContext';
-import RobotContext from '../context/RobotContext';
-
-const geometry = [
-  [0, 2, 0], // V0: 0x 2y
-  [0, 2, 0], // V1: 0x 2y
-  [0, 2, 0], // V2: 0x 2y
-  [0, 0, 0], // V3: 2x 0y
-  [0, 0, 0], // V4: 0x 2y
-];
-
-// const geometry = [
-//   [0, 0, 2], // V0: 0x 2y
-//   [0, 0, 2], // V1: 0x 2y
-//   [0, 0, 2], // V2: 0x 2y
-//   [2, 0, 0], // V3: 2x 0y
-//   [0, 2, 0], // V4: 0x 2y
-// ];
-
-// const geometry = [
-//   [0, 0, 2], // V0: 0x 2y
-//   [0, 0, 2], // V1: 0x 2y
-//   [0, 0, 2], // V2: 0x 2y
-//   [2, 0, 0], // V3: 2x 0y
-//   [0, 2, 0], // V4: 0x 2y
-// ];
 
 /**
  * Provide any application specific data
@@ -32,7 +7,7 @@ const geometry = [
 const AppProvider = ({ children }) => {
   const [colorScheme, setColorScheme] = useState('dark');
   const [navOpen, setNavOpen] = useState(false);
-  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraOpen, setExtraOpen] = useState(true);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
   const setBall = useRef();
@@ -43,13 +18,6 @@ const AppProvider = ({ children }) => {
   };
 
   const [config, setConfig] = useState({
-    // base: 1,
-    // v0: 1,
-    // v1: 1,
-    // v2: 1,
-    // v3: 1,
-    // v4: 1,
-    // v5: 1,
     base: 1.5,
     v0: 2.5,
     v1: 3,

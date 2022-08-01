@@ -154,31 +154,50 @@ describe('matrixDotString', () => {
     expect(result).toEqual(expected);
   });
 
+  /**
+   *       X
+   *       ^
+   *       |
+   *       |
+   *       |
+   *       |
+   *       + -----------> Y
+   *      /
+   *     /
+   *    /
+   *   Z
+   *
+   */
   it('should generate yaw + pitch + roll', () => {
+    // X
     const yaw = [
       ['Math.cos(a)', '-Math.sin(a)', '0'], // x0
       ['Math.sin(a)', 'Math.cos(a)', '0'], // y0
       ['0', '0', '1'], // z0
     ];
 
+    // Y
     const pitch = [
       ['Math.cos(b)', '0', 'Math.sin(b)'], // x0
       ['0', '1', '0'], // y0
-      ['-Math.sin(b)', '0', 'cos(b)'], // z0
+      ['-Math.sin(b)', '0', 'Math.cos(b)'], // z0
     ];
 
+    // Z
     const roll = [
       ['1', '0', '0'], // x0
-      ['0', 'Math.cos(b)', '-Math.sin(b)'], // y0
-      ['0', 'Math.sin(b)', 'Math.cos(b)'], // z0
+      ['0', 'Math.cos(c)', '-Math.sin(c)'], // y0
+      ['0', 'Math.sin(c)', 'Math.cos(c)'], // z0
     ];
 
-    const zx = matrixDotString(yaw, pitch);
-    const zxz = matrixDotString(zx, roll);
+    const yaw_pitch = matrixDotString(yaw, pitch);
+    const yaw_pitch_roll = matrixDotString(yaw_pitch, roll);
 
     // console.table(zxz);
 
     // expect(result).toEqual(expected);
+
+    // printMatrixJS(yaw_pitch_roll);
   });
 
   it('should generate ZXZs', () => {
