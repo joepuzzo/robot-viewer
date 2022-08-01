@@ -25,6 +25,7 @@ import { Arm } from '../3D/Arm';
 import Switch from '../Informed/Switch';
 import NumberInput from '../Informed/NumberInput';
 import RadioGroup from '../Informed/RadioGroup';
+import Select from '../Informed/Select';
 import { inverse } from '../../../lib/inverse';
 import { toRadians } from '../../../lib/toRadians';
 import { toDeg } from '../../../lib/toDeg';
@@ -34,6 +35,7 @@ import ArrowDown from '@spectrum-icons/workflow/ArrowDown';
 import ArrowUp from '@spectrum-icons/workflow/ArrowUp';
 import ArrowLeft from '@spectrum-icons/workflow/ArrowLeft';
 import ArrowRight from '@spectrum-icons/workflow/ArrowRight';
+import useRobotState from '../../hooks/useRobotState';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -188,28 +190,73 @@ const ArrayButtons = ({ index, add, remove }) => {
 };
 
 export const Waypoints = () => {
-  const run = useCallback(() => {}, []);
+  const { play } = useRobotController();
+  const { simulating } = useRobotState();
+
+  const initialValue = [
+    {
+      x: 6,
+      y: 1,
+      z: 9,
+      orientation: 'x',
+    },
+    {
+      x: 6,
+      y: -1,
+      z: 9,
+      orientation: 'x',
+    },
+    {
+      x: -6,
+      y: 1,
+      z: 9,
+      orientation: '-x',
+    },
+    {
+      x: 7,
+      y: -1,
+      z: 9.5,
+      orientation: 'x',
+    },
+    {},
+  ];
 
   return (
     <div className="waypoints">
-      <ActionButton title="Go" aria-label="Go" type="button" onPress={run} minWidth="100">
+      <ActionButton title="Go" aria-label="Go" type="button" onPress={play} minWidth="100">
         Run Simulation
       </ActionButton>
       <br />
       <br />
-      <ArrayField name="waypoints" initialValue={[{}]}>
+      <div>{`Playing: ${JSON.stringify(simulating.play)}, Step: ${simulating.step}`}</div>
+      <br />
+      <ArrayField name="waypoints" initialValue={initialValue}>
         {({ add }) => {
           return (
             <Flex direction="column" alignItems="center" gap="size-100">
               <ArrayField.Items>
                 {({ remove, name, index }) => (
                   <Flex direction="row" alignItems="end" gap="size-100" width={400}>
-                    <NumberInput name="x" label="X" hideStepper />
-                    <NumberInput name="y" label="Y" hideStepper />
-                    <NumberInput name="z" label="Z" hideStepper />
-                    <NumberInput name="a" label="a" hideStepper />
-                    <NumberInput name="b" label="b" hideStepper />
-                    <NumberInput name="c" label="c" hideStepper />
+                    <NumberInput name="x" label="X" hideStepper defaultValue={0} />
+                    <NumberInput name="y" label="Y" hideStepper defaultValue={0} />
+                    <NumberInput name="z" label="Z" hideStepper defaultValue={0} />
+                    {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
+                    <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
+                    <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
+                    <Select
+                      width={100}
+                      defaultValue="z"
+                      name="orientation"
+                      aria-label="Select Oriantaion"
+                      options={[
+                        { label: 'X', value: 'x' },
+                        { label: '-X', value: '-x' },
+                        { label: 'Y', value: 'y' },
+                        { label: '-Y', value: '-y' },
+                        { label: 'Z', value: 'z' },
+                        { label: '-Z', value: '-z' },
+                      ]}
+                    />
                     <ArrayButtons index={index} add={add} remove={remove} />
                   </Flex>
                 )}
@@ -321,7 +368,7 @@ const App = () => {
 
   return (
     <Provider theme={defaultTheme} colorScheme={colorScheme}>
-      <FormProvider initialValues={initialValues}>
+      <FormProvider initialValues={initialValues} name="robot">
         <Header />
         <Nav />
         <main className={extraOpen ? 'extra' : ''}>
