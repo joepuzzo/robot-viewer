@@ -1,4 +1,6 @@
 import winston from 'winston';
+import { Controller } from './robot/controller.js';
+import { Server } from 'socket.io';
 
 /**------------------------------------------------------------------
  * Setup function for global variables
@@ -36,6 +38,22 @@ const setupLogger = () => {
     // Prevent winston from exeting on uncaught error
     exitOnError: false,
   });
+};
+
+/**------------------------------------------------------------------
+ * Setup io server
+ */
+const setupIo = () => {
+  const io = new Server({ pingInterval: 2000, pingTimeout: 5000 });
+  return io;
+};
+
+/**------------------------------------------------------------------
+ * Setup Controller
+ */
+const setupController = (io) => {
+  const controller = new Controller({ io });
+  return controller;
 };
 
 /**------------------------------------------------------------------
@@ -87,6 +105,8 @@ const setup = async () => {
   // ---- Now for the syncrounous stuff ;) ----
   setupLogger();
   configuration.corsConfig = setupCors();
+  configuration.io = setupIo();
+  configuration.controller = setupController(configuration.io);
 
   // ---- Put stuff onto global object ----
   global.myapp.configuration = configuration;

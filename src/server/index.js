@@ -10,8 +10,15 @@ const start = async () => {
     const configuration = await setup();
     // Build express app
     const application = app(configuration);
+
     // Create server
-    const server = http.createServer(application).listen(configuration.PORT, () => {
+    const server = http.createServer(application);
+
+    // Attach io to server
+    configuration.io.attach(server);
+
+    // Start server
+    server.listen(configuration.PORT, () => {
       console.log('Server is now running on port', configuration.PORT);
     });
 
