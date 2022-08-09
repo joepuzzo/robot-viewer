@@ -3,11 +3,10 @@ import logger from 'winston';
 
 export class MotorMessenger extends EventEmitter {
   constructor(io) {
-    logger.info('constructing MotorMessenger');
+    logger.info('motor\t\t constructing MotorMessenger');
     super();
     // Create io with namespace motor
     this.io = io.of('/motor');
-    // this.io = io;
     // Initialize listeners
     this.io.on('connection', (socket) => this.connect(socket));
   }
@@ -28,33 +27,20 @@ export class MotorMessenger extends EventEmitter {
     // Get the id of the motor from the socket handshake
     const id = socket.handshake.query.id;
     // Log connection
-    logger.info(`motor ${id} connected`);
+    logger.info(`motor\t\t ${id} connected`);
     // Publish connection event
     this.emit('connect', id, socket);
-    // Configure io handlers
-    socket.on('hello', (...args) => this.hello(id, ...args));
-    socket.on('disconnect', (...args) => this.disconnect(id, ...args));
-    socket.on('state', (...args) => this.state(id, ...args));
-  }
 
-  state(id, state) {
-    // Log state
-    logger.info(`recived state from motor ${id}`, state);
-    // Publish state event
-    this.emit('state', id, state);
-  }
+    // Subscribe to disconnect event
+    socket.on('disconnect', (...args) => {
+      logger.info(`motor\t\t ${id} disconnected`, args);
+      this.emit('disconnect', id, args);
+    });
 
-  disconnect(id) {
-    // Log disconnect
-    logger.info(`motor ${id} disconnected`);
-    // Publish disconnect event
-    this.emit('disconnect', id);
-  }
-
-  hello(id) {
-    // Log hello!
-    logger.info(`bucket ${id} says hello`);
-    // Publish hello event
-    this.emit('hello', id);
+    // Subscribe to any events from motor
+    socket.onAny((eventName, ...args) => {
+      logger.info(`motor\t\t recived ${eventName} from motor ${id}`, args);
+      this.emit(eventName, id, ...args);
+    });
   }
 }

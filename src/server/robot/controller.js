@@ -5,7 +5,7 @@ import logger from 'winston';
 
 export class Controller {
   constructor({ io }) {
-    logger.info('controller - constructing controller');
+    logger.info('controller\t constructing controller');
     // Set our io
     this.io = io;
     // Map to keep track of motors
@@ -25,19 +25,29 @@ export class Controller {
   /* -------------- Client Shit -------------- */
 
   clientConnect() {
-    logger.info('controller -  client connected');
+    logger.info('controller\t client connected');
     this.clientMessenger.send('motors', this.motors);
     this.clientMessenger.send('robots', this.robots);
   }
 
+  clientDisconnect() {
+    logger.info(`controller\t client disconnected`);
+  }
+
+  clientHello(...args) {
+    logger.info(`controller\t client says hello`, args);
+  }
+
   subscribeToClientMessenger() {
+    this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
+    this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
   }
 
   /* -------------- Motor Shit -------------- */
 
   motorConnect(id, socket) {
-    logger.info(`controller - motor ${id} connected`);
+    logger.info(`controller\t motor ${id} connected`);
 
     // Register that motor via its motor id
     this.motors[id] = {
@@ -50,13 +60,13 @@ export class Controller {
   }
 
   motorDisconnect(id) {
-    logger.info(`controller - motor ${id} disconnected`);
+    logger.info(`controller\t motor ${id} disconnected`);
     delete this.motors[id];
     this.clientMessenger.send('motors', this.motors);
   }
 
   motorState(id, state) {
-    logger.info(`controller - motor ${id}:`, state);
+    logger.info(`controller\t motor ${id}:`, state);
     this.clientMessenger.send('motor', state);
   }
 
