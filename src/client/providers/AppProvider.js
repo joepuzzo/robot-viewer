@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AppContext from '../context/AppContext';
+import io from 'socket.io-client';
 
 /**
  * Provide any application specific data
@@ -84,6 +85,15 @@ const AppProvider = ({ children }) => {
     setExtraOpen((prev) => !prev);
   };
 
+  const socketRef = useRef();
+  useState(() => {
+    const socket = io('/client', {
+      transports: ['websocket'],
+      secure: true,
+    });
+    socketRef.current = socket;
+  });
+
   const value = {
     colorScheme,
     setColorScheme,
@@ -98,6 +108,7 @@ const AppProvider = ({ children }) => {
     control,
     extraOpen,
     toggleExtra,
+    socket: socketRef.current,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
