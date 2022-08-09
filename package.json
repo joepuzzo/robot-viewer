@@ -10,7 +10,7 @@
     "test:watch": "jest --watch",
     "test:watch:debug": "DEBUG='ik:.*' jest --watch",
     "build": "webpack --config src/client/webpack/webpack.prod.cjs",
-    "start:dev": "concurrently --raw \"npm run client:local\" \"npm run server:local\"",
+    "start:dev": "concurrently --raw \"npm run client:local\" \" DEBUG='robot:.*' npm run server:local\"",
     "client:local": "webpack serve --hot --config src/client/webpack/webpack.dev.cjs",
     "server:local": "NODE_ENV=development nodemon -r dotenv/config src/server/index.js",
     "build:docker": "docker build -t robot-viewer .",

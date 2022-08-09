@@ -1,23 +1,21 @@
-import { MotorMessenger } from './motor-messenger.js';
+import { RobotMessenger } from './robot-messenger.js';
 import { ClientMessenger } from './client-messenger.js';
 
-import logger from 'winston';
-
+import { Debug } from '../../lib/debug.js';
+const logger = Debug('robot:controller' + '');
 export class Controller {
   constructor({ io }) {
-    logger.info('controller\t constructing controller');
+    logger('controller constructing controller');
     // Set our io
     this.io = io;
-    // Map to keep track of motors
-    this.motors = {};
     // Map to keep track of robots
     this.robots = {};
-    // Create motor messsenger so we can talk to buckets
-    this.motorMessenger = new MotorMessenger(io);
+    // Create robot messsenger so we can talk to robots
+    this.robotMessenger = new RobotMessenger(io);
     // Create client messsenger so we can talk to clients
     this.clientMessenger = new ClientMessenger(io);
     // Bind to bucket events
-    this.subscribeToMotorMessenger();
+    this.subscribeToRobotMessenger();
     // Bind to client events
     this.subscribeToClientMessenger();
   }
@@ -25,17 +23,16 @@ export class Controller {
   /* -------------- Client Shit -------------- */
 
   clientConnect() {
-    logger.info('controller\t client connected');
-    this.clientMessenger.send('motors', this.motors);
+    logger('controller client connected');
     this.clientMessenger.send('robots', this.robots);
   }
 
   clientDisconnect() {
-    logger.info(`controller\t client disconnected`);
+    logger(`controller client disconnected`);
   }
 
   clientHello(...args) {
-    logger.info(`controller\t client says hello`, args);
+    logger(`controller client says hello`, args);
   }
 
   subscribeToClientMessenger() {
@@ -44,35 +41,35 @@ export class Controller {
     this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
   }
 
-  /* -------------- Motor Shit -------------- */
+  /* -------------- Robot Shit -------------- */
 
-  motorConnect(id, socket) {
-    logger.info(`controller\t motor ${id} connected`);
+  robotConnect(id, socket) {
+    logger(`controller robot ${id} connected`);
 
-    // Register that motor via its motor id
-    this.motors[id] = {
+    // Register that robot via its robot id
+    this.robots[id] = {
       id: id,
       socketId: socket.id,
     };
 
-    // Let the clients know of this new motor registration
-    this.clientMessenger.send('motors', this.motors);
+    // Let the clients know of this new robot registration
+    this.clientMessenger.send('robots', this.robots);
   }
 
-  motorDisconnect(id) {
-    logger.info(`controller\t motor ${id} disconnected`);
-    delete this.motors[id];
-    this.clientMessenger.send('motors', this.motors);
+  robotDisconnect(id) {
+    logger(`controller robot ${id} disconnected`);
+    delete this.robots[id];
+    this.clientMessenger.send('robots', this.robots);
   }
 
-  motorState(id, state) {
-    logger.info(`controller\t motor ${id}:`, state);
-    this.clientMessenger.send('motor', state);
+  robotState(id, state) {
+    logger(`controller robot state ${id}:`, state);
+    this.clientMessenger.send('robot', state);
   }
 
-  subscribeToMotorMessenger() {
-    this.motorMessenger.on('connect', (...args) => this.motorConnect(...args));
-    this.motorMessenger.on('disconnect', (...args) => this.motorDisconnect(...args));
-    this.motorMessenger.on('state', (...args) => this.motorState(...args));
+  subscribeToRobotMessenger() {
+    this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
+    this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
+    this.robotMessenger.on('state', (...args) => this.robotState(...args));
   }
 }
