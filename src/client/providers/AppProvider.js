@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 const AppProvider = ({ children }) => {
   const [colorScheme, setColorScheme] = useState('dark');
   const [navOpen, setNavOpen] = useState(false);
-  const [extraOpen, setExtraOpen] = useState(true);
+  const [extraOpen, setExtraOpen] = useState(false);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
   const setBall = useRef();

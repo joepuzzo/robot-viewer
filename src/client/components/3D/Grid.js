@@ -19,7 +19,7 @@ const YZPlane = ({ size }) => (
   </Plane>
 );
 
-export default function Grid({ size }) {
+export default function Grid({ size, hideNegatives }) {
   return (
     <group>
       <Text
@@ -31,15 +31,17 @@ export default function Grid({ size }) {
       >
         X+
       </Text>
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[-size / 2 - 1, 0, 0]}
-        scale={[4, 4, 4]}
-      >
-        X-
-      </Text>
+      {!hideNegatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[-size / 2 - 1, 0, 0]}
+          scale={[4, 4, 4]}
+        >
+          X-
+        </Text>
+      ) : null}
       <Text
         color="white" // default
         anchorX="center" // default
@@ -49,15 +51,17 @@ export default function Grid({ size }) {
       >
         Y+
       </Text>
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[0, -size / 2 - 1, 0]}
-        scale={[4, 4, 4]}
-      >
-        Y-
-      </Text>
+      {!hideNegatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[0, -size / 2 - 1, 0]}
+          scale={[4, 4, 4]}
+        >
+          Y-
+        </Text>
+      ) : null}
       <Text
         color="white" // default
         anchorX="center" // default
@@ -67,15 +71,17 @@ export default function Grid({ size }) {
       >
         Z+
       </Text>
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[0, 0, -size / 2 - 1]}
-        scale={[4, 4, 4]}
-      >
-        Z-
-      </Text>
+      {!hideNegatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[0, 0, -size / 2 - 1]}
+          scale={[4, 4, 4]}
+        >
+          Z-
+        </Text>
+      ) : null}
       <XZPlane size={size} />
       <XYPlane size={size} />
       <YZPlane size={size} />

@@ -1,332 +1,24 @@
-import React, { Suspense, useCallback, useMemo } from 'react';
-import { ActionButton, Button, defaultTheme, Flex, Provider, View } from '@adobe/react-spectrum';
-import { OrbitControls } from '@react-three/drei';
-import {
-  ArrayField,
-  Debug,
-  FormProvider,
-  useFormApi,
-  useFormState,
-  useArrayFieldState,
-} from 'informed';
+import React, { useMemo } from 'react';
+import { defaultTheme, Provider } from '@adobe/react-spectrum';
+import { FormProvider } from 'informed';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 // Hooks
 import useApp from '../../hooks/useApp';
-import useRobotController from '../../hooks/useRobotController';
 import useGet from '../../hooks/useGet';
 
 // Components
 import { Header } from '../Header/Header';
 import { Nav } from '../Nav/Nav';
-import { Canvas } from '@react-three/fiber';
-import { BoxZ } from '../3D/BoxZ';
-import Switch from '../Informed/Switch';
-import NumberInput from '../Informed/NumberInput';
-import RadioGroup from '../Informed/RadioGroup';
-import Select from '../Informed/Select';
+
 import { inverse } from '../../../lib/inverse';
 import { toRadians } from '../../../lib/toRadians';
 import { toDeg } from '../../../lib/toDeg';
-import { round } from '../../../lib/round';
 
-import ArrowDown from '@spectrum-icons/workflow/ArrowDown';
-import ArrowUp from '@spectrum-icons/workflow/ArrowUp';
-import ArrowLeft from '@spectrum-icons/workflow/ArrowLeft';
-import ArrowRight from '@spectrum-icons/workflow/ArrowRight';
-import useRobotState from '../../hooks/useRobotState';
-
-const getZXZ = (orientation) => {
-  switch (orientation) {
-    case 'x':
-      return [-90, -90, 0];
-    case '-x':
-      return [-270, -90, 0];
-    case 'y':
-      return [0, -90, 0];
-    case '-y':
-      return [-180, -90, 0];
-    case 'z':
-      return [0, 0, 0];
-    case '-z':
-      return [-90, -180, 0];
-    default:
-      break;
-  }
-};
-
-const Control = () => {
-  const { values } = useFormState();
-  const formApi = useFormApi();
-
-  const updateRobot = () => {
-    const { base, v0, v1, v2, v3, v4, v5, goToX, goToY, goToZ, orientation } =
-      formApi.getFormState().values;
-
-    const [r1, r2, r3] = getZXZ(orientation);
-
-    // We give in degrees so turn into rads
-    const ro1 = toRadians(r1);
-    const ro2 = toRadians(r2);
-    const ro3 = toRadians(r3);
-
-    const angles = inverse(goToX, goToY, goToZ, ro1, ro2, ro3, {
-      // a1: base + 0.5 + v0 + 1.5, // 4
-      // a2: v1 + 2, // 3
-      // a3: v2 + 1.5, // 2.5
-      // a4: v3 + 1.5, // 2.5
-      // a5: v4 + 1, // 2.5
-      // a6: v5 + 1.5, // 2.5
-      a1: base + v0,
-      a2: v1,
-      a3: v2,
-      a4: v3,
-      a5: v4,
-      a6: v5,
-    });
-
-    console.log('Setting angles to', angles);
-
-    if (!angles.find((a) => isNaN(a))) {
-      formApi.setTheseValues({
-        j0: toDeg(angles[0]),
-        j1: toDeg(angles[1]),
-        j2: toDeg(angles[2]),
-        j3: toDeg(angles[3]),
-        j4: toDeg(angles[4]),
-        j5: toDeg(angles[5]),
-        x: goToX,
-        y: goToY,
-        z: goToZ,
-        r1,
-        r2,
-        r3,
-      });
-    }
-  };
-
-  return (
-    <>
-      <Flex
-        direction="row"
-        width={450}
-        justifyContent="space-between"
-        alignItems="end"
-        gap="size-100"
-      >
-        <NumberInput
-          name="goToX"
-          label={`X: ${round(values.x, 100)}`}
-          step={0.1}
-          initialValue={6}
-        />
-        <NumberInput
-          name="goToY"
-          label={`Y: ${round(values.y, 100)}`}
-          step={0.1}
-          initialValue={1}
-        />
-        <NumberInput
-          name="goToZ"
-          label={`Z: ${round(values.z, 100)}`}
-          step={0.1}
-          initialValue={9}
-        />
-        <ActionButton title="Go" aria-label="Go" type="button" onPress={updateRobot} minWidth="100">
-          Go
-        </ActionButton>
-        <Switch name="animate" label="Animate" initialValue />
-      </Flex>
-      <br />
-      <RadioGroup
-        initialValue="x"
-        orientation="horizontal"
-        name="orientation"
-        aria-label="Select Oriantaion"
-        options={[
-          { label: 'X', value: 'x' },
-          { label: '-X', value: '-x' },
-          { label: 'Y', value: 'y' },
-          { label: '-Y', value: '-y' },
-          { label: 'Z', value: 'z' },
-          { label: '-Z', value: '-z' },
-        ]}
-      />
-    </>
-  );
-};
-
-const ArrayButtons = ({ index, add, remove }) => {
-  const { fields } = useArrayFieldState();
-
-  if (index === fields.length - 1) {
-    return (
-      <ActionButton
-        onClick={() => {
-          add();
-        }}
-        type="button"
-        minWidth={40}
-        title="Add Waypoint"
-        aria-label="Add Waypoint"
-      >
-        +
-      </ActionButton>
-    );
-  }
-
-  return (
-    <ActionButton
-      title="Remove Waypoint"
-      aria-label="Remove Waypoint"
-      type="button"
-      onClick={remove}
-      minWidth={40}
-    >
-      -
-    </ActionButton>
-  );
-};
-
-export const Waypoints = () => {
-  const { play } = useRobotController();
-  const { simulating } = useRobotState();
-
-  const initialValue = [
-    {
-      x: 6,
-      y: 1,
-      z: 9,
-      orientation: 'x',
-    },
-    {
-      x: 6,
-      y: -1,
-      z: 9,
-      orientation: 'x',
-    },
-    {
-      x: -6,
-      y: 1,
-      z: 9,
-      orientation: '-x',
-    },
-    {
-      x: 7,
-      y: 0,
-      z: 0,
-      orientation: '-z',
-    },
-    {
-      x: 7,
-      y: -1,
-      z: 9.5,
-      orientation: 'x',
-    },
-    {},
-  ];
-
-  return (
-    <div className="waypoints">
-      <ActionButton title="Go" aria-label="Go" type="button" onPress={play} minWidth="100">
-        Run Simulation
-      </ActionButton>
-      <br />
-      <br />
-      <div>{`Playing: ${JSON.stringify(simulating.play)}, Step: ${simulating.step}`}</div>
-      <br />
-      <ArrayField name="waypoints" initialValue={initialValue}>
-        {({ add }) => {
-          return (
-            <Flex direction="column" alignItems="center" gap="size-100">
-              <ArrayField.Items>
-                {({ remove, name, index }) => (
-                  <div
-                    className={simulating.step - 1 === index && simulating.play ? 'highlight' : ''}
-                  >
-                    <Flex direction="row" alignItems="end" gap="size-100" width={400}>
-                      <NumberInput name="x" label="X" hideStepper defaultValue={0} />
-                      <NumberInput name="y" label="Y" hideStepper defaultValue={0} />
-                      <NumberInput name="z" label="Z" hideStepper defaultValue={0} />
-                      {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
-                    <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
-                    <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
-                      <Select
-                        width={100}
-                        defaultValue="z"
-                        name="orientation"
-                        aria-label="Select Oriantaion"
-                        options={[
-                          { label: 'X', value: 'x' },
-                          { label: '-X', value: '-x' },
-                          { label: 'Y', value: 'y' },
-                          { label: '-Y', value: '-y' },
-                          { label: 'Z', value: 'z' },
-                          { label: '-Z', value: '-z' },
-                        ]}
-                      />
-                      <ArrayButtons index={index} add={add} remove={remove} />
-                    </Flex>
-                  </div>
-                )}
-              </ArrayField.Items>
-            </Flex>
-          );
-        }}
-      </ArrayField>
-    </div>
-  );
-};
-
-const Robot = ({ config, orbitEnabled, toggleOrbital }) => {
-  const { values } = useFormState();
-  const formApi = useFormApi();
-  const robotController = useRobotController();
-
-  const { j0, j1, j2, j3, j4, j5 } = values;
-
-  const angles = [j0, j1, j2, j3, j4, j5];
-
-  return (
-    <>
-      <h3>
-        Angles:{' '}
-        {JSON.stringify(
-          angles.map((a) => round(a, 100)),
-          null,
-          2
-        )}
-      </h3>
-      {/* <h4>Movements: {robot.movements}</h4> */}
-      <Control />
-      <Canvas
-        camera={{
-          fov: 75,
-          aspect: window.innerWidth / window.innerHeight,
-          near: 0.1,
-          far: 1000,
-          position: [8, 12, 10],
-          zoom: 0.8,
-        }}
-      >
-        <OrbitControls enabled={orbitEnabled} />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[-2, 5, 2]} intensity={1} />
-        <Suspense fallback={null}>
-          <BoxZ
-            robotController={robotController}
-            config={config}
-            values={values}
-            formApi={formApi}
-            toggleOrbital={toggleOrbital}
-          />
-        </Suspense>
-      </Canvas>
-    </>
-  );
-};
+import { Routes } from '../Routes/Routes';
 
 const App = () => {
-  const { colorScheme, config, orbitEnabled, toggleOrbital, extraOpen } = useApp();
+  const { colorScheme, config, extraOpen } = useApp();
 
   const initialValues = useMemo(() => {
     // We give in degrees so turn into rads
@@ -337,12 +29,6 @@ const App = () => {
     console.log('Initial getting angles for', [config.x, config.y, config.z, ro1, ro2, ro3]);
 
     const angles = inverse(config.x, config.y, config.z, ro1, ro2, ro3, {
-      // a1: config.base + 0.5 + config.v0 + 1.5, // 4
-      // a2: config.v1 + 2, // 3
-      // a3: config.v2 + 1.5, // 2.5
-      // a4: config.v3 + 1.5, // 2.5
-      // a5: config.v4 + 1, // 2.5
-      // a6: config.v5 + 1.5, // 2.5
       a1: config.base + config.v0,
       a2: config.v1,
       a3: config.v2,
@@ -375,15 +61,17 @@ const App = () => {
   }
 
   return (
-    <Provider theme={defaultTheme} colorScheme={colorScheme}>
-      <FormProvider initialValues={initialValues} name="robot">
-        <Header />
-        <Nav />
-        <main className={extraOpen ? 'extra' : ''}>
-          <Robot config={config} orbitEnabled={orbitEnabled} toggleOrbital={toggleOrbital} />
-        </main>
-      </FormProvider>
-    </Provider>
+    <Router>
+      <Provider theme={defaultTheme} colorScheme={colorScheme}>
+        <FormProvider initialValues={initialValues} name="robot">
+          <Header />
+          <Nav />
+          <main className={extraOpen ? 'extra' : ''}>
+            <Routes />
+          </main>
+        </FormProvider>
+      </Provider>
+    </Router>
   );
 };
 
