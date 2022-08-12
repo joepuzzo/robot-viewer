@@ -6,17 +6,30 @@ import Alert from '@spectrum-icons/workflow/Alert';
 import { Flex } from '@adobe/react-spectrum';
 
 export const Motor = () => {
-  const { socket } = useApp();
+  const { socket, robots } = useApp();
 
   const { values } = useFormState();
   const formApi = useFormApi();
 
   const [motorState, setMotorState] = useState({});
+
+  // For connection
   const [connected, setConnected] = useState(false);
+  const connectedRef = useRef();
+  connectedRef.current = connected;
 
   const { motorSetPos } = values;
 
   const controlRef = useRef();
+
+  useEffect(() => {
+    // Check to see if robot is connected
+    if (Object.keys(robots).find((id) => id == values.robotId)) {
+      setConnected(true);
+    } else {
+      setConnected(false);
+    }
+  }, [values.robotId]);
 
   useEffect(() => {
     const stateHandler = (update) => {
@@ -58,7 +71,10 @@ export const Motor = () => {
   const setMotorPos = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
-    socket.emit('setMotorPos', robotId, motorId, value);
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('setMotorPos', robotId, motorId, value);
+    }
   }, []);
 
   return (

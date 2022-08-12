@@ -79,9 +79,21 @@ export class Controller {
     this.clientMessenger.send('robot', state);
   }
 
+  robotMeta(id, meta) {
+    logger(`controller robot meta ${id}:`, meta);
+
+    // Add meta to registered robot
+    if (this.robots[id]) {
+      this.robots[id].meta = meta;
+    }
+
+    this.clientMessenger.send('robots', this.robots);
+  }
+
   subscribeToRobotMessenger() {
     this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
     this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
     this.robotMessenger.on('state', (...args) => this.robotState(...args));
+    this.robotMessenger.on('meta', (...args) => this.robotMeta(...args));
   }
 }

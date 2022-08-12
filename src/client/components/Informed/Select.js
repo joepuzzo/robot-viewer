@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useField } from 'informed';
 import { Item, Picker } from '@adobe/react-spectrum';
 
@@ -8,12 +8,8 @@ const Input = (props) => {
     ...props,
   });
 
-  const { required, options: userOptions } = userProps;
+  const { required, options } = userProps;
   const { error, showError } = fieldState;
-
-  const options = useMemo(() => {
-    return userOptions.map((op) => ({ name: op.value }));
-  }, []);
 
   return render(
     <Picker
@@ -24,10 +20,11 @@ const Input = (props) => {
       {...userProps}
       {...informed}
       selectedKey={fieldState.value}
-      items={options}
       onSelectionChange={(v) => fieldApi.setValue(v)}
     >
-      {(item) => <Item key={item.name}>{item.name}</Item>}
+      {options.map((op) => {
+        return <Item key={op.value}>{op.label}</Item>;
+      })}
     </Picker>
   );
 };
