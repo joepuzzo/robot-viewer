@@ -35,10 +35,20 @@ export class Controller {
     logger(`controller client says hello`, args);
   }
 
+  setMotorPos(robotId, motorId, pos) {
+    logger(`controller client says setMotorPos`, robotId, motorId, pos);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'setMotorPos', motorId, pos);
+    }
+  }
+
   subscribeToClientMessenger() {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
     this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
+    this.clientMessenger.on('setMotorPos', (...args) => this.setMotorPos(...args));
   }
 
   /* -------------- Robot Shit -------------- */
@@ -54,12 +64,14 @@ export class Controller {
 
     // Let the clients know of this new robot registration
     this.clientMessenger.send('robots', this.robots);
+    this.clientMessenger.send('robotConnected', id);
   }
 
   robotDisconnect(id) {
     logger(`controller robot ${id} disconnected`);
     delete this.robots[id];
     this.clientMessenger.send('robots', this.robots);
+    this.clientMessenger.send('robotDisconnected', id);
   }
 
   robotState(id, state) {
