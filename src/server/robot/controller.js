@@ -44,11 +44,31 @@ export class Controller {
     }
   }
 
+  resetErrors(robotId, motorId) {
+    logger(`controller client says resetErrors`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'resetErrors', motorId);
+    }
+  }
+
+  enableMotor(robotId, motorId) {
+    logger(`controller client says enableMotor`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'enableMotor', motorId);
+    }
+  }
+
   subscribeToClientMessenger() {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
     this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
     this.clientMessenger.on('setMotorPos', (...args) => this.setMotorPos(...args));
+    this.clientMessenger.on('resetErrors', (...args) => this.resetErrors(...args));
+    this.clientMessenger.on('enableMotor', (...args) => this.enableMotor(...args));
   }
 
   /* -------------- Robot Shit -------------- */
