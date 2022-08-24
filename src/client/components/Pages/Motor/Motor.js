@@ -18,7 +18,7 @@ export const Motor = () => {
   const connectedRef = useRef();
   connectedRef.current = connected;
 
-  const { motorSetPos } = values;
+  const { motorPos } = values;
 
   const controlRef = useRef();
 
@@ -32,10 +32,9 @@ export const Motor = () => {
   }, [values.robotId]);
 
   useEffect(() => {
-    const stateHandler = (update) => {
+    const stateHandler = (robot) => {
       const motorId = formApi.getValue('motorId');
-      const index = update.indexMap[motorId];
-      const state = update.motors[index];
+      const state = robot.motors[motorId];
       setMotorState(state);
     };
 
@@ -68,30 +67,47 @@ export const Motor = () => {
     };
   }, []);
 
-  const setMotorPos = useCallback(({ value }) => {
+  const motorSetPos = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
     if (connectedRef.current && motorId != 'na') {
-      socket.emit('setMotorPos', robotId, motorId, value);
+      socket.emit('motorSetPos', robotId, motorId, value);
     }
   }, []);
 
-  const resetErrors = useCallback(({ value }) => {
+  const motorResetErrors = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
     if (connectedRef.current && motorId != 'na') {
-      socket.emit('resetErrors', robotId, motorId);
+      socket.emit('motorResetErrors', robotId, motorId);
     }
   }, []);
 
-  const enableMotor = useCallback(({ value }) => {
+  const motorEnable = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
     if (connectedRef.current && motorId != 'na') {
-      socket.emit('enableMotor', robotId, motorId);
+      socket.emit('motorEnable', robotId, motorId);
+    }
+  }, []);
+
+  const motorHome = useCallback(({ value }) => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('motorHome', robotId, motorId);
+    }
+  }, []);
+
+  const robotHome = useCallback(({ value }) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current) {
+      socket.emit('robotHome', robotId);
     }
   }, []);
 
@@ -102,9 +118,9 @@ export const Motor = () => {
         {!connected ? <Alert.default aria-label="Negative Alert" color="negative" /> : null}
       </Flex>
       <InputSlider
-        name="motorSetPos"
+        name="motorPos"
         label="Set Position"
-        onValueChange={setMotorPos}
+        onValueChange={motorSetPos}
         type="number"
         minValue={-180}
         maxValue={180}
@@ -119,7 +135,14 @@ export const Motor = () => {
           alignItems="center"
           justifyContent="center"
           gap="size-300"
-        ></Flex>
+        >
+          <ActionButton width="size-2400" onPress={motorHome}>
+            Home
+          </ActionButton>
+          <ActionButton width="size-2400" onPress={robotHome}>
+            Robot Home
+          </ActionButton>
+        </Flex>
         <Flex direction="column" alignItems="center" gap="size-100">
           <svg width="500" height="500">
             <g transform={`rotate(${motorSetPos ?? 0} 250 250)`}>
@@ -134,9 +157,6 @@ export const Motor = () => {
               <circle ref={controlRef} cx="250" cy="100" r="20" fill="black" />
             </g>
           </svg>
-          <div>
-            <pre>{JSON.stringify(motorState, null, 2)}</pre>
-          </div>
         </Flex>
         <Flex
           width="size-2400"
@@ -145,14 +165,17 @@ export const Motor = () => {
           justifyContent="center"
           gap="size-300"
         >
-          <ActionButton width="size-2400" onPress={resetErrors}>
+          <ActionButton width="size-2400" onPress={motorResetErrors}>
             Reset Errors
           </ActionButton>
-          <ActionButton width="size-2400" onPress={enableMotor}>
+          <ActionButton width="size-2400" onPress={motorEnable}>
             Enable Motor
           </ActionButton>
         </Flex>
       </Flex>
+      <div>
+        <pre>{JSON.stringify(motorState, null, 2)}</pre>
+      </div>
     </>
   );
 };

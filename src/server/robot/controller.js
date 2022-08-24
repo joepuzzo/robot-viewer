@@ -35,30 +35,48 @@ export class Controller {
     logger(`controller client says hello`, args);
   }
 
-  setMotorPos(robotId, motorId, pos) {
-    logger(`controller client says setMotorPos`, robotId, motorId, pos);
+  motorSetPos(robotId, motorId, pos) {
+    logger(`controller client says motorSetPos`, robotId, motorId, pos);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'setMotorPos', motorId, pos);
+      this.robotMessenger.sendTo(socketId, 'motorSetPos', motorId, pos);
     }
   }
 
-  resetErrors(robotId, motorId) {
-    logger(`controller client says resetErrors`, robotId, motorId);
+  motorResetErrors(robotId, motorId) {
+    logger(`controller client says motorResetErrors`, robotId, motorId);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'resetErrors', motorId);
+      this.robotMessenger.sendTo(socketId, 'motorResetErrors', motorId);
     }
   }
 
-  enableMotor(robotId, motorId) {
-    logger(`controller client says enableMotor`, robotId, motorId);
+  motorEnable(robotId, motorId) {
+    logger(`controller client says motorEnable`, robotId, motorId);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'enableMotor', motorId);
+      this.robotMessenger.sendTo(socketId, 'motorEnable', motorId);
+    }
+  }
+
+  motorHome(robotId, motorId) {
+    logger(`controller client says motorHome`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'motorHome', motorId);
+    }
+  }
+
+  robotHome(robotId) {
+    logger(`controller client says robotHome`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotHome');
     }
   }
 
@@ -66,9 +84,11 @@ export class Controller {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
     this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
-    this.clientMessenger.on('setMotorPos', (...args) => this.setMotorPos(...args));
-    this.clientMessenger.on('resetErrors', (...args) => this.resetErrors(...args));
-    this.clientMessenger.on('enableMotor', (...args) => this.enableMotor(...args));
+    this.clientMessenger.on('motorSetPos', (...args) => this.motorSetPos(...args));
+    this.clientMessenger.on('motorResetErrors', (...args) => this.motorResetErrors(...args));
+    this.clientMessenger.on('motorEnable', (...args) => this.motorEnable(...args));
+    this.clientMessenger.on('motorHome', (...args) => this.motorHome(...args));
+    this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));
   }
 
   /* -------------- Robot Shit -------------- */
@@ -95,16 +115,19 @@ export class Controller {
   }
 
   robotState(id, state) {
-    logger(`controller robot state ${id}:`, state);
+    logger(`controller robot state ${id}:`);
     this.clientMessenger.send('robot', state);
   }
 
-  robotMeta(id, meta) {
-    logger(`controller robot meta ${id}:`, meta);
+  robotRegister(id, robot) {
+    logger(`controller robot register ${id}:`, robot);
 
     // Add meta to registered robot
     if (this.robots[id]) {
-      this.robots[id].meta = meta;
+      this.robots[id] = {
+        ...this.robots[id],
+        ...robot,
+      };
     }
 
     this.clientMessenger.send('robots', this.robots);
@@ -114,6 +137,6 @@ export class Controller {
     this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
     this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
     this.robotMessenger.on('state', (...args) => this.robotState(...args));
-    this.robotMessenger.on('meta', (...args) => this.robotMeta(...args));
+    this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
   }
 }

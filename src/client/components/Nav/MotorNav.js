@@ -25,7 +25,7 @@ export const MotorNav = () => {
   const motorOptions = useMemo(() => {
     const selectedRobot = robots[robotId];
     if (selectedRobot) {
-      return selectedRobot.meta.motors.map((motor) => {
+      return Object.values(selectedRobot.motors).map((motor) => {
         return {
           value: motor.id,
           label: `Motor-${motor.id}`,
