@@ -21,6 +21,7 @@ const AppProvider = ({ children }) => {
 
   const [config, setConfig] = useState({
     base: 1.5,
+    x0: 0,
     v0: 2.5,
     v1: 3,
     v2: 2.5,

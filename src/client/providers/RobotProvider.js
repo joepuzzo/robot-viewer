@@ -83,7 +83,7 @@ const RobotProvider = ({ children }) => {
 
     console.log('FORM STATE', formApi.getFormState());
 
-    const { base, v0, v1, v2, v3, v4, v5, waypoints } = formApi.getFormState().values;
+    const { base, v0, v1, v2, v3, v4, v5, waypoints, x0 } = formApi.getFormState().values;
 
     // We only want to go if we have more waypoints
     if (waypoints && waypoints.length - 1 !== i) {
@@ -107,6 +107,7 @@ const RobotProvider = ({ children }) => {
         a4: v3,
         a5: v4,
         a6: v5,
+        x0,
       });
 
       console.log('Waypoint Setting angles to', angles);

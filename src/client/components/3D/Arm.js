@@ -105,7 +105,7 @@ const Pos = ({
   // control.setBall.current = setPosition;
 
   const updateRobot = (x, y, z, r1, r2, r3) => {
-    const { base, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+    const { base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
 
     // We give in degrees so turn into rads
     const ro1 = toRadians(r1);
@@ -125,6 +125,7 @@ const Pos = ({
       a4: v3,
       a5: v4,
       a6: v5,
+      x0,
     });
 
     console.log('Setting angles to', angles);
@@ -301,6 +302,7 @@ const Component = ({
   linkColor,
   animate,
   updateMotion,
+  xOffset,
   ...props
 }) => {
   const { rotation: jointRotation } = useSpring({
@@ -355,7 +357,10 @@ const Component = ({
             </mesh>
           ) : null}
           {!doubleV ? (
-            <mesh position={[0, args[2] / 2 + 1, -0.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
+            <mesh
+              position={[xOffset ?? 0, args[2] / 2 + 1, -0.75]}
+              rotation={[0, Math.PI / 2, Math.PI / 2]}
+            >
               <cylinderGeometry args={[1, 1, 0.5, 32]} />
               <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
             </mesh>
@@ -444,6 +449,7 @@ export function Arm({ robotController, config, values, formApi, toggleOrbital })
 
   // Take off extras
   const base = values.base - 0.5;
+  const x0 = values.x0;
   const v0 = values.v0 - 1.5;
   const v1 = values.v1 - 2;
   const v2 = values.v2 - 1.5;
@@ -502,6 +508,7 @@ export function Arm({ robotController, config, values, formApi, toggleOrbital })
             lineOffset2={0}
             linkColor={linkColor}
             animate={animate}
+            xOffset={x0}
           >
             <Component
               name="j1"
@@ -510,7 +517,7 @@ export function Arm({ robotController, config, values, formApi, toggleOrbital })
               setSelected={setSelected}
               selected={selected}
               args={[1, 1, 1, 32]}
-              position={[0, 0, v0 / 2 + 1]}
+              position={[x0, 0, v0 / 2 + 1]}
               grid={jointGrid}
               error={outside(j1, config.rangej1)}
               hide={hide}

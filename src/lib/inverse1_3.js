@@ -83,6 +83,21 @@ const logger = Debug('ik:inverse1_3' + '\t');
  *     ( )                  |
  *      _ _ _ _ _ _ _ _ _x0_3
  *
+ *  -------- TopDownView if offset --------
+ *            .           y0_3
+ *           /             |
+ *          /              |
+ *    r1  [ ]              |
+ *        /                |
+ *       /                 |
+ *      /                  |
+ *    [ ]                  |
+ *    /                    |
+ *   /
+ *  / t1
+ * ( )
+ * _ _ _ _ _ _ _ _ _ _ _ _ _ x0_3
+ *
  *
  * Goal: our goal is to derrive equasions for each theta for joints 1-3
  */
@@ -165,9 +180,9 @@ const computeT3 = (p3) => {
  * @returns
  */
 export const inverse1_3 = (x, y, z, robotConfig) => {
-  const { a1, a2, a3 } = robotConfig;
+  const { a1, a2, a3, x0 = 0 } = robotConfig;
 
-  const r1 = computeR1(x, y);
+  const r1 = computeR1(x, y) - x0;
   logger('r1', r1);
   const r2 = computeR2(z, a1);
   logger('r2', r2);

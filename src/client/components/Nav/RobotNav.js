@@ -29,7 +29,7 @@ export const RobotNav = () => {
 
   const updateRobot = () => {
     // Get pos
-    const { x, y, z, r1, r2, r3, base, v0, v1, v2, v3, v4, v5 } = formApi.getFormState().values;
+    const { x, y, z, r1, r2, r3, base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
     const pos = [x, y, z];
 
     // We give in degrees so turn into rads
@@ -51,6 +51,7 @@ export const RobotNav = () => {
       a4: v3,
       a5: v4,
       a6: v5,
+      x0,
     });
 
     console.log('Setting angles to', angles);
@@ -257,6 +258,15 @@ export const RobotNav = () => {
             <InputSlider
               name="base"
               label="Base"
+              type="number"
+              minValue={0}
+              maxValue={5}
+              step={0.01}
+              trackGradient="black"
+            />
+            <InputSlider
+              name="x0"
+              label="X0"
               type="number"
               minValue={0}
               maxValue={5}
