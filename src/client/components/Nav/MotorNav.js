@@ -1,27 +1,23 @@
 import React, { useMemo } from 'react';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
-import Refresh from '@spectrum-icons/workflow/Refresh';
+import Home from '@spectrum-icons/workflow/Home';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import useApp from '../../hooks/useApp';
-import NumberInput from '../Informed/NumberInput';
 import Select from '../Informed/Select';
 import { Debug, useFieldState } from 'informed';
+import useRobotState from '../../hooks/useRobotState';
 
 export const MotorNav = () => {
-  const { extraOpen, toggleExtra, robots } = useApp();
+  // Get controls for nav
+  const { extraOpen, toggleExtra } = useApp();
 
+  // Get robot state
+  const { robotOptions, robots } = useRobotState();
+
+  // Get value of robotId
   const { value: robotId } = useFieldState('robotId');
 
-  const robotOptions = useMemo(() => {
-    const robotsArray = Object.values(robots);
-    return robotsArray.map((robot) => {
-      return {
-        value: robot.id,
-        label: `Robot-${robot.id}`,
-      };
-    });
-  }, [robots]);
-
+  // Build options for motor select
   const motorOptions = useMemo(() => {
     const selectedRobot = robots[robotId];
     if (selectedRobot) {
@@ -33,17 +29,16 @@ export const MotorNav = () => {
       });
     }
     return [];
-  }, [robotId]);
+  }, [robotId, robots]);
 
-  const resetMotor = () => {};
+  const homeRobot = () => {};
 
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Motor Viewer</h1>
-
-        <ActionButton title="Reset Motor" aria-label="Reset Motor" onClick={() => resetMotor()}>
-          <Refresh.default />
+        <ActionButton title="Home Robot" aria-label="Home Robot" onClick={() => homeRobot()}>
+          <Home.default />
         </ActionButton>
         <ActionButton
           title="Open Waypoints"

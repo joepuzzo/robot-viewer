@@ -1,176 +1,111 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { RobotControllerContext, RobotStateContext } from '../context/RobotContext';
-import { useInformed } from 'informed';
-import { useStateWithGetter } from '../hooks/useStateWithGetter';
-import { toRadians } from '../../lib/toRadians';
-import { toDeg } from '../../lib/toDeg';
-import { inverse } from '../../lib/inverse';
+import io from 'socket.io-client';
+import useApp from '../hooks/useApp';
+import { useFieldState, useFormApi } from 'informed';
 
-const getZXZ = (orientation) => {
-  switch (orientation) {
-    case 'x':
-      return [-90, -90, 0];
-    case '-x':
-      return [-270, -90, 0];
-    case 'y':
-      return [0, -90, 0];
-    case '-y':
-      return [-180, -90, 0];
-    case 'z':
-      return [0, 0, 0];
-    case '-z':
-      return [-90, -180, 0];
-    default:
-      break;
-  }
-};
-
+/**
+ * Provide any application specific data
+ */
 const RobotProvider = ({ children }) => {
-  // So we can access all of our form values!
-  const informed = useInformed();
+  // Get socket
+  const { socket } = useApp();
 
-  // Determines how many values are in motion
-  const [movements, updateMovements] = useState(0);
-  const [motors, updateMotors] = useState({
-    j0: { state: 'stop' },
-    j1: { state: 'stop' },
-    j2: { state: 'stop' },
-    j3: { state: 'stop' },
-    j4: { state: 'stop' },
-    j5: { state: 'stop' },
-  });
+  // Get access to the form api to control form
+  const formApi = useFormApi();
 
-  // For simulation of the robot
-  const [simulating, setSimulating, getSimulating] = useStateWithGetter({
-    play: false,
-    step: 0,
-  });
+  // For registered robots
+  const [robots, setRobots] = useState({});
+  const [robotStates, setRobotStates] = useState({});
 
-  const stepRef = useRef();
+  // For connection
+  const [connected, setConnected] = useState(false);
 
-  const updateMotion = useCallback((motor, event) => {
-    console.log('UPDATE - Motor:', motor, 'Event:', event);
+  // Get value of robotId
+  const { value: robotId } = useFieldState('robotId');
 
-    // Update amount of motors in motion
-    if (event === 'move') {
-      updateMovements((cur) => {
-        return cur + 1;
-      });
-    } else {
-      updateMovements((cur) => {
-        return cur - 1;
-      });
-    }
-
-    // Now update the motor state
-    updateMotors((cur) => {
-      const updated = { ...cur };
-      updated[motor].state = event;
-      return updated;
-    });
-  }, []);
-
-  const play = useCallback(() => {
-    setSimulating({
-      ...getSimulating(),
-      step: 0,
-      play: true,
-    });
-  }, []);
-
-  const updateRobot = (i) => {
-    const formApi = informed.getController('robot')?.getFormApi();
-
-    console.log('FORM STATE', formApi.getFormState());
-
-    const { base, v0, v1, v2, v3, v4, v5, waypoints, x0 } = formApi.getFormState().values;
-
-    // We only want to go if we have more waypoints
-    if (waypoints && waypoints.length - 1 !== i) {
-      // Get the waypoint
-      // const { x, y, z, r1, r2, r3 } = waypoints[i];
-      const { x, y, z, orientation } = waypoints[i];
-
-      const [r1, r2, r3] = getZXZ(orientation);
-
-      console.log('Going to waypoint', i, 'pos', waypoints[i]);
-
-      // We give in degrees so turn into rads
-      const ro1 = toRadians(r1);
-      const ro2 = toRadians(r2);
-      const ro3 = toRadians(r3);
-
-      const angles = inverse(x, y, z, ro1, ro2, ro3, {
-        a1: base + v0,
-        a2: v1,
-        a3: v2,
-        a4: v3,
-        a5: v4,
-        a6: v5,
-        x0,
-      });
-
-      console.log('Waypoint Setting angles to', angles);
-
-      if (!angles.find((a) => isNaN(a))) {
-        formApi.setTheseValues({
-          j0: toDeg(angles[0]),
-          j1: toDeg(angles[1]),
-          j2: toDeg(angles[2]),
-          j3: toDeg(angles[3]),
-          j4: toDeg(angles[4]),
-          j5: toDeg(angles[5]),
-          x,
-          y,
-          z,
-          r1,
-          r2,
-          r3,
-        });
-      }
-
-      // Increase the step
-      const current = getSimulating();
-      setSimulating({ ...current, step: current.step + 1 });
-    } else {
-      // Stop simulation
-      const current = getSimulating();
-      setSimulating({ ...current, step: 0, play: false });
-    }
-  };
-
+  // Register for robots events
   useEffect(() => {
-    const current = getSimulating();
-    // We are done moving
-    if (movements === 0) {
-      console.log('Not moving', current);
-      // See if we are simulating
-      if (current.play) {
-        // Get next step in simulation
-        console.log('Playing step', current.step);
-        updateRobot(current.step);
-      }
-    }
-  }, [movements, simulating.play]);
+    const robotsHandler = (rbts) => {
+      setRobots(rbts);
+    };
 
-  // The state of the robot
-  const robotState = {
-    movements,
-    motors,
-    simulating,
+    const stateHandler = (id, robotState) => {
+      setRobotStates((prev) => {
+        const newStates = { ...prev };
+        newStates[id] = robotState;
+        return newStates;
+      });
+    };
+
+    const connectedHandler = (id) => {
+      console.log('Robot Connect', id);
+      if (id == formApi.getFormState().values.robotId) {
+        formApi.setError('robotId', undefined);
+        formApi.setError('motorId', undefined);
+        setConnected(true);
+      }
+    };
+
+    const disconnectedHandler = (id) => {
+      console.log('Robot Disconnect', id);
+      if (id == formApi.getFormState().values.robotId) {
+        formApi.setError('robotId', 'Disconnected');
+        formApi.setError('motorId', 'Disconnected');
+        setConnected(false);
+      }
+    };
+
+    socket.on('robot', stateHandler);
+    socket.on('robots', robotsHandler);
+    socket.on('robotConnected', connectedHandler);
+    socket.on('robotDisconnected', disconnectedHandler);
+
+    return () => {
+      socket.removeListener('robot', stateHandler);
+      socket.removeListener('robots', robotsHandler);
+      socket.removeListener('robotConnected', connectedHandler);
+      socket.removeListener('robotDisconnected', disconnectedHandler);
+    };
+  }, []);
+
+  // Whenever the selected Id changes check for connection
+  useEffect(() => {
+    // Check to see if robot is connected
+    if (Object.keys(robots).find((id) => id == robotId)) {
+      setConnected(true);
+    } else {
+      setConnected(false);
+    }
+  }, [robotId, robots]);
+
+  // Build selectable options list
+  const robotOptions = useMemo(() => {
+    const robotsArray = Object.values(robots);
+    return robotsArray.map((robot) => {
+      return {
+        value: robot.id,
+        label: `Robot-${robot.id}`,
+      };
+    });
+  }, [robots]);
+
+  // define robot state
+  const value = {
+    robots,
+    robotStates,
+    robotOptions,
+    connected,
   };
 
-  // Robot controller
+  // Build robot controller
   const robotController = useMemo(() => {
-    return {
-      updateMotion,
-      play,
-    };
+    return {};
   }, []);
 
   return (
     <RobotControllerContext.Provider value={robotController}>
-      <RobotStateContext.Provider value={robotState}>{children}</RobotStateContext.Provider>
+      <RobotStateContext.Provider value={value}>{children}</RobotStateContext.Provider>
     </RobotControllerContext.Provider>
   );
 };

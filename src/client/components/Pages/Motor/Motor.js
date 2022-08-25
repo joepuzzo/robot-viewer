@@ -1,71 +1,33 @@
-import { useFormApi, useFormState } from 'informed';
+import { useFieldState, useFormApi, useFormState } from 'informed';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useApp from '../../../hooks/useApp';
 import InputSlider from '../../Informed/InputSlider';
 import Alert from '@spectrum-icons/workflow/Alert';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
+import useRobotState from '../../../hooks/useRobotState';
 
 export const Motor = () => {
-  const { socket, robots } = useApp();
+  const { socket } = useApp();
 
-  const { values } = useFormState();
   const formApi = useFormApi();
-
-  const [motorState, setMotorState] = useState({});
-
-  // For connection
-  const [connected, setConnected] = useState(false);
-  const connectedRef = useRef();
-  connectedRef.current = connected;
-
-  const { motorPos } = values;
 
   const controlRef = useRef();
 
-  useEffect(() => {
-    // Check to see if robot is connected
-    if (Object.keys(robots).find((id) => id == values.robotId)) {
-      setConnected(true);
-    } else {
-      setConnected(false);
-    }
-  }, [values.robotId]);
+  const { robotStates, connected } = useRobotState();
 
-  useEffect(() => {
-    const stateHandler = (robot) => {
-      const motorId = formApi.getValue('motorId');
-      const state = robot.motors[motorId];
-      setMotorState(state);
-    };
+  // Ref to use in functions for if robot is connected
+  const connectedRef = useRef();
+  connectedRef.current = connected;
 
-    const connectedHandler = (id) => {
-      console.log('Robot Connect', id);
-      if (id == formApi.getFormState().values.robotId) {
-        formApi.setError('robotId', undefined);
-        formApi.setError('motorId', undefined);
-        setConnected(true);
-      }
-    };
+  // Get value of robotId && motorId
+  const { value: robotId } = useFieldState('robotId');
+  const { value: motorId } = useFieldState('motorId');
 
-    const disconnectedHandler = (id) => {
-      console.log('Robot Disconnect', id);
-      if (id == formApi.getFormState().values.robotId) {
-        formApi.setError('robotId', 'Disconnected');
-        formApi.setError('motorId', 'Disconnected');
-        setConnected(false);
-      }
-    };
-
-    socket.on('robot', stateHandler);
-    socket.on('robotConnected', connectedHandler);
-    socket.on('robotDisconnected', disconnectedHandler);
-
-    return () => {
-      socket.removeListener('robot', stateHandler);
-      socket.removeListener('robotConnected', connectedHandler);
-      socket.removeListener('robotDisconnected', disconnectedHandler);
-    };
-  }, []);
+  // Get the selected motor state
+  const motorState =
+    robotStates[robotId] && robotStates[robotId]?.motors[motorId]
+      ? robotStates[robotId].motors[motorId]
+      : {};
 
   const motorSetPos = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');

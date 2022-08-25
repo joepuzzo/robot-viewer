@@ -1,10 +1,10 @@
 import React from 'react';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
-import useRobotController from '../../hooks/useRobotController';
-import useRobotState from '../../hooks/useRobotState';
+import useSimulateController from '../../hooks/useSimulateController';
 import NumberInput from '../Informed/NumberInput';
 import Select from '../Informed/Select';
 import { ArrayField, useArrayFieldState } from 'informed';
+import useSimulateState from '../../hooks/useSimulateState';
 
 const ArrayButtons = ({ index, add, remove }) => {
   const { fields } = useArrayFieldState();
@@ -39,8 +39,8 @@ const ArrayButtons = ({ index, add, remove }) => {
 };
 
 export const Waypoints = () => {
-  const { play } = useRobotController();
-  const { simulating } = useRobotState();
+  const { play } = useSimulateController();
+  const { simulating } = useSimulateState();
 
   const initialValue = [
     {

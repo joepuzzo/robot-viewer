@@ -2,7 +2,10 @@ import React from 'react';
 import { render } from 'react-dom';
 import App from './components/App/App.js';
 import AppProvider from './providers/AppProvider.js';
+import SimulateProvider from './providers/SimulateProvider.js';
 import RobotProvider from './providers/RobotProvider.js';
+import ControlProvider from './providers/ControlProvider.js';
+
 import { Informed } from 'informed';
 
 /* ---- Include global variables first ---- */
@@ -27,9 +30,13 @@ import './index.css';
 render(
   <AppProvider>
     <Informed>
-      <RobotProvider>
-        <App />
-      </RobotProvider>
+      <ControlProvider>
+        <RobotProvider>
+          <SimulateProvider>
+            <App />
+          </SimulateProvider>
+        </RobotProvider>
+      </ControlProvider>
     </Informed>
   </AppProvider>,
   document.getElementById('root')

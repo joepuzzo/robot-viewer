@@ -116,7 +116,7 @@ export class Controller {
 
   robotState(id, state) {
     logger(`controller robot state ${id}:`);
-    this.clientMessenger.send('robot', state);
+    this.clientMessenger.send('robot', id, state);
   }
 
   robotRegister(id, robot) {

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { OrbitControls } from '@react-three/drei';
-import useRobotController from '../../../hooks/useRobotController';
+import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
 import { Arm } from '../../3D/Arm';
@@ -139,7 +139,7 @@ export const Robot = () => {
 
   const { values } = useFormState();
   const formApi = useFormApi();
-  const robotController = useRobotController();
+  const simulateController = useSimulateController();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
@@ -172,7 +172,7 @@ export const Robot = () => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <Arm
-            robotController={robotController}
+            robotController={simulateController}
             config={config}
             values={values}
             formApi={formApi}

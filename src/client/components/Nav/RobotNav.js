@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Flex } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
@@ -7,13 +7,15 @@ import { ActionButton } from '@adobe/react-spectrum';
 
 import Switch from '../Informed/Switch';
 import InputSlider from '../Informed/InputSlider';
+import Select from '../Informed/Select';
 
 import { inverse } from '../../../lib/inverse';
 
 // Hooks
 import useApp from '../../hooks/useApp';
+import useRobotState from '../../hooks/useRobotState';
 
-import { useFormApi } from 'informed';
+import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../../lib/toRadians';
 import { toDeg } from '../../../lib/toDeg';
 import { Waypoints } from './Waypoints';
@@ -21,10 +23,16 @@ import { Waypoints } from './Waypoints';
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
 export const RobotNav = () => {
-  const { toggleColorScheme, extraOpen, toggleExtra, setConfig, config } = useApp();
+  // Get controls for nav and robot config
+  const { extraOpen, toggleExtra, setConfig, config } = useApp();
 
+  // Get robot state
+  const { robotOptions } = useRobotState();
+
+  // Grab ranges off of config
   const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5 } = config;
 
+  // Form api to manipulate form
   const formApi = useFormApi();
 
   const updateRobot = () => {
@@ -128,6 +136,13 @@ export const RobotNav = () => {
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
+            <Select
+              label="Robot"
+              name="robotId"
+              defaultValue="na"
+              aria-label="Robot"
+              options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
+            />
             <InputSlider
               name="x"
               onNativeChange={onValueChange('x')}

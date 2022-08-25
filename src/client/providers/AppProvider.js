@@ -10,7 +10,6 @@ const AppProvider = ({ children }) => {
   const [navOpen, setNavOpen] = useState(false);
   const [extraOpen, setExtraOpen] = useState(false);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
-  const [robots, setRobots] = useState({});
 
   const setBall = useRef();
 
@@ -96,18 +95,6 @@ const AppProvider = ({ children }) => {
     socketRef.current = socket;
   });
 
-  useEffect(() => {
-    const robotsHandler = (rbts) => {
-      setRobots(rbts);
-    };
-
-    socketRef.current.on('robots', robotsHandler);
-
-    return () => {
-      socketRef.current.removeListener('robots', robotsHandler);
-    };
-  }, []);
-
   const value = {
     colorScheme,
     setColorScheme,
@@ -122,7 +109,6 @@ const AppProvider = ({ children }) => {
     control,
     extraOpen,
     toggleExtra,
-    robots,
     socket: socketRef.current,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
