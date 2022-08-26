@@ -20,7 +20,7 @@ export const MotorNav = () => {
   // Build options for motor select
   const motorOptions = useMemo(() => {
     const selectedRobot = robots[robotId];
-    if (selectedRobot) {
+    if (selectedRobot && selectedRobot.motors) {
       return Object.values(selectedRobot.motors).map((motor) => {
         return {
           value: motor.id,

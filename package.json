@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "kinematics": "^1.0.2",
     "mathjs": "^10.6.4",
+    "react-spring": "^9.5.2",
     "request": "^2.88.2",
     "socket.io": "^4.5.1",
     "winston": "^3.3.3"

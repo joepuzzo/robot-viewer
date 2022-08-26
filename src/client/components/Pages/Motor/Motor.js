@@ -5,6 +5,7 @@ import InputSlider from '../../Informed/InputSlider';
 import Alert from '@spectrum-icons/workflow/Alert';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotState from '../../../hooks/useRobotState';
+// import { useSpring, animated } from 'react-spring';
 
 export const Motor = () => {
   const { socket } = useApp();
@@ -12,6 +13,16 @@ export const Motor = () => {
   const formApi = useFormApi();
 
   const controlRef = useRef();
+
+  const { value: motorPos } = useFieldState('motorPos');
+
+  // const { rotation: motorPos } = useSpring({
+  //   rotation: value,
+  //   config: {
+  //     clamp: true,
+  //     tension: 70,
+  //   },
+  // });
 
   const { robotStates, connected } = useRobotState();
 
@@ -38,7 +49,7 @@ export const Motor = () => {
     }
   }, []);
 
-  const motorResetErrors = useCallback(({ value }) => {
+  const motorResetErrors = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
@@ -47,7 +58,7 @@ export const Motor = () => {
     }
   }, []);
 
-  const motorEnable = useCallback(({ value }) => {
+  const motorEnable = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
@@ -56,7 +67,26 @@ export const Motor = () => {
     }
   }, []);
 
-  const motorHome = useCallback(({ value }) => {
+  const motorDisable = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('motorDisable', robotId, motorId);
+    }
+  }, []);
+
+  const motorZero = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('motorZero', robotId, motorId);
+      formApi.setValue('motorPos', 0);
+    }
+  }, []);
+
+  const motorHome = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
@@ -65,7 +95,7 @@ export const Motor = () => {
     }
   }, []);
 
-  const robotHome = useCallback(({ value }) => {
+  const robotHome = useCallback(() => {
     const robotId = formApi.getValue('robotId');
     // only send if we are connected and have selected motor
     if (connectedRef.current) {
@@ -82,7 +112,7 @@ export const Motor = () => {
       <InputSlider
         name="motorPos"
         label="Set Position"
-        onValueChange={motorSetPos}
+        onNativeChange={motorSetPos}
         type="number"
         minValue={-180}
         maxValue={180}
@@ -101,13 +131,16 @@ export const Motor = () => {
           <ActionButton width="size-2400" onPress={motorHome}>
             Home
           </ActionButton>
+          <ActionButton width="size-2400" onPress={motorZero}>
+            Zero Motor
+          </ActionButton>
           <ActionButton width="size-2400" onPress={robotHome}>
             Robot Home
           </ActionButton>
         </Flex>
         <Flex direction="column" alignItems="center" gap="size-100">
           <svg width="500" height="500">
-            <g transform={`rotate(${motorSetPos ?? 0} 250 250)`}>
+            <g transform={`rotate(${motorPos ?? 0} 250 250)`}>
               <circle
                 cx="250"
                 cy="250"
@@ -132,6 +165,9 @@ export const Motor = () => {
           </ActionButton>
           <ActionButton width="size-2400" onPress={motorEnable}>
             Enable Motor
+          </ActionButton>
+          <ActionButton width="size-2400" onPress={motorDisable}>
+            Disable Motor
           </ActionButton>
         </Flex>
       </Flex>

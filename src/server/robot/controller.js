@@ -62,6 +62,24 @@ export class Controller {
     }
   }
 
+  motorDisable(robotId, motorId) {
+    logger(`controller client says motorDisable`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'motorDisable', motorId);
+    }
+  }
+
+  motorZero(robotId, motorId) {
+    logger(`controller client says motorZero`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'motorZero', motorId);
+    }
+  }
+
   motorHome(robotId, motorId) {
     logger(`controller client says motorHome`, robotId, motorId);
     // only send if we are connected
@@ -87,6 +105,8 @@ export class Controller {
     this.clientMessenger.on('motorSetPos', (...args) => this.motorSetPos(...args));
     this.clientMessenger.on('motorResetErrors', (...args) => this.motorResetErrors(...args));
     this.clientMessenger.on('motorEnable', (...args) => this.motorEnable(...args));
+    this.clientMessenger.on('motorDisable', (...args) => this.motorDisable(...args));
+    this.clientMessenger.on('motorZero', (...args) => this.motorZero(...args));
     this.clientMessenger.on('motorHome', (...args) => this.motorHome(...args));
     this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));
   }
