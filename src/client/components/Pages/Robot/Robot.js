@@ -9,10 +9,8 @@ import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
 import Switch from '../../Informed/Switch';
 import RadioGroup from '../../Informed/RadioGroup';
-import { inverse } from '../../../../lib/inverse';
-import { toRadians } from '../../../../lib/toRadians';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
-import { toDeg } from '../../../../lib/toDeg';
+import useRobotController from '../../../hooks/useRobotController';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -36,51 +34,16 @@ const getZXZ = (orientation) => {
 const Control = () => {
   const { values } = useFormState();
   const formApi = useFormApi();
+  const { updateRobot } = useRobotController();
 
-  const updateRobot = () => {
-    const { base, v0, v1, v2, v3, v4, v5, goToX, goToY, goToZ, orientation } =
-      formApi.getFormState().values;
+  const robotUpdate = () => {
+    const { goToX, goToY, goToZ, orientation } = formApi.getFormState().values;
 
+    // get rotations from orientation
     const [r1, r2, r3] = getZXZ(orientation);
 
-    // We give in degrees so turn into rads
-    const ro1 = toRadians(r1);
-    const ro2 = toRadians(r2);
-    const ro3 = toRadians(r3);
-
-    const angles = inverse(goToX, goToY, goToZ, ro1, ro2, ro3, {
-      // a1: base + 0.5 + v0 + 1.5, // 4
-      // a2: v1 + 2, // 3
-      // a3: v2 + 1.5, // 2.5
-      // a4: v3 + 1.5, // 2.5
-      // a5: v4 + 1, // 2.5
-      // a6: v5 + 1.5, // 2.5
-      a1: base + v0,
-      a2: v1,
-      a3: v2,
-      a4: v3,
-      a5: v4,
-      a6: v5,
-    });
-
-    console.log('Setting angles to', angles);
-
-    if (!angles.find((a) => isNaN(a))) {
-      formApi.setTheseValues({
-        j0: toDeg(angles[0]),
-        j1: toDeg(angles[1]),
-        j2: toDeg(angles[2]),
-        j3: toDeg(angles[3]),
-        j4: toDeg(angles[4]),
-        j5: toDeg(angles[5]),
-        x: goToX,
-        y: goToY,
-        z: goToZ,
-        r1,
-        r2,
-        r3,
-      });
-    }
+    // Update the robot
+    updateRobot(goToX, goToY, goToZ, r1, r2, r3);
   };
 
   return (
@@ -110,7 +73,7 @@ const Control = () => {
           step={0.1}
           initialValue={9}
         />
-        <ActionButton title="Go" aria-label="Go" type="button" onPress={updateRobot} minWidth="100">
+        <ActionButton title="Go" aria-label="Go" type="button" onPress={robotUpdate} minWidth="100">
           Go
         </ActionButton>
         <Switch name="animate" label="Animate" initialValue />
@@ -140,6 +103,7 @@ export const Robot = () => {
   const { values } = useFormState();
   const formApi = useFormApi();
   const simulateController = useSimulateController();
+  const robotController = useRobotController();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
@@ -172,7 +136,8 @@ export const Robot = () => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <Arm
-            robotController={simulateController}
+            simulateController={simulateController}
+            robotController={robotController}
             config={config}
             values={values}
             formApi={formApi}

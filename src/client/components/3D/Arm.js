@@ -77,11 +77,15 @@ const Pos = ({
   formApi,
   toggleOrbital,
   animate,
+  robotController,
   ...props
 }) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
+
+  // Get robot control
+  const { updateRobot } = robotController;
 
   // For z control
   const spacePress = useKeyPress({ targetKeyCode: 32 });
@@ -104,52 +108,13 @@ const Pos = ({
 
   // control.setBall.current = setPosition;
 
-  const updateRobot = (x, y, z, r1, r2, r3) => {
-    const { base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
-
-    // We give in degrees so turn into rads
-    const ro1 = toRadians(r1);
-    const ro2 = toRadians(r2);
-    const ro3 = toRadians(r3);
-
-    const angles = inverse(x, y, z, ro1, ro2, ro3, {
-      // a1: base + 0.5 + v0 + 1.5, // 4
-      // a2: v1 + 2, // 3
-      // a3: v2 + 1.5, // 2.5
-      // a4: v3 + 1.5, // 2.5
-      // a5: v4 + 1, // 2.5
-      // a6: v5 + 1.5, // 2.5
-      a1: base + v0,
-      a2: v1,
-      a3: v2,
-      a4: v3,
-      a5: v4,
-      a6: v5,
-      x0,
-    });
-
-    console.log('Setting angles to', angles);
-
-    if (!angles.find((a) => isNaN(a))) {
-      formApi.setTheseValues({
-        j0: toDeg(angles[0]),
-        j1: toDeg(angles[1]),
-        j2: toDeg(angles[2]),
-        j3: toDeg(angles[3]),
-        j4: toDeg(angles[4]),
-        j5: toDeg(angles[5]),
-        x,
-        y,
-        z,
-        r1,
-        r2,
-        r3,
-      });
-    }
+  const robotUpdate = (x, y, z, r1, r2, r3) => {
+    // Update the robot
+    updateRobot(x, y, z, r1, r2, r3);
   };
 
   useEffect(() => {
-    updateRobot(...position);
+    robotUpdate(...position);
   }, [...position]);
 
   const handleKeyDown = useCallback(
@@ -435,10 +400,17 @@ const outside = (a, [l, h]) => {
   return deg < l || deg > h;
 };
 
-export function Arm({ robotController, config, values, formApi, toggleOrbital }) {
+export function Arm({
+  simulateController,
+  robotController,
+  config,
+  values,
+  formApi,
+  toggleOrbital,
+}) {
   const { jointGrid, mainGrid, gridSize, hide, linkColor, animate, hideNegatives } = values;
 
-  const { updateMotion } = robotController;
+  const { updateMotion } = simulateController;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -678,6 +650,7 @@ export function Arm({ robotController, config, values, formApi, toggleOrbital })
         animate={animate}
         formApi={formApi}
         toggleOrbital={toggleOrbital}
+        robotController={robotController}
       />
     </group>
   );

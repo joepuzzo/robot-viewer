@@ -2,9 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { SimulateControllerContext, SimulateStateContext } from '../context/SimulateContext';
 import { useInformed } from 'informed';
 import { useStateWithGetter } from '../hooks/useStateWithGetter';
-import { toRadians } from '../../lib/toRadians';
-import { toDeg } from '../../lib/toDeg';
-import { inverse } from '../../lib/inverse';
+import useRobotController from '../hooks/useRobotController';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -28,6 +26,9 @@ const getZXZ = (orientation) => {
 const SimulateProvider = ({ children }) => {
   // So we can access all of our form values!
   const informed = useInformed();
+
+  // Get robot control
+  const { updateRobot } = useRobotController();
 
   // Determines how many values are in motion
   const [movements, updateMovements] = useState(0);
@@ -78,12 +79,10 @@ const SimulateProvider = ({ children }) => {
     });
   }, []);
 
-  const updateRobot = (i) => {
+  const robotUpdate = (i) => {
     const formApi = informed.getController('robot')?.getFormApi();
 
-    console.log('FORM STATE', formApi.getFormState());
-
-    const { base, v0, v1, v2, v3, v4, v5, waypoints, x0 } = formApi.getFormState().values;
+    const { waypoints } = formApi.getFormState().values;
 
     // We only want to go if we have more waypoints
     if (waypoints && waypoints.length - 1 !== i) {
@@ -95,39 +94,8 @@ const SimulateProvider = ({ children }) => {
 
       console.log('Going to waypoint', i, 'pos', waypoints[i]);
 
-      // We give in degrees so turn into rads
-      const ro1 = toRadians(r1);
-      const ro2 = toRadians(r2);
-      const ro3 = toRadians(r3);
-
-      const angles = inverse(x, y, z, ro1, ro2, ro3, {
-        a1: base + v0,
-        a2: v1,
-        a3: v2,
-        a4: v3,
-        a5: v4,
-        a6: v5,
-        x0,
-      });
-
-      console.log('Waypoint Setting angles to', angles);
-
-      if (!angles.find((a) => isNaN(a))) {
-        formApi.setTheseValues({
-          j0: toDeg(angles[0]),
-          j1: toDeg(angles[1]),
-          j2: toDeg(angles[2]),
-          j3: toDeg(angles[3]),
-          j4: toDeg(angles[4]),
-          j5: toDeg(angles[5]),
-          x,
-          y,
-          z,
-          r1,
-          r2,
-          r3,
-        });
-      }
+      // Update the robot
+      updateRobot(x, y, z, r1, r2, r3);
 
       // Increase the step
       const current = getSimulating();
@@ -148,7 +116,7 @@ const SimulateProvider = ({ children }) => {
       if (current.play) {
         // Get next step in simulation
         console.log('Playing step', current.step);
-        updateRobot(current.step);
+        robotUpdate(current.step);
       }
     }
   }, [movements, simulating.play]);

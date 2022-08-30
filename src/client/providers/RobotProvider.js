@@ -1,8 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { RobotControllerContext, RobotStateContext } from '../context/RobotContext';
 import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
+import { toRadians } from '../../lib/toRadians';
+import { inverse } from '../../lib/inverse';
+import { toDeg } from '../../lib/toDeg';
 
 /**
  * Provide any application specific data
@@ -98,9 +101,53 @@ const RobotProvider = ({ children }) => {
     connected,
   };
 
+  // Update robot function
+  const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
+    // Get fixed values off of form state
+    const { base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
+
+    // We give in degrees so turn into rads
+    const ro1 = toRadians(r1);
+    const ro2 = toRadians(r2);
+    const ro3 = toRadians(r3);
+
+    console.log('Getting angles for', [x, y, z]);
+
+    const angles = inverse(x, y, z, ro1, ro2, ro3, {
+      a1: base + v0,
+      a2: v1,
+      a3: v2,
+      a4: v3,
+      a5: v4,
+      a6: v5,
+      x0,
+    });
+
+    console.log('Setting angles to', angles);
+
+    if (!angles.find((a) => isNaN(a))) {
+      formApi.setTheseValues({
+        j0: toDeg(angles[0]),
+        j1: toDeg(angles[1]),
+        j2: toDeg(angles[2]),
+        j3: toDeg(angles[3]),
+        j4: toDeg(angles[4]),
+        j5: toDeg(angles[5]),
+        x,
+        y,
+        z,
+        r1,
+        r2,
+        r3,
+      });
+    }
+  }, []);
+
   // Build robot controller
   const robotController = useMemo(() => {
-    return {};
+    return {
+      updateRobot,
+    };
   }, []);
 
   return (
