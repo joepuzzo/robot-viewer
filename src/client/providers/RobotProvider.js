@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RobotControllerContext, RobotStateContext } from '../context/RobotContext';
 import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
@@ -23,6 +23,10 @@ const RobotProvider = ({ children }) => {
 
   // For connection
   const [connected, setConnected] = useState(false);
+
+  // Ref to use in functions for if robot is connected
+  const connectedRef = useRef();
+  connectedRef.current = connected;
 
   // Get value of robotId
   const { value: robotId } = useFieldState('robotId');
@@ -126,6 +130,7 @@ const RobotProvider = ({ children }) => {
     console.log('Setting angles to', angles);
 
     if (!angles.find((a) => isNaN(a))) {
+      // Step1: Update the form
       formApi.setTheseValues({
         j0: toDeg(angles[0]),
         j1: toDeg(angles[1]),
@@ -140,6 +145,16 @@ const RobotProvider = ({ children }) => {
         r2,
         r3,
       });
+
+      // Step2: If we are connected to a robot send angles to that robot
+      if (connectedRef.current) {
+        const robotId = formApi.getValue('robotId');
+        socket.emit(
+          'robotSetAngles',
+          robotId,
+          angles.map((angle) => toDeg(angle))
+        );
+      }
     }
   }, []);
 

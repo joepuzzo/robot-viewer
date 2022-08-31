@@ -98,6 +98,15 @@ export class Controller {
     }
   }
 
+  robotSetAngles(robotId, angles) {
+    logger(`controller client says robotSetAngles`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotSetAngles', angles);
+    }
+  }
+
   subscribeToClientMessenger() {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
@@ -109,6 +118,7 @@ export class Controller {
     this.clientMessenger.on('motorZero', (...args) => this.motorZero(...args));
     this.clientMessenger.on('motorHome', (...args) => this.motorHome(...args));
     this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));
+    this.clientMessenger.on('robotSetAngles', (...args) => this.robotSetAngles(...args));
   }
 
   /* -------------- Robot Shit -------------- */
