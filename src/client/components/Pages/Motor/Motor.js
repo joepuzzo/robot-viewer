@@ -5,7 +5,24 @@ import InputSlider from '../../Informed/InputSlider';
 import Alert from '@spectrum-icons/workflow/Alert';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotState from '../../../hooks/useRobotState';
+import useRobotMeta from '../../../hooks/useRobotMeta';
+
 // import { useSpring, animated } from 'react-spring';
+
+const MotorState = ({ robotId, motorId }) => {
+  const { robotStates } = useRobotState();
+
+  // Get the selected motor state
+  const motorState =
+    robotStates[robotId] && robotStates[robotId]?.motors[motorId]
+      ? robotStates[robotId].motors[motorId]
+      : {};
+  return (
+    <div>
+      <pre>{JSON.stringify(motorState, null, 2)}</pre>
+    </div>
+  );
+};
 
 export const Motor = () => {
   const { socket } = useApp();
@@ -24,7 +41,9 @@ export const Motor = () => {
   //   },
   // });
 
-  const { robotStates, connected } = useRobotState();
+  const { connected } = useRobotMeta();
+
+  console.log('RENDER MOTOR PAGE');
 
   // Ref to use in functions for if robot is connected
   const connectedRef = useRef();
@@ -33,12 +52,6 @@ export const Motor = () => {
   // Get value of robotId && motorId
   const { value: robotId } = useFieldState('robotId');
   const { value: motorId } = useFieldState('motorId');
-
-  // Get the selected motor state
-  const motorState =
-    robotStates[robotId] && robotStates[robotId]?.motors[motorId]
-      ? robotStates[robotId].motors[motorId]
-      : {};
 
   const motorSetPos = useCallback(({ value }) => {
     const motorId = formApi.getValue('motorId');
@@ -171,9 +184,7 @@ export const Motor = () => {
           </ActionButton>
         </Flex>
       </Flex>
-      <div>
-        <pre>{JSON.stringify(motorState, null, 2)}</pre>
-      </div>
+      <MotorState robotId={robotId} motorId={motorId} />
     </>
   );
 };

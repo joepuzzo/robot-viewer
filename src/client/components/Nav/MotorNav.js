@@ -5,14 +5,16 @@ import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import useApp from '../../hooks/useApp';
 import Select from '../Informed/Select';
 import { Debug, useFieldState } from 'informed';
-import useRobotState from '../../hooks/useRobotState';
+import useRobotMeta from '../../hooks/useRobotMeta';
 
 export const MotorNav = () => {
+  console.log('RENDER MOTOR NAV');
+
   // Get controls for nav
   const { extraOpen, toggleExtra } = useApp();
 
   // Get robot state
-  const { robotOptions, robots } = useRobotState();
+  const { robotOptions, robots } = useRobotMeta();
 
   // Get value of robotId
   const { value: robotId } = useFieldState('robotId');

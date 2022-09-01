@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { RobotControllerContext, RobotStateContext } from '../context/RobotContext';
+import {
+  RobotControllerContext,
+  RobotStateContext,
+  RobotMetaContext,
+} from '../context/RobotContext';
 import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
@@ -105,6 +109,15 @@ const RobotProvider = ({ children }) => {
     connected,
   };
 
+  // define robot meta
+  const meta = useMemo(() => {
+    return {
+      robots,
+      robotOptions,
+      connected,
+    };
+  }, [robots, robotOptions, connected]);
+
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
     // Get fixed values off of form state
@@ -167,7 +180,9 @@ const RobotProvider = ({ children }) => {
 
   return (
     <RobotControllerContext.Provider value={robotController}>
-      <RobotStateContext.Provider value={value}>{children}</RobotStateContext.Provider>
+      <RobotMetaContext.Provider value={meta}>
+        <RobotStateContext.Provider value={value}>{children}</RobotStateContext.Provider>
+      </RobotMetaContext.Provider>
     </RobotControllerContext.Provider>
   );
 };

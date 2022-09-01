@@ -11,7 +11,7 @@ import Select from '../Informed/Select';
 
 // Hooks
 import useApp from '../../hooks/useApp';
-import useRobotState from '../../hooks/useRobotState';
+import useRobotMeta from '../../hooks/useRobotMeta';
 
 import { useFormApi } from 'informed';
 import { Waypoints } from './Waypoints';
@@ -27,7 +27,9 @@ export const RobotNav = () => {
   const { updateRobot } = useRobotController();
 
   // Get robot state
-  const { robotOptions } = useRobotState();
+  const { robotOptions } = useRobotMeta();
+
+  console.log('RENDER ROBOT NAV');
 
   // Grab ranges off of config
   const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5 } = config;
