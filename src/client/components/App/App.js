@@ -10,6 +10,7 @@ import useGet from '../../hooks/useGet';
 // Components
 import { Header } from '../Header/Header';
 import { Nav } from '../Nav/Nav';
+import { Data } from '../Data/Data';
 
 import { inverse } from '../../../lib/inverse';
 import { toRadians } from '../../../lib/toRadians';
@@ -40,6 +41,7 @@ const App = () => {
         <main className={extraOpen ? 'extra' : ''}>
           <Routes />
         </main>
+        <Data />
       </Provider>
     </Router>
   );

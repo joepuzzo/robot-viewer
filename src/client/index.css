@@ -5,7 +5,7 @@ main {
   /* min-height: 100vh; */
   flex-direction: column;
   margin-left: 280px;
-  margin-right: 180px;
+  margin-right: 280px;
   padding: 40px 52px 0;
   display: flex;
   align-items: center;
@@ -87,6 +87,42 @@ main.extra {
 
 .sidenav-controls {
   width: 230px;
+}
+
+/* ---------- Data ---------- */
+
+.databar {
+  width: 280px;
+  background: var(--spectrum-global-color-gray-200);
+  box-sizing: border-box;
+  padding: 0 24px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow-y: scroll;
+  display: block;
+  z-index: 100;
+  transition: width 0.2s;
+}
+
+@media (max-width: 1200px) {
+  .databar {
+    z-index: 100;
+    visibility: hidden;
+    outline: 0;
+    transition: transform 0.2s, visibility 0s 0.2s;
+    position: fixed;
+    inset: 0 100% 0 auto;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
+  .databar-visible {
+    visibility: unset;
+    transition-delay: 0s;
+    /* transform: translate(calc(100% - 280px)); */
+  }
 }
 
 /* ---------- Alert Pages ---------- */
