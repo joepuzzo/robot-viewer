@@ -149,6 +149,11 @@ export class Controller {
     this.clientMessenger.send('robot', id, state);
   }
 
+  robotEncoder(id, state) {
+    // Specifically dont log this because its a lot
+    this.clientMessenger.send('robot', id, state);
+  }
+
   robotRegister(id, robot) {
     logger(`controller robot register ${id}:`, robot);
 
@@ -167,6 +172,7 @@ export class Controller {
     this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
     this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
     this.robotMessenger.on('state', (...args) => this.robotState(...args));
+    this.robotMessenger.on('encoder', (...args) => this.robotEncoder(...args));
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
   }
 }
