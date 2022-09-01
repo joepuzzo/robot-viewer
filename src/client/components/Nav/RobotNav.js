@@ -1,7 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Flex } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
+import Home from '@spectrum-icons/workflow/Home';
+import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -21,13 +23,16 @@ const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, setConfig, config } = useApp();
+  const { extraOpen, toggleExtra, setConfig, config, socket } = useApp();
 
   // Get robot control
-  const { updateRobot } = useRobotController();
+  const { updateRobot, updateJoint } = useRobotController();
 
   // Get robot state
-  const { robotOptions } = useRobotMeta();
+  const { robotOptions, connected } = useRobotMeta();
+
+  const connectedRef = useRef();
+  connectedRef.current = connected;
 
   console.log('RENDER ROBOT NAV');
 
@@ -43,6 +48,18 @@ export const RobotNav = () => {
 
     // Update the robot
     updateRobot(x, y, z, r1, r2, r3);
+  };
+
+  const homeJoint = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current) {
+      socket.emit('motorHome', robotId, motorId);
+    }
+  }, []);
+
+  const centerJoint = (name) => {
+    updateJoint(name, 0);
   };
 
   const resetRobot = () => {
@@ -73,6 +90,12 @@ export const RobotNav = () => {
 
         return newConfig;
       });
+    };
+
+  const onJointChange =
+    (name) =>
+    ({ value }) => {
+      updateJoint(name, value);
     };
 
   return (
@@ -162,78 +185,133 @@ export const RobotNav = () => {
               maxValue={180}
               step={1}
             />
-            <InputSlider
-              name="j0"
-              label="J0"
-              type="number"
-              minValue={rangej0[0]}
-              maxValue={rangej0[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
-            <InputSlider
-              name="j1"
-              label="J1"
-              type="number"
-              minValue={rangej1[0]}
-              maxValue={rangej1[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
-            <InputSlider
-              name="j2"
-              label="J2"
-              type="number"
-              minValue={rangej2[0]}
-              maxValue={rangej2[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
-            <InputSlider
-              name="j3"
-              label="J3"
-              type="number"
-              minValue={rangej3[0]}
-              maxValue={rangej3[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
-            <InputSlider
-              name="j4"
-              label="J4"
-              type="number"
-              minValue={rangej4[0]}
-              maxValue={rangej4[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
-            <InputSlider
-              name="j5"
-              label="J5"
-              type="number"
-              minValue={rangej5[0]}
-              maxValue={rangej5[1]}
-              validateOn="change"
-              showErrorIfError
-              // minValue={-180}
-              // maxValue={180}
-              step={1}
-            />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j0"
+                label="J0"
+                type="number"
+                minValue={rangej0[0]}
+                maxValue={rangej0[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j0')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j0')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j0')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j1"
+                label="J1"
+                type="number"
+                minValue={rangej1[0]}
+                maxValue={rangej1[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j1')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j1')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j1')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j2"
+                label="J2"
+                type="number"
+                minValue={rangej2[0]}
+                maxValue={rangej2[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j2')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j2')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j2')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j3"
+                label="J3"
+                type="number"
+                minValue={rangej3[0]}
+                maxValue={rangej3[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j3')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j3')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j3')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j4"
+                label="J4"
+                type="number"
+                minValue={rangej4[0]}
+                maxValue={rangej4[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j4')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j4')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j4')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="j5"
+                label="J5"
+                type="number"
+                minValue={rangej5[0]}
+                maxValue={rangej5[1]}
+                validateOn="change"
+                showErrorIfError
+                onNativeChange={onJointChange('j5')}
+                // minValue={-180}
+                // maxValue={180}
+                step={1}
+              />
+              <ActionButton onPress={() => homeJoint('j5')}>
+                <Home.default />
+              </ActionButton>
+              <ActionButton onPress={() => centerJoint('j5')}>
+                <AlignCenter.default />
+              </ActionButton>
+            </Flex>
+
             <InputSlider
               name="base"
               label="Base"

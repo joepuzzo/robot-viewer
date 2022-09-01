@@ -20,32 +20,34 @@ const Input = (props) => {
   const { error, showError } = fieldState;
 
   return render(
-    <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
-      <NumberField
-        ref={ref}
-        validationState={!error ? null : 'invalid'}
-        // errorMessage={showError ? error : undefined}
-        isRequired={required}
-        {...userProps}
-        {...informed}
-        onChange={(v) => fieldApi.setValue(v, {})}
-        // type={props.type}
-        step={props.step}
-        type="number"
-      />
-      <Slider
-        maxWidth={120}
-        ref={ref}
-        validationState={!error ? null : 'invalid'}
-        errorMessage={showError ? error : undefined}
-        isRequired={required}
-        {...userProps}
-        {...informed}
-        trackGradient={['white', trackGradient ?? 'rgba(177,141,32,1)']}
-        label={' '}
-        onChange={(v) => fieldApi.setValue(v, {})}
-      />
-    </Flex>
+    <div className="input-slider">
+      <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
+        <NumberField
+          ref={ref}
+          validationState={!error ? null : 'invalid'}
+          // errorMessage={showError ? error : undefined}
+          isRequired={required}
+          {...userProps}
+          {...informed}
+          onChange={(v) => fieldApi.setValue(v, {})}
+          // type={props.type}
+          step={props.step}
+          type="number"
+        />
+        <Slider
+          maxWidth={120}
+          ref={ref}
+          validationState={!error ? null : 'invalid'}
+          errorMessage={showError ? error : undefined}
+          isRequired={required}
+          {...userProps}
+          {...informed}
+          trackGradient={['white', trackGradient ?? 'rgba(177,141,32,1)']}
+          label={' '}
+          onChange={(v) => fieldApi.setValue(v, {})}
+        />
+      </Flex>
+    </div>
   );
 };
 

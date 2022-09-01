@@ -4,7 +4,7 @@ main {
   box-sizing: border-box;
   /* min-height: 100vh; */
   flex-direction: column;
-  margin-left: 280px;
+  margin-left: 400px;
   margin-right: 280px;
   padding: 40px 52px 0;
   display: flex;
@@ -32,7 +32,7 @@ main.extra {
 /* ---------- Nav ---------- */
 
 .sidenav {
-  width: 280px;
+  width: 400px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;
@@ -47,7 +47,12 @@ main.extra {
 }
 
 .sidenav.extra {
-  width: 700px;
+  width: 820px;
+}
+
+.sidenav .input-slider {
+  width: 230px;
+  margin-right: 20px;
 }
 
 .spectrum-SideNav-item:hover {
@@ -86,7 +91,7 @@ main.extra {
 }
 
 .sidenav-controls {
-  width: 230px;
+  /* width: 230px; */
 }
 
 /* ---------- Data ---------- */

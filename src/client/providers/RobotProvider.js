@@ -119,6 +119,17 @@ const RobotProvider = ({ children }) => {
   }, [robots, robotOptions, connected]);
 
   // Update robot function
+  const updateJoint = useCallback((motorId, value) => {
+    console.log(`Setting joint ${motorId} to`, value);
+
+    // If we are connected to a robot send update to that robot
+    if (connectedRef.current) {
+      const robotId = formApi.getValue('robotId');
+      socket.emit('motorSetPos', robotId, motorId, value);
+    }
+  }, []);
+
+  // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
     // Get fixed values off of form state
     const { base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
@@ -174,6 +185,7 @@ const RobotProvider = ({ children }) => {
   // Build robot controller
   const robotController = useMemo(() => {
     return {
+      updateJoint,
       updateRobot,
     };
   }, []);

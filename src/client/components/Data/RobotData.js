@@ -29,8 +29,8 @@ const JointsData = () => {
 
   return (
     <Flex direction="column" justifyContent="space-between" alignItems="center" gap="size-100">
-      {motors.map((motor) => (
-        <JointData motor={motor} />
+      {motors.map((motor, i) => (
+        <JointData motor={motor} key={`motor-${i}`} />
       ))}
     </Flex>
   );
