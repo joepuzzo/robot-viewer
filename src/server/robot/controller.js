@@ -98,6 +98,24 @@ export class Controller {
     }
   }
 
+  robotStop(robotId) {
+    logger(`controller client says robotStop`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotStop');
+    }
+  }
+
+  robotEnable(robotId) {
+    logger(`controller client says robotEnable`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotEnable');
+    }
+  }
+
   robotSetAngles(robotId, angles) {
     logger(`controller client says robotSetAngles`, robotId);
     // only send if we are connected
@@ -118,6 +136,8 @@ export class Controller {
     this.clientMessenger.on('motorZero', (...args) => this.motorZero(...args));
     this.clientMessenger.on('motorHome', (...args) => this.motorHome(...args));
     this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));
+    this.clientMessenger.on('robotStop', (...args) => this.robotStop(...args));
+    this.clientMessenger.on('robotEnable', (...args) => this.robotEnable(...args));
     this.clientMessenger.on('robotSetAngles', (...args) => this.robotSetAngles(...args));
   }
 

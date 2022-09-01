@@ -198,3 +198,11 @@ canvas {
 .highlight {
   border-bottom: 2px solid #880808;
 }
+
+.icon-red svg {
+  fill: #d10e0e !important;
+}
+
+.icon-green svg {
+  fill: #36881a !important;
+}

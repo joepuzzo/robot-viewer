@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { Flex } from '@adobe/react-spectrum';
+import { Flex, StatusLight } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
+import StopCircle from '@spectrum-icons/workflow/StopCircle';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
+import LockOpen from '@spectrum-icons/workflow/LockOpen';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -15,7 +17,7 @@ import Select from '../Informed/Select';
 import useApp from '../../hooks/useApp';
 import useRobotMeta from '../../hooks/useRobotMeta';
 
-import { useFormApi } from 'informed';
+import { useFieldState, useFormApi } from 'informed';
 import { Waypoints } from './Waypoints';
 import useRobotController from '../../hooks/useRobotController';
 
@@ -28,11 +30,17 @@ export const RobotNav = () => {
   // Get robot control
   const { updateRobot, updateJoint } = useRobotController();
 
+  // Get the selected robot
+  const { value: selectedRobot } = useFieldState('robotId');
+
   // Get robot state
-  const { robotOptions, connected } = useRobotMeta();
+  const { robotOptions, connected, robots } = useRobotMeta();
 
   const connectedRef = useRef();
   connectedRef.current = connected;
+
+  // Get selected robot meta
+  const selectedRobotMeta = robots && robots[selectedRobot];
 
   console.log('RENDER ROBOT NAV');
 
@@ -52,7 +60,7 @@ export const RobotNav = () => {
 
   const homeJoint = useCallback((motorId) => {
     const robotId = formApi.getValue('robotId');
-    // only send if we are connected and have selected motor
+    // only send if we are connected
     if (connectedRef.current) {
       socket.emit('motorHome', robotId, motorId);
     }
@@ -60,6 +68,30 @@ export const RobotNav = () => {
 
   const centerJoint = (name) => {
     updateJoint(name, 0);
+  };
+
+  const stop = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotStop', robotId);
+    }
+  };
+
+  const enable = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotEnable', robotId);
+    }
+  };
+
+  const home = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotHome', robotId);
+    }
   };
 
   const resetRobot = () => {
@@ -98,6 +130,8 @@ export const RobotNav = () => {
       updateJoint(name, value);
     };
 
+  const disabled = !connected;
+
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
@@ -112,6 +146,17 @@ export const RobotNav = () => {
         <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh.default />
         </ActionButton>
+        <ActionButton title="Enable" onPress={() => home()} isDisabled={disabled}>
+          <Home.default />
+        </ActionButton>
+        <ActionButton title="Enable" onPress={() => enable()} isDisabled={disabled}>
+          <LockOpen.default />
+        </ActionButton>
+        <div className="icon-red">
+          <ActionButton title="Stop" onPress={() => stop()} isDisabled={disabled}>
+            <StopCircle.default />
+          </ActionButton>
+        </div>
         <ActionButton
           title="Open Waypoints"
           aria-label="Open Waypoints"
@@ -123,6 +168,26 @@ export const RobotNav = () => {
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
+            <Flex direction="row" alignItems="center" gap="size-100">
+              {connected && !selectedRobotMeta?.stopped ? (
+                <StatusLight variant="positive">Enabled</StatusLight>
+              ) : null}
+              {connected && selectedRobotMeta?.stopped ? (
+                <StatusLight variant="negative">Disabled</StatusLight>
+              ) : null}
+              {connected && !selectedRobotMeta?.home ? (
+                <StatusLight variant="negative">Home</StatusLight>
+              ) : null}
+              {connected && selectedRobotMeta?.home ? (
+                <StatusLight variant="positive">Home</StatusLight>
+              ) : null}
+              {connected && !selectedRobotMeta?.homing ? (
+                <StatusLight variant="negative">Homing</StatusLight>
+              ) : null}
+              {connected && selectedRobotMeta?.homing ? (
+                <StatusLight variant="positive">Homing</StatusLight>
+              ) : null}
+            </Flex>
             <Select
               label="Robot"
               name="robotId"

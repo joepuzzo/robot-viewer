@@ -32,7 +32,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@adobe/react-spectrum": "^3.19.0",
+    "@adobe/react-spectrum": "^3.21.1",
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@react-spring/three": "^9.5.2",
     "@react-three/drei": "^9.17.1",
@@ -41,7 +41,7 @@
     "@spectrum-css/sidenav": "^3.0.24",
     "@spectrum-css/typography": "^4.0.20",
     "@spectrum-css/vars": "^8.0.0",
-    "@spectrum-icons/workflow": "^3.2.5",
+    "@spectrum-icons/workflow": "^4.0.2",
     "@svgr/webpack": "^5.4.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.5",

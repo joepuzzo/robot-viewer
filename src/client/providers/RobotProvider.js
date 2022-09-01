@@ -111,6 +111,7 @@ const RobotProvider = ({ children }) => {
 
   // define robot meta
   const meta = useMemo(() => {
+    console.log('ROBOTS', robots);
     return {
       robots,
       robotOptions,
