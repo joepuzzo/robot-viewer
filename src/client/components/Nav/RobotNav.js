@@ -133,7 +133,7 @@ export const RobotNav = () => {
     (name) =>
     ({ value }) => {
       updateJoint(name, value);
-      // updateForward();
+      updateForward();
     };
 
   const disabled = !connected;

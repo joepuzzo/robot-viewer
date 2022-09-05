@@ -12,6 +12,7 @@ import { toRadians } from '../../lib/toRadians';
 import { inverse } from '../../lib/inverse';
 import { toDeg } from '../../lib/toDeg';
 import { forward } from '../../lib/forward';
+import { debounce } from '../utils/debounce';
 
 /**
  * Provide any application specific data
@@ -167,6 +168,10 @@ const RobotProvider = ({ children }) => {
     setEndPosition({ x, y, z });
   };
 
+  const debouncedUpdateForward = useMemo(() => {
+    return debounce(updateForward);
+  }, []);
+
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
     // Get fixed values off of form state
@@ -219,7 +224,7 @@ const RobotProvider = ({ children }) => {
       }
 
       // Update forward kinematics
-      // updateForward();
+      debouncedUpdateForward();
     }
   }, []);
 
@@ -233,7 +238,7 @@ const RobotProvider = ({ children }) => {
 
   const kinimatics = {
     endPosition,
-    updateForward,
+    updateForward: debouncedUpdateForward,
   };
 
   return (
