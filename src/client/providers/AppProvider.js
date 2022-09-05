@@ -64,7 +64,7 @@ const AppProvider = ({ children }) => {
     rangej3: [-180, 180],
     rangej4: [-90, 90],
     rangej5: [-180, 180],
-    // Below is for AR
+    // Below is for AR -------------------------
     // base: 1.5,
     // x0: 0.642,
     // v0: 1.6977 * SCALE,
