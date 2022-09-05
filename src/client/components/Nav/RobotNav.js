@@ -20,6 +20,7 @@ import useRobotMeta from '../../hooks/useRobotMeta';
 import { useFieldState, useFormApi } from 'informed';
 import { Waypoints } from './Waypoints';
 import useRobotController from '../../hooks/useRobotController';
+import useRobotKinematics from '../../hooks/useRobotKinematics';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -29,6 +30,10 @@ export const RobotNav = () => {
 
   // Get robot control
   const { updateRobot, updateJoint } = useRobotController();
+
+  // Get Kinimatics
+
+  const { updateForward } = useRobotKinematics();
 
   // Get the selected robot
   const { value: selectedRobot } = useFieldState('robotId');
@@ -128,6 +133,7 @@ export const RobotNav = () => {
     (name) =>
     ({ value }) => {
       updateJoint(name, value);
+      // updateForward();
     };
 
   const disabled = !connected;
@@ -382,7 +388,7 @@ export const RobotNav = () => {
               label="Base"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="black"
             />
@@ -391,7 +397,7 @@ export const RobotNav = () => {
               label="X0"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="black"
             />
@@ -400,7 +406,7 @@ export const RobotNav = () => {
               label="V0"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="red"
             />
@@ -409,7 +415,7 @@ export const RobotNav = () => {
               label="V1"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="green"
             />
@@ -418,7 +424,7 @@ export const RobotNav = () => {
               label="V2"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="blue"
             />
@@ -427,7 +433,7 @@ export const RobotNav = () => {
               label="V3"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="orange"
             />
@@ -436,11 +442,18 @@ export const RobotNav = () => {
               label="V4"
               type="number"
               minValue={0}
-              maxValue={5}
+              maxValue={10}
               step={0.01}
               trackGradient="purple"
             />
-            <InputSlider name="v5" label="V5" type="number" minValue={0} maxValue={5} step={0.01} />
+            <InputSlider
+              name="v5"
+              label="V5"
+              type="number"
+              minValue={0}
+              maxValue={10}
+              step={0.01}
+            />
             <InputSlider
               name="gridSize"
               initialValue={10}

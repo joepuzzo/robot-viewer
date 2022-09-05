@@ -3,6 +3,7 @@ import {
   RobotControllerContext,
   RobotStateContext,
   RobotMetaContext,
+  RobotKinimaticsContext,
 } from '../context/RobotContext';
 import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
@@ -10,6 +11,7 @@ import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../lib/toRadians';
 import { inverse } from '../../lib/inverse';
 import { toDeg } from '../../lib/toDeg';
+import { forward } from '../../lib/forward';
 
 /**
  * Provide any application specific data
@@ -31,6 +33,9 @@ const RobotProvider = ({ children }) => {
   // Ref to use in functions for if robot is connected
   const connectedRef = useRef();
   connectedRef.current = connected;
+
+  // For forward kinimatics
+  const [endPosition, setEndPosition] = useState({ x: 0, y: 0, z: 0 });
 
   // Get value of robotId
   const { value: robotId } = useFieldState('robotId');
@@ -130,6 +135,38 @@ const RobotProvider = ({ children }) => {
     }
   }, []);
 
+  // Update forward
+  const updateForward = () => {
+    const { j0, j1, j2, j3, j4, j5, base, v0, v1, v2, v3, v4, v5, x0 } =
+      formApi.getFormState().values;
+
+    const robotConfig = {
+      a1: base + v0,
+      a2: v1,
+      a3: v2,
+      a4: v3,
+      a5: v4,
+      a6: v5,
+      x0,
+    };
+
+    const res = forward(
+      toRadians(j0),
+      toRadians(j1),
+      toRadians(j2),
+      toRadians(j3),
+      toRadians(j4),
+      toRadians(j5),
+      robotConfig
+    );
+
+    const x = res[0][3];
+    const y = res[1][3];
+    const z = res[2][3];
+
+    setEndPosition({ x, y, z });
+  };
+
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
     // Get fixed values off of form state
@@ -180,6 +217,9 @@ const RobotProvider = ({ children }) => {
           angles.map((angle) => toDeg(angle))
         );
       }
+
+      // Update forward kinematics
+      // updateForward();
     }
   }, []);
 
@@ -191,10 +231,17 @@ const RobotProvider = ({ children }) => {
     };
   }, []);
 
+  const kinimatics = {
+    endPosition,
+    updateForward,
+  };
+
   return (
     <RobotControllerContext.Provider value={robotController}>
       <RobotMetaContext.Provider value={meta}>
-        <RobotStateContext.Provider value={value}>{children}</RobotStateContext.Provider>
+        <RobotKinimaticsContext.Provider value={kinimatics}>
+          <RobotStateContext.Provider value={value}>{children}</RobotStateContext.Provider>
+        </RobotKinimaticsContext.Provider>
       </RobotMetaContext.Provider>
     </RobotControllerContext.Provider>
   );

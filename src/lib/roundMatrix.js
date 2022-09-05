@@ -1,4 +1,4 @@
-import { round as defaultRound } from './round';
+import { round as defaultRound } from './round.js';
 
 export const roundMatrix = (m, round = defaultRound) => {
   const rounded = m.map((row) => row.map((col) => round(col)));

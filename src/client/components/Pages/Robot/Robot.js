@@ -11,6 +11,7 @@ import Switch from '../../Informed/Switch';
 import RadioGroup from '../../Informed/RadioGroup';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotController from '../../../hooks/useRobotController';
+import useRobotKinematics from '../../../hooks/useRobotKinematics';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -104,6 +105,7 @@ export const Robot = () => {
   const formApi = useFormApi();
   const simulateController = useSimulateController();
   const robotController = useRobotController();
+  const { endPosition } = useRobotKinematics();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
@@ -118,6 +120,10 @@ export const Robot = () => {
           null,
           2
         )}
+      </h3>
+      <h3>
+        Location: X: {round(endPosition.x, 100)} Y: {round(endPosition.y, 100)} Z:{' '}
+        {round(endPosition.z, 100)}
       </h3>
       {/* <h4>Movements: {robot.movements}</h4> */}
       <Control />

@@ -18,6 +18,8 @@ const AppProvider = ({ children }) => {
     setBall,
   };
 
+  const SCALE = 2;
+
   const [config, setConfig] = useState({
     base: 1.5,
     x0: 0,
@@ -62,6 +64,22 @@ const AppProvider = ({ children }) => {
     rangej3: [-180, 180],
     rangej4: [-90, 90],
     rangej5: [-180, 180],
+    // Below is for AR
+    // base: 1.5,
+    // x0: 0.642,
+    // v0: 1.6977 * SCALE,
+    // v1: 3.05 * SCALE,
+    // v2: 0.3625 * SCALE,
+    // v3: 2.2263 * SCALE,
+    // v4: 0.3625 * SCALE,
+    // v5: 2,
+    // // Show off direection
+    // x: 7,
+    // y: -1,
+    // z: 9.5,
+    // r1: -90,
+    // r2: -90,
+    // r3: 0,
   });
 
   const toggleColorScheme = () => {

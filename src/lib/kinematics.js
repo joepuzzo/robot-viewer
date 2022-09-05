@@ -18,6 +18,7 @@
 // tan(t)	= opposite / adjacent
 
 import { inv, dot, matrix } from 'mathjs';
+import { cleanAndRoundMatrix } from './roundMatrix.js';
 
 const toRadians = (deg) => {
   return (deg / 180) * Math.PI;
@@ -1104,11 +1105,11 @@ const inverse1_3 = (x, y, z, robotConfig) => {
   const p3 = computeP3(a2, a3, r3);
   console.log('p3', p3);
 
-  const t1 = computeT1(x, y);
-  const t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
-  const t3 = -computeT3(p3); // Needed to negate to match main x, y frame
+  const t1_res = computeT1(x, y);
+  const t2_res = -computeT2(p1, p2); // Needed to negate to match main x, y frame
+  const t3_res = -computeT3(p3); // Needed to negate to match main x, y frame
 
-  return [t1, t2, t3];
+  return [t1_res, t2_res, t3_res];
 };
 
 const result = inverse1_3(2, 0, 1, config);
@@ -1130,8 +1131,18 @@ const PT_3_6 = [
   ['t6', '0', '0', 'v4 + v5'],
 ];
 
+const PT_0_6 = [
+  ['t1', 'd90', '0', 'v0'],
+  ['t2 + d90', '0', 'v1', '0'],
+  ['t3 - d90', '-d90', '0', '0'],
+  ['t4', 'd90', '0', 'v2 + v3'],
+  ['t5', '-d90', '0', '0'],
+  ['t6', '0', '0', 'v4 + v5'],
+];
+
 const stringRes1 = buildHomogeneousDenavitStringForTable(PT_0_3);
 const stringRes2 = buildHomogeneousDenavitStringForTable(PT_3_6);
+const stringRes3 = buildHomogeneousDenavitStringForTable(PT_0_6);
 
 console.log('R0_1_String --------------------------------------------------');
 printMatrix(stringRes1.rotationalMatricies[0]);
@@ -1150,6 +1161,26 @@ console.log('R5_6_String  --------------------------------------------------');
 printMatrix(stringRes2.rotationalMatricies[2]);
 console.log('R3_6_String  --------------------------------------------------');
 printMatrixJS(stringRes2.endRotation, 'r3_6');
+
+console.log('H0_6_String  --------------------------------------------------');
+printMatrixJS(stringRes3.endHomogeneous, 'h0_6');
+
+console.log('H0_6 --------------------------------------------------');
+printMatrix(H0_6);
+
+console.log('H0_6 ( From String ) --------------------------------------------------');
+
+// prettier-ignore
+const h0_6 = [
+  [Math.cos(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + -Math.sin(t1) * Math.sin(t4) * Math.cos(t5) + Math.cos(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * Math.cos(t6) + -Math.cos(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) + -Math.sin(t1) * -Math.cos(t4) * Math.sin(t6),Math.cos(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + -Math.sin(t1) * Math.sin(t4) * Math.cos(t5) + Math.cos(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * -Math.sin(t6) + -Math.cos(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) + -Math.sin(t1) * -Math.cos(t4) * Math.cos(t6),Math.cos(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + -Math.sin(t1) * Math.sin(t4) * -Math.sin(t5) + Math.cos(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.cos(t5),Math.cos(t1) * v1 * Math.cos(t2 + d90)],
+  [Math.sin(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + Math.cos(t1) * Math.sin(t4) * Math.cos(t5) + Math.sin(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * Math.cos(t6) + -Math.sin(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) + Math.cos(t1) * -Math.cos(t4) * Math.sin(t6),Math.sin(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + Math.cos(t1) * Math.sin(t4) * Math.cos(t5) + Math.sin(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * -Math.sin(t6) + -Math.sin(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) + Math.cos(t1) * -Math.cos(t4) * Math.cos(t6),Math.sin(t1) * Math.cos(t2 + d90) * Math.cos(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) + Math.cos(t1) * Math.sin(t4) * -Math.sin(t5) + Math.sin(t1) * Math.cos(t2 + d90) * -Math.sin(t3 - d90) + Math.sin(t1) * -Math.sin(t2 + d90) * Math.cos(t3 - d90) * Math.cos(t5),Math.sin(t1) * v1 * Math.cos(t2 + d90)],
+  [Math.sin(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) * Math.cos(t5) + Math.sin(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * Math.cos(t6) + -Math.sin(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) * Math.sin(t6),Math.sin(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) * Math.cos(t5) + Math.sin(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t2 + d90) * Math.cos(t3 - d90) * Math.sin(t5) * -Math.sin(t6) + -Math.sin(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t2 + d90) * Math.sin(t3 - d90) * Math.sin(t4) * Math.cos(t6),Math.sin(t2 + d90) * Math.cos(t3 - d90) + Math.cos(t2 + d90) * Math.sin(t3 - d90) * Math.cos(t4) * -Math.sin(t5) + Math.sin(t2 + d90) * -Math.sin(t3 - d90) + Math.cos(t2 + d90) * Math.cos(t3 - d90) * Math.cos(t5),v0],
+  [0,0,0,1],
+];
+
+printMatrix(cleanAndRoundMatrix(h0_6));
+
+// Plug in numbers
 
 // Below are ths strings we derrived manually ( NOT USING THE hart method )
 // These should match the things above!
