@@ -259,7 +259,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j0"
-                label="J0"
+                label="J1"
                 type="number"
                 minValue={rangej0[0]}
                 maxValue={rangej0[1]}
@@ -280,7 +280,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j1"
-                label="J1"
+                label="J2"
                 type="number"
                 minValue={rangej1[0]}
                 maxValue={rangej1[1]}
@@ -301,7 +301,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j2"
-                label="J2"
+                label="J3"
                 type="number"
                 minValue={rangej2[0]}
                 maxValue={rangej2[1]}
@@ -322,7 +322,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j3"
-                label="J3"
+                label="J4"
                 type="number"
                 minValue={rangej3[0]}
                 maxValue={rangej3[1]}
@@ -343,7 +343,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j4"
-                label="J4"
+                label="J5"
                 type="number"
                 minValue={rangej4[0]}
                 maxValue={rangej4[1]}
@@ -364,7 +364,7 @@ export const RobotNav = () => {
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j5"
-                label="J5"
+                label="J6"
                 type="number"
                 minValue={rangej5[0]}
                 maxValue={rangej5[1]}

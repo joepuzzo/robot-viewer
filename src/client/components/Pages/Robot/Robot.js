@@ -122,8 +122,8 @@ export const Robot = () => {
         )}
       </h3>
       <h3>
-        Location: X: {round(endPosition.x, 100)} Y: {round(endPosition.y, 100)} Z:{' '}
-        {round(endPosition.z, 100)}
+        Location: X: {round(endPosition.x, 10000)} Y: {round(endPosition.y, 10000)} Z:{' '}
+        {round(endPosition.z, 10000)}
       </h3>
       {/* <h4>Movements: {robot.movements}</h4> */}
       <Control />
