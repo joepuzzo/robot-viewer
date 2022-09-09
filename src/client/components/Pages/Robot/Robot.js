@@ -16,7 +16,7 @@ import useRobotKinematics from '../../../hooks/useRobotKinematics';
 const getZXZ = (orientation) => {
   switch (orientation) {
     case 'x':
-      return [-90, -90, 0];
+      return [90, 90, 90];
     case '-x':
       return [-270, -90, 0];
     case 'y':
@@ -125,6 +125,9 @@ export const Robot = () => {
         Location: X: {round(endPosition.x, 10000)} Y: {round(endPosition.y, 10000)} Z:{' '}
         {round(endPosition.z, 10000)}
       </h3>
+      {/* <pre>{JSON.stringify(endPosition.matrix[0])}</pre>
+      <pre>{JSON.stringify(endPosition.matrix[1])}</pre>
+      <pre>{JSON.stringify(endPosition.matrix[2])}</pre> */}
       {/* <h4>Movements: {robot.movements}</h4> */}
       <Control />
       <Canvas

@@ -38,7 +38,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   // ];
 
   // Get lengths of all verticies between joints
-  const { a1, a2, a3, a4, a5, a6, x0 = 0 } = robotConfig;
+  const { a1, a2, a3, a4, a5, a6, x0 = 0, flip } = robotConfig;
 
   // ----------------------------------------------------------------------------------
   // Step1 find the x0_3, y0_3 and Z0_3 based on end effector
@@ -232,7 +232,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   logger('---------------------- CALC THETA 5 ------------------------------');
   // let angle5 = Math.acos(r3_6[2][2]); // OLD
 
-  const angle5 = -Math.atan2(Math.sqrt(Math.pow(c, 2) + Math.pow(f, 2)), i);
+  let angle5 = -Math.atan2(Math.sqrt(Math.pow(c, 2) + Math.pow(f, 2)), i);
 
   logger('angle5', angle5);
 
@@ -248,7 +248,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   logger('---------------------- CALC THETA 6 ------------------------------');
   // let angle6 = Math.sin(angle5) === 0 ? 0 : Math.acos(roundOne(r3_6[2][0] / -Math.sin(angle5))); // OLD
 
-  const angle6 = Math.atan2(-h, g);
+  let angle6 = Math.atan2(-h, g);
 
   logger('angle6', angle6);
 
@@ -274,5 +274,47 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
 
   // Return angles removing negative zeros
   logger('Angles', [angle1, angle2, angle3, angle4, angle5, angle6]);
+
+  /**
+   * Ok so the following code is very wierd but it makes the angles that the kinimatics created much cleaner
+   *
+   * Basically depending on how big the angle is we flip it or take recipricals resulting in same location but again...
+   * better angles
+   *
+   * Example:
+   * Given: Angles  a4 = -158 a5 = -22 a6 = 158
+   * Result: Angles a4 = 22   a5 = 22  a6 = -22
+   */
+
+  if (flip) {
+    // 180 - 157 = 23
+    const diff4 = Math.PI - Math.abs(angle4);
+    const diff6 = Math.PI - Math.abs(angle6);
+
+    // Flip reciprical of 4 and 6 && flip 5
+    if (Math.abs(angle4) > Math.PI / 4 && Math.abs(angle6) > Math.PI / 4) {
+      // console.log('HERE1', angle4, angle5, angle6);
+      if (angle4 != 0) {
+        angle4 = angle4 < 0 ? diff4 : -diff4;
+      }
+      angle5 = angle5 * -1;
+      if (angle6 != 0 && round(angle4, 10000) != 0) angle6 = angle6 < 0 ? diff6 : -diff6;
+    } else if (Math.abs(angle4) > Math.PI / 2 && angle4 != 0) {
+      // console.log('HERE2', angle4, angle5, angle6);
+      // Sometimes we just need to flip 4 and 5
+      angle5 = angle5 * -1;
+      angle4 = angle4 < 0 ? diff4 : -diff4;
+    }
+    if (angle4 === Math.PI) {
+      // console.log('HERE3', angle4, angle5, angle6);
+      angle4 = 0;
+      angle5 = angle5 * -1;
+    }
+    if (Math.abs(angle6) === Math.PI) {
+      // console.log('HERE4', angle4, angle5, angle6);
+      angle6 = 0;
+    }
+  }
+
   return [angle1, angle2, angle3, angle4, angle5, angle6].map((a) => (Object.is(a, -0) ? 0 : a));
 };

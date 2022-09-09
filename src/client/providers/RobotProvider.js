@@ -19,7 +19,7 @@ import { debounce } from '../utils/debounce';
  */
 const RobotProvider = ({ children }) => {
   // Get socket
-  const { socket } = useApp();
+  const { socket, config } = useApp();
 
   // Get access to the form api to control form
   const formApi = useFormApi();
@@ -192,6 +192,7 @@ const RobotProvider = ({ children }) => {
       a5: v4,
       a6: v5,
       x0,
+      flip: config.flip,
     });
 
     console.log('Setting angles to', angles);

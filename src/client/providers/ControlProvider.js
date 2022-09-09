@@ -25,6 +25,7 @@ const ControlProvider = ({ children }) => {
       a4: config.v3,
       a5: config.v4,
       a6: config.v5,
+      flip: config.flip,
     });
 
     return {
