@@ -292,7 +292,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
     const diff6 = Math.PI - Math.abs(angle6);
 
     // Flip reciprical of 4 and 6 && flip 5
-    if (Math.abs(angle4) > Math.PI / 4 && Math.abs(angle6) > Math.PI / 4) {
+    if (Math.abs(angle4) > Math.PI / 2 && Math.abs(angle6) > Math.PI / 2) {
       // console.log('HERE1', angle4, angle5, angle6);
       if (angle4 != 0) {
         angle4 = angle4 < 0 ? diff4 : -diff4;

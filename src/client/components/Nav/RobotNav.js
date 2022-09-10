@@ -206,8 +206,8 @@ export const RobotNav = () => {
               onNativeChange={onValueChange('x')}
               label="X"
               type="number"
-              minValue={-10}
-              maxValue={10}
+              minValue={-20}
+              maxValue={20}
               step={0.1}
               // hideStepper
             />
@@ -216,8 +216,8 @@ export const RobotNav = () => {
               onNativeChange={onValueChange('y')}
               label="Y"
               type="number"
-              minValue={-10}
-              maxValue={10}
+              minValue={-20}
+              maxValue={20}
               step={0.1}
             />
             <InputSlider
@@ -225,8 +225,8 @@ export const RobotNav = () => {
               onNativeChange={onValueChange('z')}
               label="Z"
               type="number"
-              minValue={-16.5}
-              maxValue={16.5}
+              minValue={-18}
+              maxValue={18}
               step={0.1}
             />
             <InputSlider

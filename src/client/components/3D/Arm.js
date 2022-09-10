@@ -213,15 +213,24 @@ const Tool = ({
   toggleOrbital,
   position,
   rotation,
+  actual,
+  lineOffset1,
+  lineOffset2,
   ...props
 }) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
+  const lineColor = 'pink';
+
   const ref = useRef();
 
   // ...bind()
+
+  let cylinderArgs = [...args];
+  cylinderArgs[2] = cylinderArgs[2] / 2;
+
   return (
     <group ref={ref} {...props} position={position}>
       <mesh
@@ -229,10 +238,19 @@ const Tool = ({
         onPointerOver={(event) => setHover(true)}
         onPointerOut={(event) => setHover(false)}
       >
-        <cylinderGeometry args={args} />
+        <cylinderGeometry args={cylinderArgs} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
       {grid ? <Grid size={1} /> : null}
+      <Line
+        rotation={rotation}
+        points={[
+          [0, actual / 2 + lineOffset1, 0],
+          [0, -actual / 2 + lineOffset2, 0],
+        ]}
+        color={lineColor}
+        lineWidth={1}
+      />
     </group>
   );
 };
@@ -427,6 +445,7 @@ export function Arm({
   const v2 = values.v2 - 1.5;
   const v3 = values.v3 - 1.5;
   const v4 = values.v4 - 1.5;
+  const v5 = values.v5;
 
   const [selected, setSelected] = useState();
 
@@ -625,9 +644,12 @@ export function Arm({
                                 rotation={[Math.PI * 0.5, 0, 0]}
                                 setSelected={setSelected}
                                 selected={selected}
-                                args={[0.5, 0.5, 1, 32]}
+                                args={[0.5, 0.5, v5, 32]}
                                 position={[0, 0, 1]}
                                 grid
+                                actual={values.v5}
+                                lineOffset1={0}
+                                lineOffset2={0}
                               />
                             </Component>
                           </Component>

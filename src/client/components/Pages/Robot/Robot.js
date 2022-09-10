@@ -60,7 +60,7 @@ const Control = () => {
           name="goToX"
           label={`X: ${round(values.x, 100)}`}
           step={0.1}
-          initialValue={6}
+          initialValue={8}
         />
         <NumberInput
           name="goToY"
