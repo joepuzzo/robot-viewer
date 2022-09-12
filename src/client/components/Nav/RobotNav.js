@@ -50,7 +50,7 @@ export const RobotNav = () => {
   console.log('RENDER ROBOT NAV');
 
   // Grab ranges off of config
-  const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5 } = config;
+  const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5, units } = config;
 
   // Form api to manipulate form
   const formApi = useFormApi();
@@ -104,7 +104,7 @@ export const RobotNav = () => {
     formApi.setTheseValues({
       x: 0,
       y: 0,
-      z: 16.5,
+      z: 165,
       r1: 0,
       r2: 0,
       r3: 0,
@@ -204,30 +204,30 @@ export const RobotNav = () => {
             <InputSlider
               name="x"
               onNativeChange={onValueChange('x')}
-              label="X"
+              label={`X ${units}`}
               type="number"
-              minValue={-20}
-              maxValue={20}
-              step={0.1}
+              minValue={-200}
+              maxValue={200}
+              step={1}
               // hideStepper
             />
             <InputSlider
               name="y"
               onNativeChange={onValueChange('y')}
-              label="Y"
+              label={`Y ${units}`}
               type="number"
-              minValue={-20}
-              maxValue={20}
-              step={0.1}
+              minValue={-200}
+              maxValue={200}
+              step={1}
             />
             <InputSlider
               name="z"
               onNativeChange={onValueChange('z')}
-              label="Z"
+              label={`Z ${units}`}
               type="number"
-              minValue={-18}
-              maxValue={18}
-              step={0.1}
+              minValue={-200}
+              maxValue={200}
+              step={1}
             />
             <InputSlider
               name="r1"
@@ -388,8 +388,8 @@ export const RobotNav = () => {
               label="Base"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="black"
             />
             <InputSlider
@@ -397,8 +397,8 @@ export const RobotNav = () => {
               label="X0"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="black"
             />
             <InputSlider
@@ -406,8 +406,8 @@ export const RobotNav = () => {
               label="V0"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="red"
             />
             <InputSlider
@@ -415,8 +415,8 @@ export const RobotNav = () => {
               label="V1"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="green"
             />
             <InputSlider
@@ -424,8 +424,8 @@ export const RobotNav = () => {
               label="V2"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="blue"
             />
             <InputSlider
@@ -433,8 +433,8 @@ export const RobotNav = () => {
               label="V3"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="orange"
             />
             <InputSlider
@@ -442,26 +442,19 @@ export const RobotNav = () => {
               label="V4"
               type="number"
               minValue={0}
-              maxValue={10}
-              step={0.01}
+              maxValue={100}
+              step={1}
               trackGradient="purple"
             />
-            <InputSlider
-              name="v5"
-              label="V5"
-              type="number"
-              minValue={0}
-              maxValue={10}
-              step={0.01}
-            />
+            <InputSlider name="v5" label="V5" type="number" minValue={0} maxValue={100} step={1} />
             <InputSlider
               name="gridSize"
-              initialValue={10}
+              initialValue={100}
               label="Grid Size"
               type="number"
               minValue={0}
-              maxValue={30}
-              step={2}
+              maxValue={300}
+              step={10}
             />
             <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={true} />

@@ -56,24 +56,9 @@ const Control = () => {
         alignItems="end"
         gap="size-100"
       >
-        <NumberInput
-          name="goToX"
-          label={`X: ${round(values.x, 100)}`}
-          step={0.1}
-          initialValue={8}
-        />
-        <NumberInput
-          name="goToY"
-          label={`Y: ${round(values.y, 100)}`}
-          step={0.1}
-          initialValue={1}
-        />
-        <NumberInput
-          name="goToZ"
-          label={`Z: ${round(values.z, 100)}`}
-          step={0.1}
-          initialValue={9}
-        />
+        <NumberInput name="goToX" label={`X: ${round(values.x, 100)}`} step={1} initialValue={60} />
+        <NumberInput name="goToY" label={`Y: ${round(values.y, 100)}`} step={1} initialValue={10} />
+        <NumberInput name="goToZ" label={`Z: ${round(values.z, 100)}`} step={1} initialValue={90} />
         <ActionButton title="Go" aria-label="Go" type="button" onPress={robotUpdate} minWidth="100">
           Go
         </ActionButton>
@@ -111,6 +96,8 @@ export const Robot = () => {
 
   const angles = [j0, j1, j2, j3, j4, j5];
 
+  const { units } = config;
+
   return (
     <>
       <h3>
@@ -122,8 +109,8 @@ export const Robot = () => {
         )}
       </h3>
       <h3>
-        Location: X: {round(endPosition.x, 10000)} Y: {round(endPosition.y, 10000)} Z:{' '}
-        {round(endPosition.z, 10000)}
+        Location: X: {round(endPosition.x, 1000)} {units} Y: {round(endPosition.y, 1000)} {units} Z:{' '}
+        {round(endPosition.z, 1000)} {units}
       </h3>
       {/* <pre>{JSON.stringify(endPosition.matrix[0])}</pre>
       <pre>{JSON.stringify(endPosition.matrix[1])}</pre>
@@ -135,8 +122,8 @@ export const Robot = () => {
           fov: 75,
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
-          far: 1000,
-          position: [8, 12, 10],
+          far: 10000,
+          position: [80, 120, 100],
           zoom: 0.8,
         }}
       >

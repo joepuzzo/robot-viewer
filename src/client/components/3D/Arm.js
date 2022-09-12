@@ -121,7 +121,7 @@ const Pos = ({
     (event) => {
       const { key, keyCode } = event;
 
-      const step = 0.1;
+      const step = 1;
 
       if (key === 'ArrowUp') {
         setPosition(([x, y, z, r1, r2, r3]) => {
@@ -198,7 +198,7 @@ const Pos = ({
         <sphereBufferGeometry args={args} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
-      {grid ? <Grid size={1} /> : null}
+      {grid ? <Grid size={10} /> : null}
     </animated.group>
   );
 };
@@ -241,7 +241,7 @@ const Tool = ({
         <cylinderGeometry args={cylinderArgs} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
-      {grid ? <Grid size={1} /> : null}
+      {grid ? <Grid size={10} /> : null}
       <Line
         rotation={rotation}
         points={[
@@ -258,7 +258,7 @@ const Tool = ({
 const ErrorBall = () => {
   return (
     <mesh>
-      <sphereBufferGeometry args={[2, 30, 30]} />
+      <sphereBufferGeometry args={[10, 30, 30]} />
       <meshStandardMaterial color="#880808" opacity={0.4} transparent />
     </mesh>
   );
@@ -316,8 +316,8 @@ const Component = ({
     color = '#880808';
   }
 
-  const lineOffset1 = userLineOffset1 ?? 0.25;
-  const lineOffset2 = userLineOffset2 ?? 0.25;
+  const lineOffset1 = userLineOffset1 ?? 2.5;
+  const lineOffset2 = userLineOffset2 ?? 2.5;
 
   let opacity = 1;
   let transparent = true;
@@ -335,37 +335,37 @@ const Component = ({
           </mesh>
           {linkColor ? (
             <mesh>
-              <cylinderGeometry args={[1.01, 1.01, 0.02, 32]} />
+              <cylinderGeometry args={[10.01, 10.01, 0.2, 32]} />
               <meshStandardMaterial color={lineColor} opacity={opacity} transparent={transparent} />
             </mesh>
           ) : null}
           {!doubleV ? (
             <mesh
-              position={[xOffset ?? 0, args[2] / 2 + 1, -0.75]}
+              position={[xOffset ?? 0, args[2] / 2 + 10, -7.5]}
               rotation={[0, Math.PI / 2, Math.PI / 2]}
             >
-              <cylinderGeometry args={[1, 1, 0.5, 32]} />
+              <cylinderGeometry args={[10, 10, 5, 32]} />
               <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
             </mesh>
           ) : null}
           {doubleV ? (
             <>
               <mesh
-                position={[0, -(args[2] / 2 + 1), 0.75]}
+                position={[0, -(args[2] / 2 + 10), 7.5]}
                 rotation={[0, Math.PI / 2, Math.PI / 2]}
               >
-                <cylinderGeometry args={[1, 1, 0.5, 32]} />
+                <cylinderGeometry args={[10, 10, 5, 32]} />
                 <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
               </mesh>
-              <mesh position={[0, args[2] / 2 + 1, 0.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
-                <cylinderGeometry args={[1, 1, 0.5, 32]} />
+              <mesh position={[0, args[2] / 2 + 10, 7.5]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
+                <cylinderGeometry args={[10, 10, 5, 32]} />
                 <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
               </mesh>
             </>
           ) : null}
         </group>
         {children}
-        {grid ? <Grid size={hide ? 1 : 3} hideNegatives={hideNegatives} /> : null}
+        {grid ? <Grid size={hide ? 10 : 30} hideNegatives={hideNegatives} /> : null}
         {hide && actual ? (
           <>
             <Line
@@ -389,7 +389,7 @@ const Component = ({
           <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
         </mesh>
         {children}
-        {grid ? <Grid size={hide ? 1 : 3} hideNegatives={hideNegatives} /> : null}
+        {grid ? <Grid size={hide ? 10 : 30} hideNegatives={hideNegatives} /> : null}
         {error ? <ErrorBall /> : null}
         {hide && actual ? (
           <Line
@@ -438,13 +438,13 @@ export function Arm({
   const j5 = toRadians(values.j5);
 
   // Take off extras
-  const base = values.base - 0.5;
+  const base = values.base - 5;
   const x0 = values.x0;
-  const v0 = values.v0 - 1.5;
-  const v1 = values.v1 - 2;
-  const v2 = values.v2 - 1.5;
-  const v3 = values.v3 - 1.5;
-  const v4 = values.v4 - 1.5;
+  const v0 = values.v0 - 15;
+  const v1 = values.v1 - 20;
+  const v2 = values.v2 - 15;
+  const v3 = values.v3 - 15;
+  const v4 = values.v4 - 15;
   const v5 = values.v5;
 
   const [selected, setSelected] = useState();
@@ -460,7 +460,7 @@ export function Arm({
         setSelected={setSelected}
         selected={selected}
         position={[0, 0, base / 2]}
-        args={[1, 1.5, base, 32]}
+        args={[10, 15, base, 32]}
         rotation={[Math.PI * 0.5, 0, 0]}
         actual={values.base}
         hide={hide}
@@ -472,11 +472,11 @@ export function Arm({
           name="j0"
           setSelected={setSelected}
           selected={selected}
-          args={[1, 1, 1, 32]}
+          args={[10, 10, 10, 32]}
           error={outside(j0, config.rangej0)}
           rotation={[Math.PI * 0.5, 0, 0]}
           jointRotation={[0, 0, j0]}
-          position={[0, 0, base / 2 + 0.5]}
+          position={[0, 0, base / 2 + 5]}
           grid={jointGrid}
           hide={hide}
           hideNegatives={hideNegatives}
@@ -489,8 +489,8 @@ export function Arm({
             selected={selected}
             radius={0.1}
             actual={values.v0}
-            args={[1, 1, v0, 32]}
-            position={[0, 0, v0 / 2 + 0.5]}
+            args={[10, 10, v0, 32]}
+            position={[0, 0, v0 / 2 + 5]}
             rotation={[Math.PI * 0.5, 0, 0]}
             grid={vertexGrid}
             hide={hide}
@@ -507,8 +507,8 @@ export function Arm({
               rotation={[Math.PI * -0.5, 0, 0]}
               setSelected={setSelected}
               selected={selected}
-              args={[1, 1, 1, 32]}
-              position={[x0, 0, v0 / 2 + 1]}
+              args={[10, 10, 10, 32]}
+              position={[x0, 0, v0 / 2 + 10]}
               grid={jointGrid}
               error={outside(j1, config.rangej1)}
               hide={hide}
@@ -521,8 +521,8 @@ export function Arm({
                 setSelected={setSelected}
                 selected={selected}
                 rotation={[0, 0, 0]}
-                args={[1, 1, v1, 32]}
-                position={[0, v1 / 2 + 1, 0]}
+                args={[10, 10, v1, 32]}
+                position={[0, v1 / 2 + 10, 0]}
                 doubleV
                 grid={vertexGrid}
                 actual={values.v1}
@@ -540,8 +540,8 @@ export function Arm({
                   jointRotation={[0, 0, j2 + Math.PI * 0.5]}
                   setSelected={setSelected}
                   selected={selected}
-                  args={[1, 1, 1, 32]}
-                  position={[0, v1 / 2 + 1, 0]}
+                  args={[10, 10, 10, 32]}
+                  position={[0, v1 / 2 + 10, 0]}
                   grid={jointGrid}
                   error={outside(j2, config.rangej2)}
                   hide={hide}
@@ -554,8 +554,8 @@ export function Arm({
                     setSelected={setSelected}
                     selected={selected}
                     rotation={[0, 0, Math.PI * 0.5]}
-                    args={[1, 1, v2, 32]}
-                    position={[v2 / 2 + 1, 0, 0]}
+                    args={[10, 10, v2, 32]}
+                    position={[v2 / 2 + 10, 0, 0]}
                     grid={vertexGrid}
                     actual={values.v2}
                     hide={hide}
@@ -570,8 +570,8 @@ export function Arm({
                       rotation={[Math.PI * 0.5, 0, 0]}
                       setSelected={setSelected}
                       selected={selected}
-                      args={[1, 1, 1, 32]}
-                      position={[v2 / 2 + 0.5, 0, 0]}
+                      args={[10, 10, 10, 32]}
+                      position={[v2 / 2 + 5, 0, 0]}
                       grid={jointGrid}
                       error={outside(j3, config.rangej3)}
                       hide={hide}
@@ -584,8 +584,8 @@ export function Arm({
                         setSelected={setSelected}
                         selected={selected}
                         rotation={[Math.PI * 0.5, 0, 0]}
-                        args={[1, 1, v3, 32]}
-                        position={[0, 0, v3 / 2 + 0.5]}
+                        args={[10, 10, v3, 32]}
+                        position={[0, 0, v3 / 2 + 5]}
                         grid={vertexGrid}
                         actual={values.v3}
                         hide={hide}
@@ -600,8 +600,8 @@ export function Arm({
                           jointRotation={[Math.PI * 0.5, 0, j4]}
                           setSelected={setSelected}
                           selected={selected}
-                          args={[1, 1, 1, 32]}
-                          position={[0, 0, v3 / 2 + 1]}
+                          args={[10, 10, 10, 32]}
+                          position={[0, 0, v3 / 2 + 10]}
                           grid={jointGrid}
                           error={outside(j4, config.rangej4)}
                           hide={hide}
@@ -614,8 +614,8 @@ export function Arm({
                             setSelected={setSelected}
                             selected={selected}
                             rotation={[Math.PI, 0, 0]}
-                            args={[1, 1, v4, 32]}
-                            position={[0, v4 / 2 + 1, 0]}
+                            args={[10, 10, v4, 32]}
+                            position={[0, v4 / 2 + 10, 0]}
                             grid={vertexGrid}
                             actual={values.v4}
                             hide={hide}
@@ -630,8 +630,8 @@ export function Arm({
                               jointRotation={[-Math.PI * 0.5, 0, j5]}
                               setSelected={setSelected}
                               selected={selected}
-                              args={[1, 1, 1, 32]}
-                              position={[0, v4 / 2 + 0.5, 0]}
+                              args={[10, 10, 10, 32]}
+                              position={[0, v4 / 2 + 5, 0]}
                               error={outside(j5, config.rangej5)}
                               hide={hide}
                               hideNegatives={hideNegatives}
@@ -644,8 +644,8 @@ export function Arm({
                                 rotation={[Math.PI * 0.5, 0, 0]}
                                 setSelected={setSelected}
                                 selected={selected}
-                                args={[0.5, 0.5, v5, 32]}
-                                position={[0, 0, 1]}
+                                args={[5, 5, v5, 32]}
+                                position={[0, 0, 10]}
                                 grid
                                 actual={values.v5}
                                 lineOffset1={0}
@@ -667,7 +667,7 @@ export function Arm({
         name="pos"
         setSelected={setSelected}
         selected={selected}
-        args={[0.5, 30, 30]}
+        args={[5, 30, 30]}
         grid
         animate={animate}
         formApi={formApi}
