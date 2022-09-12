@@ -68,7 +68,7 @@ export const Waypoints = () => {
       orientation: '-z',
     },
     {
-      x: 50,
+      x: 30,
       y: -10,
       z: 60,
       orientation: 'x',

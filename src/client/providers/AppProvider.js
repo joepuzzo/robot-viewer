@@ -66,13 +66,13 @@ const AppProvider = ({ children }) => {
     rangej4: [-90, 90],
     rangej5: [-180, 180],
     // Below is for AR -------------------------
-    zeroPosition: [6.42, 0, 101.99],
-    base: 15,
+    zeroPosition: [6.42, 0, 84.602],
+    base: 3.11,
     x0: 6.42,
-    v0: 16.977,
+    v0: 13.867,
     v1: 30.5,
-    v2: 3.625,
-    v3: 22.263,
+    v2: 4.5,
+    v3: 19.0,
     v4: 3.625,
     v5: 10,
     // Show off direection
@@ -85,7 +85,7 @@ const AppProvider = ({ children }) => {
     // For Zero Direction
     x: 6.42,
     y: 0,
-    z: 101.99,
+    z: 84.602,
     r1: 0,
     r2: 0,
     r3: 0,

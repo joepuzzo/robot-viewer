@@ -123,7 +123,7 @@ export const Robot = () => {
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
           far: 10000,
-          position: [40, 60, 50],
+          position: [80, 90, 80],
           zoom: 0.8,
         }}
       >
