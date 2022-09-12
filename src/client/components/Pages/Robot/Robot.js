@@ -56,9 +56,9 @@ const Control = () => {
         alignItems="end"
         gap="size-100"
       >
-        <NumberInput name="goToX" label={`X: ${round(values.x, 100)}`} step={1} initialValue={60} />
+        <NumberInput name="goToX" label={`X: ${round(values.x, 100)}`} step={1} initialValue={40} />
         <NumberInput name="goToY" label={`Y: ${round(values.y, 100)}`} step={1} initialValue={10} />
-        <NumberInput name="goToZ" label={`Z: ${round(values.z, 100)}`} step={1} initialValue={90} />
+        <NumberInput name="goToZ" label={`Z: ${round(values.z, 100)}`} step={1} initialValue={50} />
         <ActionButton title="Go" aria-label="Go" type="button" onPress={robotUpdate} minWidth="100">
           Go
         </ActionButton>
@@ -123,7 +123,7 @@ export const Robot = () => {
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
           far: 10000,
-          position: [80, 120, 100],
+          position: [40, 60, 50],
           zoom: 0.8,
         }}
       >

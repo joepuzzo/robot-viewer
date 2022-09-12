@@ -50,7 +50,7 @@ export const RobotNav = () => {
   console.log('RENDER ROBOT NAV');
 
   // Grab ranges off of config
-  const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5, units } = config;
+  const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5, units, zeroPosition } = config;
 
   // Form api to manipulate form
   const formApi = useFormApi();
@@ -102,9 +102,9 @@ export const RobotNav = () => {
   const resetRobot = () => {
     formApi.reset();
     formApi.setTheseValues({
-      x: 0,
-      y: 0,
-      z: 165,
+      x: zeroPosition[0],
+      y: zeroPosition[1],
+      z: zeroPosition[2],
       r1: 0,
       r2: 0,
       r3: 0,
@@ -461,7 +461,7 @@ export const RobotNav = () => {
             <br />
             <Switch name="jointGrid" label="Joint Grids" />
             <br />
-            <Switch name="hide" label="Hide Robot" />
+            <Switch name="hide" label="Hide Robot" initialValue={false} />
             <br />
             <Switch name="linkColor" label="Show Link Color" />
             <br />

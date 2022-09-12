@@ -44,33 +44,33 @@ export const Waypoints = () => {
 
   const initialValue = [
     {
-      x: 60,
+      x: 30,
       y: 10,
-      z: 90,
+      z: 60,
       orientation: 'x',
     },
     {
-      x: 60,
+      x: 30,
       y: -10,
-      z: 90,
+      z: 60,
       orientation: 'x',
     },
     {
-      x: -60,
+      x: -30,
       y: 10,
-      z: 90,
+      z: 60,
       orientation: '-x',
     },
     {
-      x: 70,
+      x: 50,
       y: 0,
       z: 0,
       orientation: '-z',
     },
     {
-      x: 70,
+      x: 50,
       y: -10,
-      z: 95,
+      z: 60,
       orientation: 'x',
     },
     {},
