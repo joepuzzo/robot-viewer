@@ -286,6 +286,7 @@ const Component = ({
   linkColor,
   animate,
   updateMotion,
+  runOnRobot,
   xOffset,
   ...props
 }) => {
@@ -298,10 +299,10 @@ const Component = ({
     },
     immediate: !animate,
     onStart: () => {
-      if (animate) updateMotion(name, 'move');
+      if (animate && !runOnRobot) updateMotion(name, 'move');
     },
     onRest: () => {
-      if (animate) updateMotion(name, 'stop');
+      if (animate && !runOnRobot) updateMotion(name, 'stop');
     },
   });
 
@@ -427,7 +428,8 @@ export function Arm({
   formApi,
   toggleOrbital,
 }) {
-  const { jointGrid, mainGrid, gridSize, hide, linkColor, animate, hideNegatives } = values;
+  const { jointGrid, mainGrid, gridSize, hide, linkColor, animate, hideNegatives, runOnRobot } =
+    values;
 
   const { updateMotion } = simulateController;
 
@@ -467,6 +469,7 @@ export function Arm({
         hide={hide}
         hideNegatives={hideNegatives}
         animate={animate}
+        runOnRobot={runOnRobot}
         // grid
       >
         <Component
@@ -482,6 +485,7 @@ export function Arm({
           hide={hide}
           hideNegatives={hideNegatives}
           animate={animate}
+          runOnRobot={runOnRobot}
           updateMotion={updateMotion}
         >
           <Component
@@ -500,6 +504,7 @@ export function Arm({
             lineOffset1={0}
             linkColor={linkColor}
             animate={animate}
+            runOnRobot={runOnRobot}
             xOffset={x0}
           >
             <Component
@@ -515,6 +520,7 @@ export function Arm({
               hide={hide}
               hideNegatives={hideNegatives}
               animate={animate}
+              runOnRobot={runOnRobot}
               updateMotion={updateMotion}
             >
               <Component
@@ -534,6 +540,7 @@ export function Arm({
                 lineOffset2={0}
                 linkColor={linkColor}
                 animate={animate}
+                runOnRobot={runOnRobot}
               >
                 <Component
                   name="j2"
@@ -549,6 +556,7 @@ export function Arm({
                   hideNegatives={hideNegatives}
                   animate={animate}
                   updateMotion={updateMotion}
+                  runOnRobot={runOnRobot}
                 >
                   <Component
                     name="v2"
@@ -566,6 +574,7 @@ export function Arm({
                     animate={animate}
                     lineOffset1={1.25}
                     lineOffset2={1.25}
+                    runOnRobot={runOnRobot}
                   >
                     <Component
                       name="j3"
@@ -581,6 +590,7 @@ export function Arm({
                       hideNegatives={hideNegatives}
                       animate={animate}
                       updateMotion={updateMotion}
+                      runOnRobot={runOnRobot}
                     >
                       <Component
                         name="v3"
@@ -596,6 +606,7 @@ export function Arm({
                         lineColor="orange"
                         linkColor={linkColor}
                         animate={animate}
+                        runOnRobot={runOnRobot}
                       >
                         <Component
                           name="j4"
@@ -611,6 +622,7 @@ export function Arm({
                           hideNegatives={hideNegatives}
                           animate={animate}
                           updateMotion={updateMotion}
+                          runOnRobot={runOnRobot}
                         >
                           <Component
                             name="v4"
@@ -626,6 +638,7 @@ export function Arm({
                             lineColor="purple"
                             linkColor={linkColor}
                             animate={animate}
+                            runOnRobot={runOnRobot}
                           >
                             <Component
                               name="j5"
@@ -641,6 +654,7 @@ export function Arm({
                               grid={jointGrid}
                               animate={animate}
                               updateMotion={updateMotion}
+                              runOnRobot={runOnRobot}
                             >
                               <Tool
                                 name="tool"

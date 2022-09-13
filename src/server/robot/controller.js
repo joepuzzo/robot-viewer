@@ -208,11 +208,17 @@ export class Controller {
     this.clientMessenger.send('robots', this.robots);
   }
 
+  robotMoved(id, state) {
+    logger(`controller robot moved ${id}:`);
+    this.clientMessenger.send('robotMoved', id, state);
+  }
+
   subscribeToRobotMessenger() {
     this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
     this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
     this.robotMessenger.on('state', (...args) => this.robotState(...args));
     this.robotMessenger.on('encoder', (...args) => this.robotEncoder(...args));
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
+    this.robotMessenger.on('moved', (...args) => this.robotMoved(...args));
   }
 }

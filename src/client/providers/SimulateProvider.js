@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SimulateControllerContext, SimulateStateContext } from '../context/SimulateContext';
-import { useInformed } from 'informed';
+import { useFormApi, useInformed } from 'informed';
 import { useStateWithGetter } from '../hooks/useStateWithGetter';
 import useRobotController from '../hooks/useRobotController';
+import useApp from '../hooks/useApp';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -27,8 +28,13 @@ const SimulateProvider = ({ children }) => {
   // So we can access all of our form values!
   const informed = useInformed();
 
+  const { socket } = useApp();
+
   // Get robot control
   const { updateRobot } = useRobotController();
+
+  // Form Api
+  const formApi = useFormApi();
 
   // Determines how many values are in motion
   const [movements, updateMovements] = useState(0);
@@ -77,6 +83,9 @@ const SimulateProvider = ({ children }) => {
       step: 0,
       play: true,
     });
+
+    // Play first step
+    robotUpdate(0);
   }, []);
 
   const robotUpdate = (i) => {
@@ -109,17 +118,44 @@ const SimulateProvider = ({ children }) => {
 
   useEffect(() => {
     const current = getSimulating();
+    const { runOnRobot } = formApi.getFormState().values;
+    console.log('MOVEMENTS', movements);
     // We are done moving
     if (movements === 0) {
       console.log('Not moving', current);
       // See if we are simulating
-      if (current.play) {
+      if (current.play && !runOnRobot) {
         // Get next step in simulation
         console.log('Playing step', current.step);
         robotUpdate(current.step);
       }
     }
-  }, [movements, simulating.play]);
+  }, [movements]);
+
+  // Register for robots events
+  useEffect(() => {
+    const movedHandler = () => {
+      console.log('Robot moved');
+      const { runOnRobot } = formApi.getFormState().values;
+
+      // Get status of our simulation ( movement )
+      const current = getSimulating();
+      // See if we are executing and running on robot
+      if (current.play && runOnRobot) {
+        // Get next step in simulation
+        console.log('Robot moved - Playing step', current.step);
+        setTimeout(() => {
+          robotUpdate(current.step);
+        }, [500]);
+      }
+    };
+
+    socket.on('robotMoved', movedHandler);
+
+    return () => {
+      socket.removeListener('robotMoved', movedHandler);
+    };
+  }, []);
 
   // The state of the robot
   const simulateState = {

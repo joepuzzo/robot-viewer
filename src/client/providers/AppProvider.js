@@ -83,12 +83,12 @@ const AppProvider = ({ children }) => {
     r2: 90,
     r3: 90,
     // For Zero Direction
-    x: 6.42,
-    y: 0,
-    z: 84.602,
-    r1: 0,
-    r2: 0,
-    r3: 0,
+    // x: 6.42,
+    // y: 0,
+    // z: 84.602,
+    // r1: 0,
+    // r2: 0,
+    // r3: 0,
     // For Limits
     rangej0: [-170, 170],
     rangej1: [-90, 42],

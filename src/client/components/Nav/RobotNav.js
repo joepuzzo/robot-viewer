@@ -205,6 +205,9 @@ export const RobotNav = () => {
         >
           <AlignCenter.default />
         </ActionButton>
+        <br />
+        <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
+        <br />
       </Flex>
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
@@ -227,6 +230,12 @@ export const RobotNav = () => {
               ) : null}
               {connected && selectedRobotMeta?.homing ? (
                 <StatusLight variant="positive">Homing</StatusLight>
+              ) : null}
+              {connected && !selectedRobotMeta?.moving ? (
+                <StatusLight variant="negative">Moving</StatusLight>
+              ) : null}
+              {connected && selectedRobotMeta?.moving ? (
+                <StatusLight variant="positive">Moving</StatusLight>
               ) : null}
             </Flex>
             <Select

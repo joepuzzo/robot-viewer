@@ -175,7 +175,7 @@ const RobotProvider = ({ children }) => {
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
     // Get fixed values off of form state
-    const { base, v0, v1, v2, v3, v4, v5, x0 } = formApi.getFormState().values;
+    const { base, v0, v1, v2, v3, v4, v5, x0, runOnRobot } = formApi.getFormState().values;
 
     // We give in degrees so turn into rads
     const ro1 = toRadians(r1);
@@ -215,7 +215,7 @@ const RobotProvider = ({ children }) => {
       });
 
       // Step2: If we are connected to a robot send angles to that robot
-      if (connectedRef.current) {
+      if (connectedRef.current && runOnRobot) {
         const robotId = formApi.getValue('robotId');
         socket.emit(
           'robotSetAngles',

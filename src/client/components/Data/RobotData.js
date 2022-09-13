@@ -79,6 +79,12 @@ const JointData = ({ motor }) => {
             </Cell>
           </Row>
           <Row>
+            <Cell>Moving</Cell>
+            <Cell>
+              <Status status={motor.moving} />
+            </Cell>
+          </Row>
+          <Row>
             <Cell>Step Position</Cell>
             <Cell>
               <span>{motor.stepPosition}</span>
