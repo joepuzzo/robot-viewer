@@ -237,10 +237,13 @@ const RobotProvider = ({ children }) => {
     };
   }, []);
 
-  const kinimatics = {
-    endPosition,
-    updateForward: debouncedUpdateForward,
-  };
+  const kinimatics = useMemo(
+    () => ({
+      endPosition,
+      updateForward: debouncedUpdateForward,
+    }),
+    [endPosition, debouncedUpdateForward]
+  );
 
   return (
     <RobotControllerContext.Provider value={robotController}>
