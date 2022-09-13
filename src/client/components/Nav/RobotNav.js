@@ -4,6 +4,7 @@ import Refresh from '@spectrum-icons/workflow/Refresh';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
 import StopCircle from '@spectrum-icons/workflow/StopCircle';
+import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
 
@@ -80,6 +81,22 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotStop', robotId);
+    }
+  };
+
+  const freezeRobot = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotFreeze', robotId);
+    }
+  };
+
+  const centerRobot = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotCenter', robotId);
     }
   };
 
@@ -169,6 +186,24 @@ export const RobotNav = () => {
           onClick={() => toggleExtra()}
         >
           <ChevronRight.default />
+        </ActionButton>
+      </Flex>
+      <Flex direction="row" alignItems="center" gap="size-100">
+        <ActionButton
+          title="Freeze Robot"
+          aria-label="Freeze Robot"
+          onPress={() => freezeRobot()}
+          isDisabled={disabled}
+        >
+          <Stopwatch.default />
+        </ActionButton>
+        <ActionButton
+          title="Center Robot"
+          aria-label="Center Robot"
+          onPress={() => centerRobot()}
+          isDisabled={disabled}
+        >
+          <AlignCenter.default />
         </ActionButton>
       </Flex>
       <Flex direction="row" gap="size-500">
