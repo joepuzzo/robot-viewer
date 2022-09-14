@@ -107,16 +107,22 @@ const SimulateProvider = ({ children }) => {
       // const { x, y, z, r1, r2, r3 } = waypoints[i];
       const { x, y, z, orientation, speed } = waypoints[i];
 
+      const { wait } = waypoints[i - 1] ? waypoints[i - 1] : 0;
+
+      console.log('WAIT', wait);
+
       const [r1, r2, r3] = getZXZ(orientation);
 
-      console.log('Going to waypoint', i, 'pos', waypoints[i]);
+      setTimeout(() => {
+        console.log('Going to waypoint', i, 'pos', waypoints[i]);
 
-      // Update the robot
-      updateRobot(x, y, z, r1, r2, r3, speed);
+        // Update the robot
+        updateRobot(x, y, z, r1, r2, r3, speed);
 
-      // Increase the step
-      const current = getSimulating();
-      setSimulating({ ...current, step: current.step + 1 });
+        // Increase the step
+        const current = getSimulating();
+        setSimulating({ ...current, step: current.step + 1 });
+      }, [wait * 1000]);
     } else {
       // Stop simulation
       const current = getSimulating();

@@ -13,7 +13,7 @@ main {
 }
 
 main.extra {
-  margin-left: 600px;
+  margin-left: 690px;
 }
 
 @media (max-width: 1200px) {
@@ -47,7 +47,7 @@ main.extra {
 }
 
 .sidenav.extra {
-  width: 820px;
+  width: 870px;
 }
 
 .sidenav .input-slider {
@@ -196,7 +196,12 @@ canvas {
 } */
 
 .highlight {
-  border-bottom: 2px solid #880808;
+  /* border-bottom: 2px solid #880808; */
+  background-color: rgba(136, 8, 8, 0.5);
+}
+
+.waypoint {
+  padding: 5px;
 }
 
 .icon-red svg {

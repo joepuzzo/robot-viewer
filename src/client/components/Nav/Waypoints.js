@@ -92,12 +92,14 @@ export const Waypoints = () => {
               <ArrayField.Items>
                 {({ remove, name, index }) => (
                   <div
-                    className={simulating.step - 1 === index && simulating.play ? 'highlight' : ''}
+                    className={`waypoint ${
+                      simulating.step - 1 === index && simulating.play ? 'highlight' : ''
+                    }`}
                   >
-                    <Flex direction="row" alignItems="end" gap="size-100" width={420}>
-                      <NumberInput name="x" label="X" hideStepper defaultValue={0} />
-                      <NumberInput name="y" label="Y" hideStepper defaultValue={0} />
-                      <NumberInput name="z" label="Z" hideStepper defaultValue={0} />
+                    <Flex direction="row" alignItems="end" gap="size-100" width={460}>
+                      <NumberInput name="x" label="X" hideStepper defaultValue={0} width={90} />
+                      <NumberInput name="y" label="Y" hideStepper defaultValue={0} width={90} />
+                      <NumberInput name="z" label="Z" hideStepper defaultValue={0} width={90} />
                       {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
                     <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
                     <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
@@ -115,7 +117,20 @@ export const Waypoints = () => {
                           { label: '-Z', value: '-z' },
                         ]}
                       />
-                      <NumberInput name="speed" label="Speed" hideStepper defaultValue={1500} />
+                      <NumberInput
+                        name="speed"
+                        label="Speed"
+                        hideStepper
+                        defaultValue={1500}
+                        width={90}
+                      />
+                      <NumberInput
+                        name="wait"
+                        label="Hold"
+                        hideStepper
+                        defaultValue={0}
+                        width={80}
+                      />
                       <ArrayButtons index={index} add={add} remove={remove} />
                     </Flex>
                   </div>
