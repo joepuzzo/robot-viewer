@@ -37,7 +37,7 @@ const SimulateProvider = ({ children }) => {
   const formApi = useFormApi();
 
   // Determines how many values are in motion
-  const [movements, updateMovements] = useState(0);
+  const [movements, updateMovements, getMovements] = useStateWithGetter(0);
   const [motors, updateMotors] = useState({
     j0: { state: 'stop' },
     j1: { state: 'stop' },
@@ -127,9 +127,10 @@ const SimulateProvider = ({ children }) => {
   useEffect(() => {
     const current = getSimulating();
     const { runOnRobot } = formApi.getFormState().values;
-    console.log('MOVEMENTS', movements);
+    const mvmnts = getMovements();
+    console.log('MOVEMENTS', mvmnts);
     // We are done moving
-    if (movements === 0) {
+    if (mvmnts === 0) {
       console.log('Not moving', current);
       // See if we are simulating
       if (current.play && !runOnRobot) {

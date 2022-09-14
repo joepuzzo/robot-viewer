@@ -288,6 +288,7 @@ const Component = ({
   updateMotion,
   runOnRobot,
   xOffset,
+  simulating,
   ...props
 }) => {
   const { rotation: jointRotation } = useSpring({
@@ -299,10 +300,10 @@ const Component = ({
     },
     immediate: !animate,
     onStart: () => {
-      if (animate && !runOnRobot) updateMotion(name, 'move');
+      if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'move');
     },
     onRest: () => {
-      if (animate && !runOnRobot) updateMotion(name, 'stop');
+      if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'stop');
     },
   });
 
@@ -422,6 +423,7 @@ const outside = (a, [l, h]) => {
 
 export function Arm({
   simulateController,
+  simulateState,
   robotController,
   config,
   values,
@@ -432,6 +434,7 @@ export function Arm({
     values;
 
   const { updateMotion } = simulateController;
+  const { simulating } = simulateState;
 
   const j0 = toRadians(values.j0);
   const j1 = toRadians(values.j1);
@@ -470,6 +473,7 @@ export function Arm({
         hideNegatives={hideNegatives}
         animate={animate}
         runOnRobot={runOnRobot}
+        simulating={simulating}
         // grid
       >
         <Component
@@ -487,6 +491,7 @@ export function Arm({
           animate={animate}
           runOnRobot={runOnRobot}
           updateMotion={updateMotion}
+          simulating={simulating}
         >
           <Component
             name="v0"
@@ -506,6 +511,7 @@ export function Arm({
             animate={animate}
             runOnRobot={runOnRobot}
             xOffset={x0}
+            simulating={simulating}
           >
             <Component
               name="j1"
@@ -522,6 +528,7 @@ export function Arm({
               animate={animate}
               runOnRobot={runOnRobot}
               updateMotion={updateMotion}
+              simulating={simulating}
             >
               <Component
                 name="v1"
@@ -541,6 +548,7 @@ export function Arm({
                 linkColor={linkColor}
                 animate={animate}
                 runOnRobot={runOnRobot}
+                simulating={simulating}
               >
                 <Component
                   name="j2"
@@ -557,6 +565,7 @@ export function Arm({
                   animate={animate}
                   updateMotion={updateMotion}
                   runOnRobot={runOnRobot}
+                  simulating={simulating}
                 >
                   <Component
                     name="v2"
@@ -575,6 +584,7 @@ export function Arm({
                     lineOffset1={1.25}
                     lineOffset2={1.25}
                     runOnRobot={runOnRobot}
+                    simulating={simulating}
                   >
                     <Component
                       name="j3"
@@ -591,6 +601,7 @@ export function Arm({
                       animate={animate}
                       updateMotion={updateMotion}
                       runOnRobot={runOnRobot}
+                      simulating={simulating}
                     >
                       <Component
                         name="v3"
@@ -607,6 +618,7 @@ export function Arm({
                         linkColor={linkColor}
                         animate={animate}
                         runOnRobot={runOnRobot}
+                        simulating={simulating}
                       >
                         <Component
                           name="j4"
@@ -623,6 +635,7 @@ export function Arm({
                           animate={animate}
                           updateMotion={updateMotion}
                           runOnRobot={runOnRobot}
+                          simulating={simulating}
                         >
                           <Component
                             name="v4"
@@ -639,6 +652,7 @@ export function Arm({
                             linkColor={linkColor}
                             animate={animate}
                             runOnRobot={runOnRobot}
+                            simulating={simulating}
                           >
                             <Component
                               name="j5"
@@ -655,6 +669,7 @@ export function Arm({
                               animate={animate}
                               updateMotion={updateMotion}
                               runOnRobot={runOnRobot}
+                              simulating={simulating}
                             >
                               <Tool
                                 name="tool"

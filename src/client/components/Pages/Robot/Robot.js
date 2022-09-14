@@ -12,6 +12,7 @@ import RadioGroup from '../../Informed/RadioGroup';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotController from '../../../hooks/useRobotController';
 import useRobotKinematics from '../../../hooks/useRobotKinematics';
+import useSimulateState from '../../../hooks/useSimulateState';
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -91,6 +92,7 @@ export const Robot = () => {
   const simulateController = useSimulateController();
   const robotController = useRobotController();
   const { endPosition } = useRobotKinematics();
+  const simulateState = useSimulateState();
 
   const { j0, j1, j2, j3, j4, j5 } = values;
 
@@ -112,10 +114,6 @@ export const Robot = () => {
         Location: X: {round(endPosition.x, 1000)} {units} Y: {round(endPosition.y, 1000)} {units} Z:{' '}
         {round(endPosition.z, 1000)} {units}
       </h3>
-      {/* <pre>{JSON.stringify(endPosition.matrix[0])}</pre>
-      <pre>{JSON.stringify(endPosition.matrix[1])}</pre>
-      <pre>{JSON.stringify(endPosition.matrix[2])}</pre> */}
-      {/* <h4>Movements: {robot.movements}</h4> */}
       <Control />
       <Canvas
         camera={{
@@ -133,6 +131,7 @@ export const Robot = () => {
         <Suspense fallback={null}>
           <Arm
             simulateController={simulateController}
+            simulateState={simulateState}
             robotController={robotController}
             config={config}
             values={values}

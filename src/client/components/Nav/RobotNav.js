@@ -320,8 +320,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j0')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j0')}>
@@ -341,8 +339,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j1')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j1')}>
@@ -362,8 +358,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j2')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j2')}>
@@ -383,8 +377,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j3')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j3')}>
@@ -404,8 +396,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j4')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j4')}>
@@ -425,8 +415,6 @@ export const RobotNav = () => {
                 validateOn="change"
                 showErrorIfError
                 onNativeChange={onJointChange('j5')}
-                // minValue={-180}
-                // maxValue={180}
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j5')}>
