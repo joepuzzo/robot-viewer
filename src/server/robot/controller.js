@@ -143,12 +143,12 @@ export class Controller {
     }
   }
 
-  robotSetAngles(robotId, angles) {
+  robotSetAngles(robotId, angles, speed) {
     logger(`controller client says robotSetAngles`, robotId);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'robotSetAngles', angles);
+      this.robotMessenger.sendTo(socketId, 'robotSetAngles', angles, speed);
     }
   }
 

@@ -105,14 +105,14 @@ const SimulateProvider = ({ children }) => {
     if (waypoints && waypoints.length - 1 !== i) {
       // Get the waypoint
       // const { x, y, z, r1, r2, r3 } = waypoints[i];
-      const { x, y, z, orientation } = waypoints[i];
+      const { x, y, z, orientation, speed } = waypoints[i];
 
       const [r1, r2, r3] = getZXZ(orientation);
 
       console.log('Going to waypoint', i, 'pos', waypoints[i]);
 
       // Update the robot
-      updateRobot(x, y, z, r1, r2, r3);
+      updateRobot(x, y, z, r1, r2, r3, speed);
 
       // Increase the step
       const current = getSimulating();

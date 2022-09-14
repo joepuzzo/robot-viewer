@@ -94,7 +94,7 @@ export const Waypoints = () => {
                   <div
                     className={simulating.step - 1 === index && simulating.play ? 'highlight' : ''}
                   >
-                    <Flex direction="row" alignItems="end" gap="size-100" width={400}>
+                    <Flex direction="row" alignItems="end" gap="size-100" width={420}>
                       <NumberInput name="x" label="X" hideStepper defaultValue={0} />
                       <NumberInput name="y" label="Y" hideStepper defaultValue={0} />
                       <NumberInput name="z" label="Z" hideStepper defaultValue={0} />
@@ -115,6 +115,7 @@ export const Waypoints = () => {
                           { label: '-Z', value: '-z' },
                         ]}
                       />
+                      <NumberInput name="speed" label="Speed" hideStepper defaultValue={1500} />
                       <ArrayButtons index={index} add={add} remove={remove} />
                     </Flex>
                   </div>

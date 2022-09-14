@@ -173,7 +173,7 @@ const RobotProvider = ({ children }) => {
   }, []);
 
   // Update robot function
-  const updateRobot = useCallback((x, y, z, r1, r2, r3) => {
+  const updateRobot = useCallback((x, y, z, r1, r2, r3, speed) => {
     // Get fixed values off of form state
     const { base, v0, v1, v2, v3, v4, v5, x0, runOnRobot } = formApi.getFormState().values;
 
@@ -220,7 +220,8 @@ const RobotProvider = ({ children }) => {
         socket.emit(
           'robotSetAngles',
           robotId,
-          angles.map((angle) => toDeg(angle))
+          angles.map((angle) => toDeg(angle)),
+          speed
         );
       }
 
