@@ -27,6 +27,30 @@ import useSimulateController from '../../hooks/useSimulateController';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
+// Helper status component -----------------------------
+const Status = ({ status, posText, negText, text }) => {
+  const { connected } = useRobotMeta();
+
+  if (!connected) {
+    return null;
+  }
+
+  if (status) {
+    return (
+      <StatusLight variant="positive" maxWidth={100}>
+        {posText ?? text}
+      </StatusLight>
+    );
+  } else {
+    return (
+      <StatusLight variant="negative" maxWidth={100}>
+        {negText ?? text}
+      </StatusLight>
+    );
+  }
+};
+
+// Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
   const { extraOpen, toggleExtra, setConfig, config, socket } = useApp();
@@ -219,30 +243,10 @@ export const RobotNav = () => {
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
             <Flex direction="row" alignItems="center" gap="size-100">
-              {connected && !selectedRobotMeta?.stopped ? (
-                <StatusLight variant="positive">Enabled</StatusLight>
-              ) : null}
-              {connected && selectedRobotMeta?.stopped ? (
-                <StatusLight variant="negative">Disabled</StatusLight>
-              ) : null}
-              {connected && !selectedRobotMeta?.home ? (
-                <StatusLight variant="negative">Home</StatusLight>
-              ) : null}
-              {connected && selectedRobotMeta?.home ? (
-                <StatusLight variant="positive">Home</StatusLight>
-              ) : null}
-              {connected && !selectedRobotMeta?.homing ? (
-                <StatusLight variant="negative">Homing</StatusLight>
-              ) : null}
-              {connected && selectedRobotMeta?.homing ? (
-                <StatusLight variant="positive">Homing</StatusLight>
-              ) : null}
-              {connected && !selectedRobotMeta?.moving ? (
-                <StatusLight variant="negative">Moving</StatusLight>
-              ) : null}
-              {connected && selectedRobotMeta?.moving ? (
-                <StatusLight variant="positive">Moving</StatusLight>
-              ) : null}
+              <Status status={!selectedRobotMeta?.stopped} posText="Enabled" negText="Disabled" />
+              <Status status={selectedRobotMeta?.home} text="Home" />
+              <Status status={selectedRobotMeta?.homing} text="Homing" />
+              <Status status={selectedRobotMeta?.moving} text="Moving" />
             </Flex>
             <Select
               label="Robot"
