@@ -88,6 +88,14 @@ const SimulateProvider = ({ children }) => {
     robotUpdate(0);
   }, []);
 
+  const stop = useCallback(() => {
+    setSimulating({
+      ...getSimulating(),
+      step: 0,
+      play: false,
+    });
+  }, []);
+
   const robotUpdate = (i) => {
     const formApi = informed.getController('robot')?.getFormApi();
 
@@ -169,6 +177,7 @@ const SimulateProvider = ({ children }) => {
     return {
       updateMotion,
       play,
+      stop,
     };
   }, []);
 

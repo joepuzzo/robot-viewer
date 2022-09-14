@@ -7,6 +7,7 @@ import StopCircle from '@spectrum-icons/workflow/StopCircle';
 import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
+import Compass from '@spectrum-icons/workflow/Compass';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -22,6 +23,7 @@ import { useFieldState, useFormApi } from 'informed';
 import { Waypoints } from './Waypoints';
 import useRobotController from '../../hooks/useRobotController';
 import useRobotKinematics from '../../hooks/useRobotKinematics';
+import useSimulateController from '../../hooks/useSimulateController';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -31,6 +33,9 @@ export const RobotNav = () => {
 
   // Get robot control
   const { updateRobot, updateJoint } = useRobotController();
+
+  // Get simulate controls
+  const { stop: stopSimulation } = useSimulateController();
 
   // Get Kinimatics
 
@@ -78,6 +83,7 @@ export const RobotNav = () => {
 
   const stop = () => {
     const robotId = formApi.getValue('robotId');
+    stopSimulation();
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotStop', robotId);
@@ -86,6 +92,7 @@ export const RobotNav = () => {
 
   const freezeRobot = () => {
     const robotId = formApi.getValue('robotId');
+    stopSimulation();
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotFreeze', robotId);
@@ -113,6 +120,14 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotHome', robotId);
+    }
+  };
+
+  const calibrate = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotCalibrate', robotId);
     }
   };
 
@@ -159,18 +174,11 @@ export const RobotNav = () => {
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Robot Viewer</h1>
-        {/* <ActionButton
-          title="Switch Theme"
-          aria-label="Switch Theme"
-          onClick={() => toggleColorScheme()}
-        >
-          <Contrast.default />
-        </ActionButton> */}
         <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh.default />
         </ActionButton>
-        <ActionButton title="Enable" onPress={() => home()} isDisabled={disabled}>
-          <Home.default />
+        <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
+          <Stopwatch.default />
         </ActionButton>
         <ActionButton title="Enable" onPress={() => enable()} isDisabled={disabled}>
           <LockOpen.default />
@@ -189,13 +197,8 @@ export const RobotNav = () => {
         </ActionButton>
       </Flex>
       <Flex direction="row" alignItems="center" gap="size-100">
-        <ActionButton
-          title="Freeze Robot"
-          aria-label="Freeze Robot"
-          onPress={() => freezeRobot()}
-          isDisabled={disabled}
-        >
-          <Stopwatch.default />
+        <ActionButton title="Enable" onPress={() => home()} isDisabled={disabled}>
+          <Home.default />
         </ActionButton>
         <ActionButton
           title="Center Robot"
@@ -204,6 +207,9 @@ export const RobotNav = () => {
           isDisabled={disabled}
         >
           <AlignCenter.default />
+        </ActionButton>
+        <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
+          <Compass.default />
         </ActionButton>
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
