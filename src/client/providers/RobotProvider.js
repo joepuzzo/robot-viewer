@@ -201,8 +201,8 @@ const RobotProvider = ({ children }) => {
       // Step1: Update the form
       formApi.setTheseValues({
         j0: toDeg(angles[0]),
-        j1: toDeg(angles[1]),
-        j2: toDeg(angles[2]),
+        j1: toDeg(angles[1]), //- 2, // TEMP OFFSET FOR TESTING WHAT HAPPENS
+        j2: toDeg(angles[2]), //- 2, // TEMP OFFSET FOR TESTING WHAT HAPPENS
         j3: toDeg(angles[3]),
         j4: toDeg(angles[4]),
         j5: toDeg(angles[5]),

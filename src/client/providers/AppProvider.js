@@ -71,8 +71,8 @@ const AppProvider = ({ children }) => {
     x0: 6.42,
     v0: 13.867,
     v1: 30.5,
-    v2: 4.5,
-    v3: 19.0,
+    v2: 3.5,
+    v3: 18.763,
     v4: 3.625,
     v5: 10,
     // Show off direection

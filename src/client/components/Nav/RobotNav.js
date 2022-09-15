@@ -431,7 +431,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="black"
             />
             <InputSlider
@@ -440,7 +440,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="black"
             />
             <InputSlider
@@ -449,7 +449,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="red"
             />
             <InputSlider
@@ -458,7 +458,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="green"
             />
             <InputSlider
@@ -467,7 +467,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="blue"
             />
             <InputSlider
@@ -476,7 +476,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="orange"
             />
             <InputSlider
@@ -485,7 +485,7 @@ export const RobotNav = () => {
               type="number"
               minValue={0}
               maxValue={100}
-              step={1}
+              step={0.1}
               trackGradient="purple"
             />
             <InputSlider name="v5" label="V5" type="number" minValue={0} maxValue={100} step={1} />

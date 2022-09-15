@@ -57,9 +57,24 @@ const Control = () => {
         alignItems="end"
         gap="size-100"
       >
-        <NumberInput name="goToX" label={`X: ${round(values.x, 100)}`} step={1} initialValue={40} />
-        <NumberInput name="goToY" label={`Y: ${round(values.y, 100)}`} step={1} initialValue={10} />
-        <NumberInput name="goToZ" label={`Z: ${round(values.z, 100)}`} step={1} initialValue={50} />
+        <NumberInput
+          name="goToX"
+          label={`X: ${round(values.x, 100)}`}
+          step={0.1}
+          initialValue={40}
+        />
+        <NumberInput
+          name="goToY"
+          label={`Y: ${round(values.y, 100)}`}
+          step={0.1}
+          initialValue={0}
+        />
+        <NumberInput
+          name="goToZ"
+          label={`Z: ${round(values.z, 100)}`}
+          step={0.1}
+          initialValue={10}
+        />
         <ActionButton title="Go" aria-label="Go" type="button" onPress={robotUpdate} minWidth="100">
           Go
         </ActionButton>
@@ -67,7 +82,7 @@ const Control = () => {
       </Flex>
       <br />
       <RadioGroup
-        initialValue="x"
+        initialValue="-z"
         orientation="horizontal"
         name="orientation"
         aria-label="Select Oriantaion"
