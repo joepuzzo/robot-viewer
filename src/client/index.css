@@ -18,7 +18,7 @@ main.extra {
 
 @media (max-width: 1200px) {
   main {
-    margin-top: 48px;
+    margin-top: 0px;
     margin-left: 0;
     margin-right: 0;
     padding: 40px 80px;
@@ -143,14 +143,18 @@ main.extra {
 
 /* ----------  ---------- */
 
-@media (max-width: 1200px) {
+.pageHeader {
+  border-bottom: 1px solid var(--spectrum-global-color-gray-200);
+  background: var(--page-background);
+  z-index: 50;
+  width: 100%;
+  display: flex;
+  padding-bottom: 5px;
+}
+
+@media (min-width: 1200px) {
   .pageHeader {
-    border-bottom: 1px solid var(--spectrum-global-color-gray-200);
-    background: var(--page-background);
-    z-index: 50;
-    width: 100%;
-    display: flex;
-    padding-bottom: 5px;
+    margin-left: 400px;
   }
 }
 

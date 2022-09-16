@@ -137,7 +137,7 @@ export const Robot = () => {
           near: 0.1,
           far: 10000,
           position: [80, 90, 80],
-          zoom: 0.8,
+          zoom: 1,
         }}
       >
         <OrbitControls enabled={orbitEnabled} />

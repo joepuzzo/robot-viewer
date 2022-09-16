@@ -38,15 +38,8 @@ export const MotorNav = () => {
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
-        <h1>Motor Viewer</h1>
-        <ActionButton title="Home Robot" aria-label="Home Robot" onClick={() => homeRobot()}>
-          <Home.default />
-        </ActionButton>
-        <ActionButton
-          title="Open Waypoints"
-          aria-label="Open Waypoints"
-          onClick={() => toggleExtra()}
-        >
+        <h1>Motor Control</h1>
+        <ActionButton onClick={() => toggleExtra()}>
           <ChevronRight.default />
         </ActionButton>
       </Flex>

@@ -1,12 +1,12 @@
-import { ActionButton } from '@adobe/react-spectrum';
+import { ActionButton, Flex } from '@adobe/react-spectrum';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
 
 import useMedia from '../../hooks/useMedia';
 import useApp from '../../hooks/useApp';
 
-const NavLink = ({ href, ...rest }) => {
+const NavLink = ({ children, href, ...rest }) => {
   const navigate = useNavigate();
 
   const onClick = (e) => {
@@ -14,7 +14,16 @@ const NavLink = ({ href, ...rest }) => {
     navigate(href);
   };
 
-  return <a {...rest} onClick={onClick} />;
+  let location = useLocation();
+  const isSelected = href === location.pathname;
+
+  return (
+    <li className={`spectrum-SideNav-item ${isSelected ? 'is-selected' : ''}`}>
+      <a {...rest} onClick={onClick} className="spectrum-SideNav-itemLink">
+        {children}
+      </a>
+    </li>
+  );
 };
 
 export const Header = () => {
@@ -27,15 +36,17 @@ export const Header = () => {
     setModalOpen(false);
   });
 
-  if (!isDesktopUp) {
-    return (
-      <header className="pageHeader">
-        <ActionButton aria-label="Open Menu" onClick={() => toggleNav()}>
-          <ShowMenu.default />
-        </ActionButton>
-      </header>
-    );
-  }
-
-  return null;
+  return (
+    <header className="pageHeader">
+      <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
+        {!isDesktopUp ? (
+          <ActionButton aria-label="Open Menu" onClick={() => toggleNav()}>
+            <ShowMenu.default />
+          </ActionButton>
+        ) : null}
+        <NavLink href="/">Robot</NavLink>
+        <NavLink href="/motor">Motor</NavLink>
+      </Flex>
+    </header>
+  );
 };

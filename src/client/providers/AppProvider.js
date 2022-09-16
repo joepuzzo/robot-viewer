@@ -67,13 +67,16 @@ const AppProvider = ({ children }) => {
     rangej5: [-180, 180],
     // Below is for AR -------------------------
     zeroPosition: [6.42, 0, 84.602],
-    base: 3.11,
     x0: 6.42,
+    // Below three should add up to 474.77 mm ( 47.477 cm )
+    base: 3.11,
     v0: 13.867,
     v1: 30.5,
+    // Below three should add up to 258.88 mm ( 25.888 cm )
     v2: 3.5,
     v3: 18.763,
     v4: 3.625,
+    // Distance to the end effector
     v5: 10,
     // Show off direection
     x: 45,

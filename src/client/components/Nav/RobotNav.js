@@ -197,7 +197,7 @@ export const RobotNav = () => {
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
-        <h1>Robot Viewer</h1>
+        <h1>Robot Control</h1>
         <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh.default />
         </ActionButton>
