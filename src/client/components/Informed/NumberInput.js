@@ -17,7 +17,7 @@ const Input = (props) => {
       isRequired={required}
       {...userProps}
       {...informed}
-      onChange={(v) => fieldApi.setValue(v)}
+      onChange={(v) => fieldApi.setValue(v, {})}
     />
   );
 };

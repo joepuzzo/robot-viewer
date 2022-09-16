@@ -136,6 +136,28 @@ const RobotProvider = ({ children }) => {
     }
   }, []);
 
+  // Update config function
+  const updateConfig = useCallback((key, value) => {
+    console.log(`Setting config ${key} to`, value);
+
+    // If we are connected to a robot send update to that robot
+    if (connectedRef.current) {
+      const robotId = formApi.getValue('robotId');
+      socket.emit('robotUpdateConfig', robotId, key, value);
+    }
+  }, []);
+
+  // Save config function
+  const saveConfig = useCallback(() => {
+    console.log(`Saving robot config`);
+
+    // If we are connected to a robot send update to that robot
+    if (connectedRef.current) {
+      const robotId = formApi.getValue('robotId');
+      socket.emit('robotWriteConfig', robotId);
+    }
+  }, []);
+
   // Update forward
   const updateForward = () => {
     const { j0, j1, j2, j3, j4, j5, base, v0, v1, v2, v3, v4, v5, x0 } =
@@ -235,6 +257,8 @@ const RobotProvider = ({ children }) => {
     return {
       updateJoint,
       updateRobot,
+      updateConfig,
+      saveConfig,
     };
   }, []);
 

@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useRef } from 'react';
-import { Flex, StatusLight } from '@adobe/react-spectrum';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Button, Flex, StatusLight } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
@@ -13,6 +13,8 @@ import { ActionButton } from '@adobe/react-spectrum';
 
 import Switch from '../Informed/Switch';
 import InputSlider from '../Informed/InputSlider';
+import NumberInput from '../Informed/NumberInput';
+
 import Select from '../Informed/Select';
 
 // Hooks
@@ -56,14 +58,16 @@ export const RobotNav = () => {
   const { extraOpen, toggleExtra, setConfig, config, socket } = useApp();
 
   // Get robot control
-  const { updateRobot, updateJoint } = useRobotController();
+  const { updateRobot, updateJoint, updateConfig, saveConfig } = useRobotController();
 
   // Get simulate controls
   const { stop: stopSimulation } = useSimulateController();
 
   // Get Kinimatics
-
   const { updateForward } = useRobotKinematics();
+
+  // Form api to manipulate form
+  const formApi = useFormApi();
 
   // Get the selected robot
   const { value: selectedRobot } = useFieldState('robotId');
@@ -77,13 +81,24 @@ export const RobotNav = () => {
   // Get selected robot meta
   const selectedRobotMeta = robots && robots[selectedRobot];
 
+  // Update some fields when the selected robot changes
+  useEffect(() => {
+    if (selectedRobotMeta) {
+      formApi.setTheseValues({
+        j0_limitAdj: selectedRobotMeta.config?.j0?.limitAdj ?? 0,
+        j1_limitAdj: selectedRobotMeta.config?.j1?.limitAdj ?? 0,
+        j2_limitAdj: selectedRobotMeta.config?.j2?.limitAdj ?? 0,
+        j3_limitAdj: selectedRobotMeta.config?.j3?.limitAdj ?? 0,
+        j4_limitAdj: selectedRobotMeta.config?.j4?.limitAdj ?? 0,
+        j5_limitAdj: selectedRobotMeta.config?.j5?.limitAdj ?? 0,
+      });
+    }
+  }, [selectedRobotMeta]);
+
   console.log('RENDER ROBOT NAV');
 
   // Grab ranges off of config
   const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5, units, zeroPosition } = config;
-
-  // Form api to manipulate form
-  const formApi = useFormApi();
 
   const robotUpdate = () => {
     // Get pos
@@ -190,6 +205,14 @@ export const RobotNav = () => {
     ({ value }) => {
       updateJoint(name, value);
       updateForward();
+    };
+
+  const onConfigChange =
+    (key) =>
+    ({ value }) => {
+      // Example key = "j0.limitAdj"
+      console.log('WTF');
+      updateConfig(key, value);
     };
 
   const disabled = !connected;
@@ -508,6 +531,59 @@ export const RobotNav = () => {
             <Switch name="linkColor" label="Show Link Color" />
             <br />
             <Switch name="hideNegatives" label="Hide Nagatives" />
+            <br />
+            <hr />
+            <h2>Robot Config</h2>
+            <NumberInput
+              name="j0_limitAdj"
+              label="J1 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j0.limitAdj')}
+            />
+            <NumberInput
+              name="j1_limitAdj"
+              label="J2 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j1.limitAdj')}
+            />
+            <NumberInput
+              name="j2_limitAdj"
+              label="J3 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j2.limitAdj')}
+            />
+            <NumberInput
+              name="j3_limitAdj"
+              label="J4 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j3.limitAdj')}
+            />
+            <NumberInput
+              name="j4_limitAdj"
+              label="J5 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j4.limitAdj')}
+            />
+            <NumberInput
+              name="j5_limitAdj"
+              label="J6 Limit Adjustment"
+              step={0.1}
+              initialValue={0}
+              onNativeChange={onConfigChange('j5.limitAdj')}
+            />
+            <br />
+            <br />
+            <Button variant="cta" type="button" onPress={saveConfig}>
+              Save Config
+            </Button>
+            <br />
+            <br />
+            <br />
           </ul>
         </div>
         <div className={extraOpen ? 'sidenav-extra sidenav-extra-visible' : 'sidenav-extra'}>
