@@ -8,6 +8,7 @@ import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
 import Compass from '@spectrum-icons/workflow/Compass';
+import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -162,6 +163,14 @@ export const RobotNav = () => {
     }
   };
 
+  const splitHome = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotSplitHome', robotId);
+    }
+  };
+
   const calibrate = () => {
     const robotId = formApi.getValue('robotId');
     // only send if we are connected
@@ -257,6 +266,9 @@ export const RobotNav = () => {
         </ActionButton>
         <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
           <Compass.default />
+        </ActionButton>
+        <ActionButton title="Split Home" onPress={() => splitHome()} isDisabled={disabled}>
+          <MoveUpDown.default />
         </ActionButton>
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
