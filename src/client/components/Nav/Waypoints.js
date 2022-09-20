@@ -3,7 +3,8 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useSimulateController from '../../hooks/useSimulateController';
 import NumberInput from '../Informed/NumberInput';
 import Select from '../Informed/Select';
-import { ArrayField, useArrayFieldState } from 'informed';
+import Switch from '../Informed/Switch';
+import { ArrayField, Relevant, useArrayFieldState } from 'informed';
 import useSimulateState from '../../hooks/useSimulateState';
 
 const ArrayButtons = ({ index, add, remove }) => {
@@ -155,12 +156,6 @@ export const Waypoints = () => {
                     }`}
                   >
                     <Flex direction="row" alignItems="end" gap="size-100" width={460}>
-                      <NumberInput name="x" label="X" hideStepper defaultValue={0} width={90} />
-                      <NumberInput name="y" label="Y" hideStepper defaultValue={0} width={90} />
-                      <NumberInput name="z" label="Z" hideStepper defaultValue={0} width={90} />
-                      {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
-                    <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
-                    <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
                       <Select
                         width={100}
                         defaultValue="z"
@@ -173,14 +168,8 @@ export const Waypoints = () => {
                           { label: '-Y', value: '-y' },
                           { label: 'Z', value: 'z' },
                           { label: '-Z', value: '-z' },
+                          { label: 'G', value: 'g' },
                         ]}
-                      />
-                      <NumberInput
-                        name="speed"
-                        label="Speed"
-                        hideStepper
-                        defaultValue={1500}
-                        width={90}
                       />
                       <NumberInput
                         name="wait"
@@ -189,6 +178,32 @@ export const Waypoints = () => {
                         defaultValue={0}
                         width={80}
                       />
+                      <Relevant
+                        when={({ scope, formApi }) =>
+                          formApi.getValue(`${scope}.orientation`) != 'g'
+                        }
+                      >
+                        <NumberInput name="x" label="X" hideStepper defaultValue={0} width={90} />
+                        <NumberInput name="y" label="Y" hideStepper defaultValue={0} width={90} />
+                        <NumberInput name="z" label="Z" hideStepper defaultValue={0} width={90} />
+                        {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
+                    <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
+                    <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
+                        <NumberInput
+                          name="speed"
+                          label="Speed"
+                          hideStepper
+                          defaultValue={1500}
+                          width={90}
+                        />
+                      </Relevant>
+                      <Relevant
+                        when={({ scope, formApi }) =>
+                          formApi.getValue(`${scope}.orientation`) === 'g'
+                        }
+                      >
+                        <Switch name="grip" initialValue={false} />
+                      </Relevant>
                       <ArrayButtons index={index} add={add} remove={remove} />
                     </Flex>
                   </div>

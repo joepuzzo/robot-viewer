@@ -31,7 +31,7 @@ const SimulateProvider = ({ children }) => {
   const { socket } = useApp();
 
   // Get robot control
-  const { updateRobot } = useRobotController();
+  const { updateRobot, updateGripper } = useRobotController();
 
   // Form Api
   const formApi = useFormApi();
@@ -105,19 +105,23 @@ const SimulateProvider = ({ children }) => {
     if (waypoints && waypoints.length - 1 !== i) {
       // Get the waypoint
       // const { x, y, z, r1, r2, r3 } = waypoints[i];
-      const { x, y, z, orientation, speed } = waypoints[i];
+      const { x, y, z, orientation, speed, grip } = waypoints[i];
 
       const { wait } = waypoints[i - 1] ? waypoints[i - 1] : 0;
 
       console.log('WAIT', wait);
 
-      const [r1, r2, r3] = getZXZ(orientation);
-
       setTimeout(() => {
-        console.log('Going to waypoint', i, 'pos', waypoints[i]);
-
-        // Update the robot
-        updateRobot(x, y, z, r1, r2, r3, speed);
+        if (orientation != 'g') {
+          console.log('Going to waypoint', i, 'pos', waypoints[i]);
+          // Get rotations
+          const [r1, r2, r3] = getZXZ(orientation);
+          // Update the robot
+          updateRobot(x, y, z, r1, r2, r3, speed);
+        } else {
+          // Update the gripper
+          updateGripper(grip ? 20 : 60);
+        }
 
         // Increase the step
         const current = getSimulating();

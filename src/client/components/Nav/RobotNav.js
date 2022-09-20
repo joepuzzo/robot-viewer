@@ -231,9 +231,11 @@ export const RobotNav = () => {
 
   const gripperOpenChange = ({ value }) => {
     if (value) {
-      updateGripper(30);
+      updateGripper(60);
+      formApi.setValue('gripper', 60);
     } else {
-      updateGripper(15);
+      updateGripper(20);
+      formApi.setValue('gripper', 20);
     }
   };
 
@@ -317,16 +319,16 @@ export const RobotNav = () => {
                 onNativeChange={onGripperChange}
                 label={`Gripper`}
                 type="number"
-                minValue={15}
-                maxValue={30}
-                initialValue={15}
+                minValue={20}
+                maxValue={60}
+                initialValue={20}
                 step={1}
               />
               <br />
               <Switch
                 name="gripperOpen"
                 label="Open"
-                initialValue={true}
+                initialValue={false}
                 onNativeChange={gripperOpenChange}
               />
               <br />
