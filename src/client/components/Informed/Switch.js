@@ -18,7 +18,7 @@ const Input = (props) => {
       {...userProps}
       {...informed}
       isSelected={informed.value}
-      onChange={(v) => fieldApi.setValue(v)}
+      onChange={(v) => fieldApi.setValue(v, {})}
     >
       {props.label}
     </Switch>

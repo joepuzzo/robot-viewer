@@ -42,36 +42,94 @@ export const Waypoints = () => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
 
+  // const initialValue = [
+  //   {
+  //     x: 30,
+  //     y: 10,
+  //     z: 60,
+  //     orientation: 'x',
+  //   },
+  //   {
+  //     x: 30,
+  //     y: -10,
+  //     z: 60,
+  //     orientation: 'x',
+  //   },
+  //   {
+  //     x: -30,
+  //     y: 10,
+  //     z: 60,
+  //     orientation: '-x',
+  //   },
+  //   {
+  //     x: 50,
+  //     y: 0,
+  //     z: 0,
+  //     orientation: '-z',
+  //   },
+  //   {
+  //     x: 30,
+  //     y: -10,
+  //     z: 60,
+  //     orientation: 'x',
+  //   },
+  //   {},
+  // ];
+
   const initialValue = [
     {
       x: 30,
-      y: 10,
-      z: 60,
-      orientation: 'x',
+      y: 20,
+      z: 10,
+      orientation: '-z',
     },
     {
-      x: 30,
-      y: -10,
-      z: 60,
-      orientation: 'x',
-    },
-    {
-      x: -30,
-      y: 10,
-      z: 60,
-      orientation: '-x',
+      x: 40,
+      y: 20,
+      z: 10,
+      orientation: '-z',
     },
     {
       x: 50,
-      y: 0,
-      z: 0,
+      y: 20,
+      z: 10,
       orientation: '-z',
     },
     {
       x: 30,
-      y: -10,
-      z: 60,
-      orientation: 'x',
+      y: 0,
+      z: 10,
+      orientation: '-z',
+    },
+    {
+      x: 40,
+      y: 0,
+      z: 10,
+      orientation: '-z',
+    },
+    {
+      x: 50,
+      y: 0,
+      z: 10,
+      orientation: '-z',
+    },
+    {
+      x: 30,
+      y: -20,
+      z: 10,
+      orientation: '-z',
+    },
+    {
+      x: 40,
+      y: -20,
+      z: 10,
+      orientation: '-z',
+    },
+    {
+      x: 50,
+      y: -20,
+      z: 10,
+      orientation: '-z',
     },
     {},
   ];

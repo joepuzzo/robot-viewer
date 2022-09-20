@@ -136,6 +136,17 @@ const RobotProvider = ({ children }) => {
     }
   }, []);
 
+  // Update gripper function
+  const updateGripper = useCallback((value) => {
+    console.log(`Setting gripper to`, value);
+
+    // If we are connected to a robot send update to that robot
+    if (connectedRef.current) {
+      const robotId = formApi.getValue('robotId');
+      socket.emit('gripperSetPos', robotId, value);
+    }
+  }, []);
+
   // Update config function
   const updateConfig = useCallback((key, value) => {
     console.log(`Setting config ${key} to`, value);
@@ -255,6 +266,7 @@ const RobotProvider = ({ children }) => {
   // Build robot controller
   const robotController = useMemo(() => {
     return {
+      updateGripper,
       updateJoint,
       updateRobot,
       updateConfig,

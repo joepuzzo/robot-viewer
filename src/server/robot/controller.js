@@ -35,6 +35,15 @@ export class Controller {
     logger(`controller client says hello`, args);
   }
 
+  gripperSetPos(robotId, pos, speed) {
+    logger(`controller client says gripperSetPos`, robotId, pos, speed);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed);
+    }
+  }
+
   motorSetPos(robotId, motorId, pos) {
     logger(`controller client says motorSetPos`, robotId, motorId, pos);
     // only send if we are connected
@@ -183,6 +192,7 @@ export class Controller {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
     this.clientMessenger.on('disconnect', (...args) => this.clientDisconnect(...args));
+    this.clientMessenger.on('gripperSetPos', (...args) => this.gripperSetPos(...args));
     this.clientMessenger.on('motorSetPos', (...args) => this.motorSetPos(...args));
     this.clientMessenger.on('motorResetErrors', (...args) => this.motorResetErrors(...args));
     this.clientMessenger.on('motorEnable', (...args) => this.motorEnable(...args));

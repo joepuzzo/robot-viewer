@@ -59,7 +59,8 @@ export const RobotNav = () => {
   const { extraOpen, toggleExtra, setConfig, config, socket } = useApp();
 
   // Get robot control
-  const { updateRobot, updateJoint, updateConfig, saveConfig } = useRobotController();
+  const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
+    useRobotController();
 
   // Get simulate controls
   const { stop: stopSimulation } = useSimulateController();
@@ -141,6 +142,14 @@ export const RobotNav = () => {
 
   const centerRobot = () => {
     const robotId = formApi.getValue('robotId');
+    formApi.setTheseValues({
+      j0: 0,
+      j1: 0,
+      j2: 0,
+      j3: 0,
+      j4: 0,
+      j5: 0,
+    });
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotCenter', robotId);
@@ -216,6 +225,18 @@ export const RobotNav = () => {
       updateForward();
     };
 
+  const onGripperChange = ({ value }) => {
+    updateGripper(value);
+  };
+
+  const gripperOpenChange = ({ value }) => {
+    if (value) {
+      updateGripper(30);
+    } else {
+      updateGripper(15);
+    }
+  };
+
   const onConfigChange =
     (key) =>
     ({ value }) => {
@@ -290,6 +311,26 @@ export const RobotNav = () => {
               aria-label="Robot"
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="gripper"
+                onNativeChange={onGripperChange}
+                label={`Gripper`}
+                type="number"
+                minValue={15}
+                maxValue={30}
+                initialValue={15}
+                step={1}
+              />
+              <br />
+              <Switch
+                name="gripperOpen"
+                label="Open"
+                initialValue={true}
+                onNativeChange={gripperOpenChange}
+              />
+              <br />
+            </Flex>
             <InputSlider
               name="x"
               onNativeChange={onValueChange('x')}
