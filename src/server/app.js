@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import path, { dirname } from 'path';
+import bodyParser from 'body-parser';
 
 import health from './routes/health.js';
 import fail from './routes/fail.js';
+import waypoints from './routes/waypoints.js';
 import errorHandler from './middleware/errorHandler.js';
 import proxy from './middleware/proxy.js';
 
@@ -25,8 +27,14 @@ const createApp = ({ corsConfig }) => {
   // Apply CORS to the endpoints
   app.use(cors(corsConfig));
 
+  // Add body parser
+  app.use(bodyParser.json());
+
   // Add error handler
   app.use(errorHandler);
+
+  // Waypoint endpoints
+  app.use('/waypoints', waypoints);
 
   // Route for static content
   if (process.env.NODE_ENV === 'development') {

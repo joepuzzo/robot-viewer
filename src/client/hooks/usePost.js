@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { useCallback, useState } from 'react';
 
-export const useGet = ({ url, headers } = {}) => {
+export const usetPost = ({ url, headers }) => {
   const [res, setRes] = useState({ data: null, error: null, loading: false });
-  // You GET method here
+  // You POST method here
   const post = useCallback(
-    ({ url: newUrl }) => {
+    ({ payload, url: newUrl }) => {
       setRes((prevState) => ({ ...prevState, loading: true }));
       axios
-        .get(newUrl ?? url)
+        .post(newUrl ?? url, payload)
         .then((res) => {
           setRes({ data: res.data, loading: false, error: null });
         })

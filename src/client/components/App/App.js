@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 // Hooks
 import useApp from '../../hooks/useApp';
-import useGet from '../../hooks/useGet';
+import { useGet } from '../../hooks/useGet';
 
 // Components
 import { Header } from '../Header/Header';
@@ -21,7 +21,7 @@ import { Routes } from '../Routes/Routes';
 const App = () => {
   const { colorScheme, extraOpen } = useApp();
 
-  const { loading, error } = useGet({
+  const [{ loading, error }] = useGet({
     url: '/health',
   });
 
