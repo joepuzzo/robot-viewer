@@ -293,7 +293,7 @@ export const Waypoints = () => {
                           formApi.getValue(`${scope}.orientation`) === 'g'
                         }
                       >
-                        <Switch name="grip" initialValue={false} isDisabled={loading} />
+                        <Switch name="grip" defaultValue={false} isDisabled={loading} />
                       </Relevant>
                       <ArrayButtons index={index} add={add} remove={remove} isDisabled={loading} />
                     </Flex>
