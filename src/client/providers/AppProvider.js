@@ -66,7 +66,7 @@ const AppProvider = ({ children }) => {
     rangej4: [-90, 90],
     rangej5: [-180, 180],
     // Below is for AR -------------------------
-    zeroPosition: [6.42, 0, 84.602],
+    zeroPosition: [6.42, 0, 83.365],
     x0: 6.42,
     // Below three should add up to 474.77 mm ( 47.477 cm )
     base: 3.11,
@@ -88,7 +88,7 @@ const AppProvider = ({ children }) => {
     // For Zero Direction
     // x: 6.42,
     // y: 0,
-    // z: 84.602,
+    // z: 83.365,
     // r1: 0,
     // r2: 0,
     // r3: 0,
