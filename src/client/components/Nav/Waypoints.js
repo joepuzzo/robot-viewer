@@ -193,7 +193,7 @@ export const Waypoints = () => {
       <br />
       <br />
       <Flex direction="row" alignItems="end" gap="size-100">
-        <Input name="filename" label="Filename" placeholder="pickup-cup" autocomplete="off" />
+        <Input name="filename" label="Filename" autocomplete="off" />
         <ActionButton type="button" onPress={load} minWidth="100" isDisabled={loading}>
           Load Waypoints
         </ActionButton>

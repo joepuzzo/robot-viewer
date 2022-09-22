@@ -292,13 +292,24 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
     const diff6 = Math.PI - Math.abs(angle6);
 
     // console.log('DIFF4', diff4, 'Diff6', diff6);
+    // console.log('HERE0', angle4, angle5, angle6);
+    // console.log('RS', r1, r2, r3);
 
     // Flip reciprical of 4 and 6 && flip 5
     if (Math.abs(angle4) > Math.PI / 2) {
       // console.log('HERE1', angle4, angle5, angle6);
       angle4 = angle4 < 0 ? diff4 : -diff4;
       angle5 = angle5 * -1;
-      if (r1 != 0) angle6 = angle6 < 0 ? diff6 : -diff6;
+      // Only flip 6 when the diffence of angle4 is less than 180 degrees ( also special check for about zero )
+      if (diff4 < Math.PI / 2 && Math.round(diff4 * 100) / 100 != 0) {
+        // && Math.abs(diff6) < Math.PI / 2
+        // console.log('FLIPPING');
+        angle6 = angle6 < 0 ? diff6 : -diff6;
+      }
+      // Special case for 180
+      if (Math.abs(angle6) === Math.PI) {
+        angle6 = 0;
+      }
     }
   }
 
