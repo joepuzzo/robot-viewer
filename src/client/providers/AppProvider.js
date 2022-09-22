@@ -89,9 +89,18 @@ const AppProvider = ({ children }) => {
     // x: 6.42,
     // y: 0,
     // z: 83.365,
+    // // x: 40,
+    // // z: 60,
     // r1: 0,
     // r2: 0,
     // r3: 0,
+    // For 30deg Direction
+    // x: 40,
+    // y: -20,
+    // z: 60,
+    // r1: 60,
+    // r2: 90,
+    // r3: 90,
     // For Limits
     rangej0: [-170, 170],
     rangej1: [-90, 42],

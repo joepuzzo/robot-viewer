@@ -19,7 +19,7 @@ const getZXZ = (orientation) => {
     case 'x':
       return [90, 90, 90];
     case '-x':
-      return [-270, -90, 90];
+      return [-270, -90, -90];
     case 'y':
       return [0, -90, 0];
     case '-y':

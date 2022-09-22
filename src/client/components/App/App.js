@@ -35,7 +35,11 @@ const App = () => {
 
   return (
     <Router>
-      <Provider theme={defaultTheme} colorScheme={colorScheme}>
+      <Provider
+        theme={defaultTheme}
+        colorScheme={colorScheme}
+        UNSAFE_style={{ overflow: 'hidden' }}
+      >
         <Header />
         <Nav />
         <main className={extraOpen ? 'extra' : ''}>
