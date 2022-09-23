@@ -41,6 +41,9 @@ const RobotProvider = ({ children }) => {
   // Get value of robotId
   const { value: robotId } = useFieldState('robotId');
 
+  // For controlling ball locaiton
+  const setBallRef = useRef();
+
   // Register for robots events
   useEffect(() => {
     const robotsHandler = (rbts) => {
@@ -271,6 +274,7 @@ const RobotProvider = ({ children }) => {
       updateRobot,
       updateConfig,
       saveConfig,
+      setBallRef,
     };
   }, []);
 

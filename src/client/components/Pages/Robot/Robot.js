@@ -1,10 +1,10 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { OrbitControls } from '@react-three/drei';
 import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
 import { Arm } from '../../3D/Arm';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useThree } from '@react-three/fiber';
 import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
 import Switch from '../../Informed/Switch';
@@ -13,6 +13,8 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotController from '../../../hooks/useRobotController';
 import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
+
+const DEG45 = Math.PI / 4;
 
 const getZXZ = (orientation) => {
   switch (orientation) {
@@ -33,10 +35,13 @@ const getZXZ = (orientation) => {
   }
 };
 
-const Control = () => {
+const Control = ({ controlRef }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
-  const { updateRobot } = useRobotController();
+  const { updateRobot, setBallRef } = useRobotController();
+  const { config } = useApp();
+
+  const { zeroPosition } = config;
 
   const robotUpdate = () => {
     const { goToX, goToY, goToZ, orientation } = formApi.getFormState().values;
@@ -48,15 +53,37 @@ const Control = () => {
     updateRobot(goToX, goToY, goToZ, r1, r2, r3);
   };
 
+  const reset = () => {
+    formApi.reset();
+    // formApi.setTheseValues({
+    //   x: zeroPosition[0],
+    //   y: zeroPosition[1],
+    //   z: zeroPosition[2],
+    //   r1: 0,
+    //   r2: 0,
+    //   r3: 0,
+    // });
+
+    // Get pos
+    const { x, y, z, r1, r2, r3 } = formApi.getFormState().values;
+
+    setBallRef.current([x, y, z, r1, r2, r3]);
+
+    controlRef.current.reset();
+  };
+
   return (
     <>
       <Flex
         direction="row"
-        width={450}
+        width={500}
         justifyContent="space-between"
         alignItems="end"
         gap="size-100"
       >
+        <ActionButton type="button" onPress={reset} minWidth="100">
+          Reset
+        </ActionButton>
         <NumberInput
           name="goToX"
           label={`X: ${round(values.x, 100)}`}
@@ -115,6 +142,8 @@ export const Robot = () => {
 
   const { units } = config;
 
+  const controlRef = useRef();
+
   return (
     <>
       <h3>
@@ -129,7 +158,7 @@ export const Robot = () => {
         Location: X: {round(endPosition.x, 1000)} {units} Y: {round(endPosition.y, 1000)} {units} Z:{' '}
         {round(endPosition.z, 1000)} {units}
       </h3>
-      <Control />
+      <Control controlRef={controlRef} />
       <Canvas
         camera={{
           fov: 75,
@@ -140,7 +169,7 @@ export const Robot = () => {
           zoom: 1,
         }}
       >
-        <OrbitControls enabled={orbitEnabled} />
+        <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>

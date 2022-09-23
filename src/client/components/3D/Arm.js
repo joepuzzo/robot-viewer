@@ -106,7 +106,7 @@ const Pos = ({
     immediate: !animate,
   });
 
-  // control.setBall.current = setPosition;
+  robotController.setBallRef.current = setPosition;
 
   const robotUpdate = (x, y, z, r1, r2, r3) => {
     // Update the robot
