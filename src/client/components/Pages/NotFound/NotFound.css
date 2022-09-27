@@ -4,8 +4,6 @@
   display: flex;
   block-size: 100%;
 
-  /* Starman image has whitespace on the right */
-  padding: var(--tds-size--3x);
   padding-inline-end: 0;
 }
 
@@ -32,45 +30,4 @@
   align-items: center;
   block-size: 100%;
   inline-size: 100%;
-}
-
-@media (--tds-phone-only) {
-  .error-container {
-    flex-direction: column;
-    padding: initial;
-  }
-
-  .error-text {
-    align-items: center;
-    margin: 0;
-  }
-
-  .error-code {
-    font-size: 80px;
-    line-height: initial;
-  }
-
-  .error-message {
-    font-size: 17px;
-  }
-
-  .error-action {
-    margin-block-start: var(--tds-size--half);
-    text-align: center;
-  }
-
-  .error-image {
-    margin: var(--tds-size--3x) 0;
-  }
-
-  .starman {
-    block-size: 180px;
-  }
-}
-
-@media (--tds-tablet-portrait-only) {
-  .error-code {
-    font-size: 100px;
-    line-height: initial;
-  }
 }
