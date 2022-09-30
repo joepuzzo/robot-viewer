@@ -288,6 +288,7 @@ const Component = ({
   updateMotion,
   runOnRobot,
   xOffset,
+  yOffset = 0,
   simulating,
   ...props
 }) => {
@@ -344,7 +345,7 @@ const Component = ({
           ) : null}
           {!doubleV ? (
             <mesh
-              position={[xOffset ?? 0, args[2] / 2 + 5, -3.75]}
+              position={[xOffset ?? 0, args[2] / 2 + 5, -3.75 - yOffset]}
               rotation={[0, Math.PI / 2, Math.PI / 2]}
             >
               <cylinderGeometry args={[5, 5, 2.5, 32]} />
@@ -446,6 +447,7 @@ export function Arm({
   // Take off extras
   const base = values.base - 2.5;
   const x0 = values.x0;
+  const y0 = values.y0;
   const v0 = values.v0 - 7.5;
   const v1 = values.v1 - 10;
   const v2 = values.v2 - 7.5;
@@ -511,6 +513,7 @@ export function Arm({
             animate={animate}
             runOnRobot={runOnRobot}
             xOffset={x0}
+            yOffset={y0}
             simulating={simulating}
           >
             <Component
@@ -520,7 +523,7 @@ export function Arm({
               setSelected={setSelected}
               selected={selected}
               args={[5, 5, 5, 32]}
-              position={[x0, 0, v0 / 2 + 5]}
+              position={[x0, y0, v0 / 2 + 5]}
               grid={jointGrid}
               error={outside(j1, config.rangej1)}
               hide={hide}

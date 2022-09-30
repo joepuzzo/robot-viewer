@@ -38,7 +38,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   // ];
 
   // Get lengths of all verticies between joints
-  const { a1, a2, a3, a4, a5, a6, x0 = 0, flip } = robotConfig;
+  const { a1, a2, a3, a4, a5, a6, x0 = 0, y0 = 0, flip } = robotConfig;
 
   // ----------------------------------------------------------------------------------
   // Step1 find the x0_3, y0_3 and Z0_3 based on end effector
@@ -89,6 +89,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
     a2,
     a3: a3 + a4, // Our point includes joint 4 because we want location to wrist center,
     x0,
+    y0,
   };
   const [angle1, angle2, angle3] = inverse1_3(x0_3, y0_3, z0_3, robotConfig1_3);
 

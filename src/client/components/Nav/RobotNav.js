@@ -522,6 +522,15 @@ export const RobotNav = () => {
               trackGradient="black"
             />
             <InputSlider
+              name="y0"
+              label="Y0"
+              type="number"
+              minValue={0}
+              maxValue={100}
+              step={0.1}
+              trackGradient="black"
+            />
+            <InputSlider
               name="v0"
               label="V0"
               type="number"

@@ -180,9 +180,9 @@ const computeT3 = (p3) => {
  * @returns
  */
 export const inverse1_3 = (x, y, z, robotConfig) => {
-  const { a1, a2, a3, x0 = 0 } = robotConfig;
+  const { a1, a2, a3, x0 = 0, y0 = 0 } = robotConfig;
 
-  const r1 = computeR1(x, y) - x0;
+  const r1 = computeR1(x, y - y0) - x0;
   logger('r1', r1);
   const r2 = computeR2(z, a1);
   logger('r2', r2);
@@ -195,7 +195,7 @@ export const inverse1_3 = (x, y, z, robotConfig) => {
   const p3 = computeP3(a2, a3, r3);
   logger('p3', p3);
 
-  const t1 = computeT1(x, y);
+  const t1 = computeT1(x, y - y0);
   const t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
   const t3 = -computeT3(p3); // Needed to negate to match main x, y frame
 
