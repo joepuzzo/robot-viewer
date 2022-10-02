@@ -329,6 +329,8 @@ const Component = ({
     opacity = 0.02;
   }
 
+  const clydYLength = yOffset - 2.5;
+
   if (vertex) {
     return (
       <group ref={mesh} position={position} {...props}>
@@ -355,10 +357,10 @@ const Component = ({
           {doubleV ? (
             <>
               <mesh
-                position={[0, -(args[2] / 2 + 5), 3.75]}
+                position={[0, -(args[2] / 2 + 5), 3.75 + yOffset / 2]}
                 rotation={[0, Math.PI / 2, Math.PI / 2]}
               >
-                <cylinderGeometry args={[5, 5, 2.5, 32]} />
+                <cylinderGeometry args={[5, 5, 2.5 + yOffset, 32]} />
                 <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
               </mesh>
               <mesh position={[0, args[2] / 2 + 5, 3.75]} rotation={[0, Math.PI / 2, Math.PI / 2]}>
@@ -552,6 +554,7 @@ export function Arm({
                 animate={animate}
                 runOnRobot={runOnRobot}
                 simulating={simulating}
+                yOffset={y0}
               >
                 <Component
                   name="j2"

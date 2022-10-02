@@ -38,12 +38,12 @@ const AppProvider = ({ children }) => {
     r2: 0,
     r3: 0,
     // Below is for sideways testing
-    // x: 55,
-    // y: 0,
-    // z: 45,
-    // r1: -90,
-    // r2: -90,
-    // r3: 0,
+    x: 55,
+    y: 0,
+    z: 45,
+    r1: -90,
+    r2: -90,
+    r3: 0,
     // Below is for down direction
     // x: 5,
     // y: 0,

@@ -19,8 +19,10 @@ const logger = Debug('ik:inverse1_3' + '\t');
  * 3. Law of cosines
  *
  * Math.pow(c, 2) = Math.pow(a, 2) + Math.pow(b, 2) - 2 * a * b * Math.cos( alpha )
+ * OR
+ * c ** 2 = a ** 2 + b ** 2 - 2 * a * b * Math.cos( alpha )
  *
- * where c is angle opposite side c
+ * where alpha is angle opposite side c
  *
  *        /\
  *     a /  \ c
@@ -83,7 +85,7 @@ const logger = Debug('ik:inverse1_3' + '\t');
  *     ( )                  |
  *      _ _ _ _ _ _ _ _ _x0_3
  *
- *  -------- TopDownView if offset --------
+ *  -------- TopDownView if offsetX --------
  *            .           y0_3
  *           /             |
  *          /              |
@@ -97,6 +99,18 @@ const logger = Debug('ik:inverse1_3' + '\t');
  *  / t1
  * ( )
  * _ _ _ _ _ _ _ _ _ _ _ _ _ x0_3
+ *
+ *  -------- TopDownView if offsetY --------
+ *                  .           y0_3
+ *                 /             |
+ *                /              |
+ *          r1  [ ]              |
+ *              /                |
+ *             /                 |
+ *            / t1               |
+ *     ( )   /                   |
+ *          /
+ *      _ _ _ _ _ _ _ _ _ _ _ x0_3
  *
  *
  * Goal: our goal is to derrive equasions for each theta for joints 1-3
@@ -182,7 +196,7 @@ const computeT3 = (p3) => {
 export const inverse1_3 = (x, y, z, robotConfig) => {
   const { a1, a2, a3, x0 = 0, y0 = 0 } = robotConfig;
 
-  const r1 = computeR1(x, y - y0) - x0;
+  const r1 = computeR1(x, y) - x0;
   logger('r1', r1);
   const r2 = computeR2(z, a1);
   logger('r2', r2);
