@@ -80,6 +80,33 @@ export class Controller {
     }
   }
 
+  queryMotorPosition(robotId, motorId) {
+    logger(`controller client says queryMotorPosition`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'queryMotorPosition', motorId);
+    }
+  }
+
+  queryMotorParameter(robotId, motorId, index, subindex) {
+    logger(`controller client says queryMotorParameter`, robotId, motorId, index, subindex);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'queryMotorParameter', motorId, index, subindex);
+    }
+  }
+
+  motorCalibrate(robotId, motorId) {
+    logger(`controller client says motorCalibrate`, robotId, motorId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'motorCalibrate', motorId);
+    }
+  }
+
   motorZero(robotId, motorId) {
     logger(`controller client says motorZero`, robotId, motorId);
     // only send if we are connected
@@ -197,6 +224,9 @@ export class Controller {
     this.clientMessenger.on('motorResetErrors', (...args) => this.motorResetErrors(...args));
     this.clientMessenger.on('motorEnable', (...args) => this.motorEnable(...args));
     this.clientMessenger.on('motorDisable', (...args) => this.motorDisable(...args));
+    this.clientMessenger.on('motorCalibrate', (...args) => this.motorCalibrate(...args));
+    this.clientMessenger.on('queryMotorPosition', (...args) => this.queryMotorPosition(...args));
+    this.clientMessenger.on('queryMotorParameter', (...args) => this.queryMotorParameter(...args));
     this.clientMessenger.on('motorZero', (...args) => this.motorZero(...args));
     this.clientMessenger.on('motorHome', (...args) => this.motorHome(...args));
     this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));

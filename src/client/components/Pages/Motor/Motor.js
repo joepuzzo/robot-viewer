@@ -6,6 +6,7 @@ import Alert from '@spectrum-icons/workflow/Alert';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotState from '../../../hooks/useRobotState';
 import useRobotMeta from '../../../hooks/useRobotMeta';
+import Input from '../../Informed/Input';
 
 // import { useSpring, animated } from 'react-spring';
 
@@ -89,6 +90,35 @@ export const Motor = () => {
     }
   }, []);
 
+  const motorCalibrate = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('motorCalibrate', robotId, motorId);
+    }
+  }, []);
+
+  const queryMotorPosition = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('queryMotorPosition', robotId, motorId);
+    }
+  }, []);
+
+  const queryMotorParameter = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    const parameterIndex = formApi.getValue('parameterIndex');
+    const parameterSubindex = formApi.getValue('parameterSubindex');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('queryMotorParameter', robotId, motorId, parameterIndex, parameterSubindex);
+    }
+  }, []);
+
   const motorZero = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
@@ -150,6 +180,9 @@ export const Motor = () => {
           <ActionButton width="size-2400" onPress={robotHome}>
             Robot Home
           </ActionButton>
+          <ActionButton width="size-2400" onPress={queryMotorPosition}>
+            Query Motor Pos
+          </ActionButton>
         </Flex>
         <Flex direction="column" alignItems="center" gap="size-100">
           <svg width="500" height="500">
@@ -165,6 +198,13 @@ export const Motor = () => {
               <circle ref={controlRef} cx="250" cy="100" r="20" fill="black" />
             </g>
           </svg>
+          <Flex alignItems="end" gap="size-100">
+            <Input name="parameterIndex" label="Parameter Index" />
+            <Input name="parameterSubindex" label="Parameter SubIndex" />
+            <ActionButton width="size-2400" onPress={queryMotorParameter}>
+              Query
+            </ActionButton>
+          </Flex>
         </Flex>
         <Flex
           width="size-2400"
@@ -181,6 +221,9 @@ export const Motor = () => {
           </ActionButton>
           <ActionButton width="size-2400" onPress={motorDisable}>
             Disable Motor
+          </ActionButton>
+          <ActionButton width="size-2400" onPress={motorCalibrate}>
+            Calibrate Motor
           </ActionButton>
         </Flex>
       </Flex>
