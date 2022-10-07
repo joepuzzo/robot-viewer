@@ -12,7 +12,7 @@ const terminate = (server, options = { coredump: false, timeout: 500 }) => {
   };
 
   return (code, reason) => (err) => {
-    logger.info(`Barker Terminating due to ${reason}`);
+    logger.info(`Terminating due to ${reason}`);
 
     if (err && err instanceof Error) {
       logger.error('Terminating due to error', err);
