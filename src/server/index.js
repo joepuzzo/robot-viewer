@@ -3,6 +3,7 @@ import http from 'http';
 import app from './app.js';
 import setup from './setup.js';
 import terminate from './terminate.js';
+import startWebsocket from './socketserver.js';
 
 const start = async () => {
   try {
@@ -21,6 +22,11 @@ const start = async () => {
     server.listen(configuration.PORT, () => {
       console.log('Server is now running on port', configuration.PORT);
     });
+
+    // start websocket for metrics
+    if (process.env.METRICS) {
+      configuration.controller.websocket = startWebsocket();
+    }
 
     // Add Terminate code
     const exitHandler = terminate(server, {

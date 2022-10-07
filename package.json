@@ -30,6 +30,7 @@
     "react-spring": "^9.5.2",
     "request": "^2.88.2",
     "socket.io": "^4.5.1",
+    "websocket": "^1.0.34",
     "winston": "^3.3.3"
   },
   "devDependencies": {

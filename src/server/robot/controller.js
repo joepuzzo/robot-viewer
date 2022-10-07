@@ -267,11 +267,13 @@ export class Controller {
   robotState(id, state) {
     logger(`controller robot state ${id}:`);
     this.clientMessenger.send('robot', id, state);
+    if (this.websocket) this.websocket.send(state);
   }
 
   robotEncoder(id, state) {
     // Specifically dont log this because its a lot
     this.clientMessenger.send('robot', id, state);
+    if (this.websocket) this.websocket.send(state);
   }
 
   robotRegister(id, robot) {
