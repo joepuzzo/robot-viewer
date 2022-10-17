@@ -1,12 +1,12 @@
-# BFF Starter
+# Robot Viewer
 
-This is a starting point for creating a react app with a BFF pattern
+This is a simulator and control interface for 6 axis robotic arms.
 
 ## Layout
 
 ```bash
 # Directory for all the react static site content
-src/clint/
+src/client/
 # Directory for all the node/express server content ( BFF )
 src/server/
 ```
@@ -49,16 +49,14 @@ The second will start up the bff ( express-app/node-server ) with the env variab
 
 ## Build / Deploy
 
-This project contains a Dockerfile that can be built with: 
+This project contains a Dockerfile that can be built with:
 
 ```bash
 npm run build:docker
 ```
 
-To run it locally simply run 
+To run it locally simply run
 
 ```bash
 npm run run:docker
 ```
-
-

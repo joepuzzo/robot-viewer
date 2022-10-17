@@ -41,7 +41,7 @@ const createApp = ({ corsConfig }) => {
     // Route for static content
     app.use('/static', express.static(path.join(__dirname, './static')));
     // Route to dev server when developing
-    app.use('/*', proxy('http://localhost:9000'));
+    app.use('/*', proxy('http://localhost:9001'));
   } else {
     // Routes for static content
     app.use('/static', express.static(path.join(__dirname, './static')));

@@ -6,9 +6,9 @@ module.exports = merge(common, {
   mode: 'development',
   devServer: {
     contentBase: './build',
-    port: 9000,
+    port: 9001,
     historyApiFallback: true,
     host: '0.0.0.0',
     hot: true,
-  }
+  },
 });
