@@ -9,7 +9,7 @@ export class ClientMessenger extends EventEmitter {
     // Create io with namespace client
     this.io = io.of('/client');
     // Initialize listeners
-    this.io.on('connect', (socket) => this.connect(socket)};
+    this.io.on('connect', (socket) => this.connect(socket));
   }
 
   send(event, ...args) {
