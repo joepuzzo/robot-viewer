@@ -74,16 +74,6 @@ export const Recipe = ({recipe, allActions}) => {
     getWaypoints({ url: `/recipes/load/${recipeName}` });
   }, []);
 
-  // // Build new initial values from data
-  // const initialValue = useMemo(() => {
-  //   if (recipe) return recipe;
-  // }, recipe);
-
-  // Reset the array field
-  // useEffect(() => {
-  //   arrayFieldApiRef.current.reset();
-  // }, [initialValue]);
-
   return (
     <div className="recipes">
       <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
@@ -111,7 +101,7 @@ export const Recipe = ({recipe, allActions}) => {
                       <Select
                         isDisabled={loading}
                         width={300}
-                        defaultValue={recipe[index]?.action || 'Select Action'}
+                      defaultValue={recipe[index]?.action || 'Select Action'}
                         name="action"
                         aria-label="Select Action"
                         options={allActions.map((x) => {return {"label": x, "value": x}})}
