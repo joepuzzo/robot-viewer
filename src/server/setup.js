@@ -83,7 +83,6 @@ const setupCors = () => {
       } else {
         callback(new Error('Not allowed by CORS'));
       }
-     callback(null, true);
     },
   };
 };
