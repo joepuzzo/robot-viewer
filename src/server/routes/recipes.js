@@ -10,18 +10,18 @@ const router = express.Router();
 router.post('/save/:filename', (req, res) => {
   const { filename } = req.params;
 
-  logger.info(`Saving waypoints to file ${filename}.json`, req.body);
+  logger.info(`Saving recipes to file ${filename}.json`, req.body);
 
-  // Make waypoint dir if its not there
-  if (!fs.existsSync('waypoints')) {
-    logger.info(`Making waypoint directory`);
-    fs.mkdirSync('waypoints');
+  // Make recipe dir if its not there
+  if (!fs.existsSync('recipes')) {
+    logger.info(`Making recipe directory`);
+    fs.mkdirSync('recipes');
   }
 
   // Write out the file
   try {
     // Get filepath
-    const filepath = path.resolve(`waypoints/${filename}`);
+    const filepath = path.resolve(`recipes/${filename}`);
     // Write out file
     fs.writeFileSync(`${filepath}.json`, JSON.stringify(req.body, null, 2));
   } catch (err) {
@@ -34,12 +34,12 @@ router.post('/save/:filename', (req, res) => {
 router.get('/load/:filename', (req, res) => {
   const { filename } = req.params;
 
-  logger.info(`Loading waypoints from file ${filename}.json`);
+  logger.info(`Loading recipes from file ${filename}.json`);
 
   // Read in config file ( create if it does not exist yet )
   try {
     // Get filepath
-    const filepath = path.resolve(`waypoints/${filename}`);
+    const filepath = path.resolve(`recipes/${filename}`);
 
     // Read in config file
     const data = JSON.parse(fs.readFileSync(`${filepath}.json`, 'utf8'));
@@ -54,9 +54,14 @@ router.get('/load/:filename', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-  logger.info(`Loading all waypoints from /waypoints`);
-  const allWaypoints = {};
-  const directory = path.resolve('waypoints/');
+  logger.info(`Loading all recipes from /recipes`);
+  const allRecipes = {};
+  // Make recipe dir if its not there
+  if (!fs.existsSync('recipes')) {
+    logger.info(`Making recipe directory`);
+    fs.mkdirSync('recipes');
+  }
+  const directory = path.resolve('recipes/');
   try {
     fs.readdirSync(directory).forEach(filename => {
         // get current file name
@@ -73,10 +78,10 @@ router.get('/all', (req, res) => {
         // exclude folders
         if (isFile && ext === '.json') {
           const data = JSON.parse(fs.readFileSync(`${filepath}`, 'utf8'));
-          allWaypoints[name] = data;
+          allRecipes[name] = data;
           }
     });
-    return res.send(allWaypoints);
+    return res.send(allRecipes);
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);

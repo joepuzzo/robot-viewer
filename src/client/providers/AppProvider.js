@@ -165,6 +165,7 @@ const AppProvider = ({ children }) => {
       transports: ['websocket'],
       secure: true,
     });
+    console.log(socket);
     socketRef.current = socket;
   });
 

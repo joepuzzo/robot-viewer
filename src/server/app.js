@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import health from './routes/health.js';
 import fail from './routes/fail.js';
 import waypoints from './routes/waypoints.js';
+import recipes from './routes/recipes.js';
 import errorHandler from './middleware/errorHandler.js';
 import proxy from './middleware/proxy.js';
 
@@ -25,7 +26,7 @@ const createApp = ({ corsConfig }) => {
   app.use('/fail', fail);
 
   // Apply CORS to the endpoints
-  app.use(cors(corsConfig));
+  //app.use(cors(corsConfig));
 
   // Add body parser
   app.use(bodyParser.json());
@@ -35,6 +36,8 @@ const createApp = ({ corsConfig }) => {
 
   // Waypoint endpoints
   app.use('/waypoints', waypoints);
+
+  app.use('/recipes', recipes);
 
   // Route for static content
   if (process.env.NODE_ENV === 'development') {
