@@ -157,8 +157,8 @@ export const Motor = () => {
         label="Set Position"
         onNativeChange={motorSetPos}
         type="number"
-        minValue={-180}
-        maxValue={180}
+        minValue={-360}
+        maxValue={360}
         initialValue={0}
         step={1}
         trackGradient="rgb(107,18,10)"
