@@ -7,6 +7,7 @@ import { Debug, useFieldState, useFormApi } from 'informed';
 import useRobotMeta from '../../hooks/useRobotMeta';
 import Switch from '../Informed/Switch';
 import useRobotController from '../../hooks/useRobotController';
+import ListBoxInput from '../Informed/Listbox';
 
 export const CookbookNav = () => {
   console.log('RENDER CookBook NAV');
@@ -66,7 +67,7 @@ export const CookbookNav = () => {
             />
             <br />
             <br />
-            <Select
+            <ListBoxInput
               label="Work On"
               name="listToShow"
               defaultValue="actions"
