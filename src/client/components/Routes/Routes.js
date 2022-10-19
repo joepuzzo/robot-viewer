@@ -14,7 +14,7 @@ export const Routes = () => {
     <RouterRoutes>
       <Route path="/" element={<Robot />} />
       <Route path="/motor" element={<Motor />} />
-      <Route path="/recipes" element={<Cookbook />} />
+      <Route path="/cookbook" element={<Cookbook />} />
       <Route path="*" element={<NotFound />} />
     </RouterRoutes>
   );

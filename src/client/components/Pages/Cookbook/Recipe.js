@@ -41,11 +41,12 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   );
 };
 
-export const Recipe = ({recipe, allActions}) => {
+export const Recipe = ({ recipe, allActions }) => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
 
+  console.log('WTF', recipe);
 
   const arrayFieldApiRef = useRef();
 
@@ -80,11 +81,11 @@ export const Recipe = ({recipe, allActions}) => {
         Run Recipe
       </ActionButton>
       <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
-          Save Recipe
-        </ActionButton>
+        Save Recipe
+      </ActionButton>
       <ArrayField
         name="recipes"
-        initialValue={recipe.length? recipe : [{}]}
+        initialValue={recipe?.length ? recipe : [{}]}
         arrayFieldApiRef={arrayFieldApiRef}
       >
         {({ add }) => {
@@ -101,10 +102,12 @@ export const Recipe = ({recipe, allActions}) => {
                       <Select
                         isDisabled={loading}
                         width={300}
-                      defaultValue={recipe[index]?.action || 'Select Action'}
+                        defaultValue={(recipe && recipe[index]?.action) || 'Select Action'}
                         name="action"
                         aria-label="Select Action"
-                        options={allActions.map((x) => {return {"label": x, "value": x}})}
+                        options={allActions.map((x) => {
+                          return { label: x, value: x };
+                        })}
                       />
                       <ArrayButtons index={index} add={add} remove={remove} isDisabled={loading} />
                     </Flex>

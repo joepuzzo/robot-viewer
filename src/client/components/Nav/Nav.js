@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import useApp from '../../hooks/useApp';
 
 import useOutsideAlerter from '../../hooks/useOutsideAlerter';
+import { CookbookNav } from './CookbookNav';
 
 import { MotorNav } from './MotorNav';
 import { RobotNav } from './RobotNav';
@@ -24,6 +25,7 @@ export const Nav = () => {
       <Routes>
         <Route path="/" element={<RobotNav />} />
         <Route path="/motor" element={<MotorNav />} />
+        <Route path="/cookbook" element={<CookbookNav />} />
       </Routes>
     </nav>
   );
