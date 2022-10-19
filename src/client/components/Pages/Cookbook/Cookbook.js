@@ -23,13 +23,16 @@ export const Cookbook = () => {
     headers: { ContentType: 'application/json' },
   });
 
-  const [{ data: allRecipes }, getRecipes] = useGet();
-  const loadRecipes = useEffect(() => {
+  const [{ data: allRecipes, loading: loadingRecipes }, getRecipes] = useGet();
+  useEffect(() => {
     getRecipes({ url: `/recipes/all` });
   }, []);
 
   const [{}, postRecipes] = usetPost({
     headers: { ContentType: 'application/json' },
+    onComplete: () => {
+      getRecipes({ url: `/recipes/all` });
+    },
   });
 
   const actionOptions = useMemo(() => {
@@ -96,12 +99,13 @@ export const Cookbook = () => {
               label="Action"
               name="selectedAction"
               defaultValue="na"
-              options={[{ value: 'na', label: '- Example -' }, ...actionOptions]}
+              options={[{ value: 'na', label: 'Example' }, ...actionOptions]}
             />
           </Flex>
         )}
         {listToShow === 'recipes' && (
           <Flex direction="column" gap="size-100">
+            <h3>Create Recipe</h3>
             <Flex direction="row" alignItems="end" gap="size-100">
               <Input
                 name="recipeName"
@@ -123,12 +127,15 @@ export const Cookbook = () => {
                 Add Recipe
               </ActionButton>
             </Flex>
-            <ListBoxInput
-              label="Recipe"
-              name="selectedRecipe"
-              defaultValue="na"
-              options={[...recipeOptions]}
-            />
+            <h3>Select Existing Recipe</h3>
+            {loadingRecipes ? null : (
+              <ListBoxInput
+                label="Recipe"
+                name="selectedRecipe"
+                defaultValue={recipeOptions[0]?.value}
+                options={[...recipeOptions]}
+              />
+            )}
           </Flex>
         )}
         <Flex direction="column">

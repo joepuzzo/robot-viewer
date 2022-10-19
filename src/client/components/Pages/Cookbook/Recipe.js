@@ -50,6 +50,10 @@ export const Recipe = ({ recipe, allActions }) => {
 
   const arrayFieldApiRef = useRef();
 
+  useEffect(() => {
+    arrayFieldApiRef.current.reset();
+  }, [recipe]);
+
   const [{ error: postError, loading: postLoading }, postRecipe] = usetPost({
     headers: { ContentType: 'application/json' },
   });
@@ -76,13 +80,15 @@ export const Recipe = ({ recipe, allActions }) => {
   }, []);
 
   return (
-    <div className="recipes">
-      <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
-        Run Recipe
-      </ActionButton>
-      <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
-        Save Recipe
-      </ActionButton>
+    <Flex direction="column" gap="size-500">
+      <Flex direction="row" gap="size-300">
+        <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
+          Run Recipe
+        </ActionButton>
+        <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
+          Save Recipe
+        </ActionButton>
+      </Flex>
       <ArrayField
         name="recipes"
         initialValue={recipe?.length ? recipe : [{}]}
@@ -118,6 +124,6 @@ export const Recipe = ({ recipe, allActions }) => {
           );
         }}
       </ArrayField>
-    </div>
+    </Flex>
   );
 };
