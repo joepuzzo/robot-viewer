@@ -46,6 +46,7 @@ export const Header = () => {
         ) : null}
         <NavLink href="/">Robot</NavLink>
         <NavLink href="/motor">Motor</NavLink>
+        <NavLink href="/recipes">Cookbook</NavLink>
       </Flex>
     </header>
   );
