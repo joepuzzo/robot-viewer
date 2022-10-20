@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FormProvider } from 'informed';
 
 // Hooks
@@ -10,7 +10,10 @@ import useApp from '../hooks/useApp';
 const ControlProvider = ({ children }) => {
   const { config } = useApp();
 
+  const formApiRef = useRef();
+
   const initialValues = useMemo(() => {
+    console.log('NEW INITIAL VALUES', config);
     // We give in degrees so turn into rads
     const ro1 = toRadians(config.r1);
     const ro2 = toRadians(config.r2);
@@ -39,10 +42,14 @@ const ControlProvider = ({ children }) => {
       j4: toDeg(angles[4]),
       j5: toDeg(angles[5]),
     };
-  }, []);
+  }, [config]);
+
+  useEffect(() => {
+    formApiRef.current.reset();
+  }, [initialValues]);
 
   return (
-    <FormProvider initialValues={initialValues} name="robot">
+    <FormProvider formApiRef={formApiRef} initialValues={initialValues} name="robot">
       {children}
     </FormProvider>
   );

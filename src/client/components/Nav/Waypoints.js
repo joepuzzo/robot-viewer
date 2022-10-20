@@ -175,7 +175,6 @@ export const Waypoints = () => {
 
   // Reset the array field
   useEffect(() => {
-    console.log('WTF', initialValue);
     arrayFieldApiRef.current.reset();
   }, [initialValue]);
 

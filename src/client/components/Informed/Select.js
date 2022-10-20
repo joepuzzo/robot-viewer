@@ -20,7 +20,7 @@ const Input = (props) => {
       {...userProps}
       {...informed}
       selectedKey={fieldState.value}
-      onSelectionChange={(v) => fieldApi.setValue(v)}
+      onSelectionChange={(v) => fieldApi.setValue(v, {})}
     >
       {options.map((op) => {
         return <Item key={op.value}>{op.label}</Item>;

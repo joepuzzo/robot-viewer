@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useCallback, useState } from 'react';
 
-export const useGet = ({ url, headers } = {}) => {
+export const useGet = ({ url, headers, onComplete } = {}) => {
   const [res, setRes] = useState({ data: null, error: null, loading: false });
   // You GET method here
   const post = useCallback(
@@ -11,6 +11,9 @@ export const useGet = ({ url, headers } = {}) => {
         .get(newUrl ?? url)
         .then((res) => {
           setRes({ data: res.data, loading: false, error: null });
+          if (onComplete) {
+            onComplete(res.data);
+          }
         })
         .catch((error) => {
           setRes({ data: null, loading: false, error });

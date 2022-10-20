@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AppContext from '../context/AppContext';
 import io from 'socket.io-client';
+import { useGet } from '../hooks/useGet';
 
 /**
  * Provide any application specific data
@@ -19,6 +20,8 @@ const AppProvider = ({ children }) => {
   };
 
   const [config, setConfig] = useState({
+    // Default is for example robot
+    robotType: 'Example',
     zeroPosition: [0, 0, 100],
     units: 'cm',
     base: 10,
@@ -30,112 +33,35 @@ const AppProvider = ({ children }) => {
     v3: 15,
     v4: 15,
     v5: 10,
-    // Below is for top testing
-    x: 0,
-    y: 0,
-    z: 100,
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    // Below is for sideways testing
-    x: 55,
-    y: 0,
-    z: 45,
-    r1: -90,
-    r2: -90,
-    r3: 0,
-    // Below is for down direction
-    // x: 5,
-    // y: 0,
-    // z: 0,
-    // r1: -90,
-    // r2: -180,
-    // r3: 0,
-    // Below is show off direction
-    // x: 40,
-    // y: 5,
-    // z: 60,
-    // r1: 90,
-    // r2: 90,
-    // r3: 90,
-    // flip: true,
-    // For other dims
+    x: 45,
+    y: 10,
+    z: 55,
+    r1: 90,
+    r2: 90,
+    r3: 90,
     rangej0: [-180, 180],
     rangej1: [-140, 140],
     rangej2: [-115, 115],
     rangej3: [-180, 180],
     rangej4: [-90, 90],
     rangej5: [-180, 180],
-    // Below is for AR -------------------------
-    zeroPosition: [6.42, 0, 83.365],
-    x0: 6.42,
-    // Below three should add up to 474.77 mm ( 47.477 cm )
-    base: 3.11,
-    v0: 13.867,
-    v1: 30.5,
-    // Below three should add up to 258.88 mm ( 25.888 cm )
-    v2: 3.5,
-    v3: 18.763,
-    v4: 3.625,
-    // Distance to the end effector
-    v5: 10,
-    // Show off direection
-    x: 45,
-    y: 10,
-    z: 50,
-    r1: 90,
-    r2: 90,
-    r3: 90,
-    // For Zero Direction
-    // x: 6.42,
-    // y: 0,
-    // z: 83.365,
-    // // x: 40,
-    // // z: 60,
-    // r1: 0,
-    // r2: 0,
-    // r3: 0,
-    // For 30deg Direction
-    // x: 40,
-    // y: -20,
-    // z: 60,
-    // r1: 60,
-    // r2: 90,
-    // r3: 90,
-    // For Limits
-    rangej0: [-170, 170],
-    rangej1: [-90, 42],
-    rangej2: [-141, 20],
-    rangej3: [-165, 165],
-    rangej4: [-100, 100],
-    rangej5: [-155, 155],
-    flip: true,
-    // Below is for ReBel -------------------------
-    // zeroPosition: [0, 0, 101.2],
-    // x0: 0,
-    // base: 12.6,
-    // v0: 12.6,
-    // v1: 23.7,
-    // v2: 14.85,
-    // v3: 14.85,
-    // v4: 12.6,
-    // // Distance to the end effector
-    // v5: 10,
-    // // Show off direction
-    // x: 45,
-    // y: 10,
-    // z: 60,
-    // r1: 90,
-    // r2: 90,
-    // r3: 90,
-    // rangej0: [-180, 180],
-    // rangej1: [-140, 80],
-    // rangej2: [-140, 80],
-    // rangej3: [-180, 180],
-    // rangej4: [-95, 95],
-    // rangej5: [-180, 180],
-    // flip: true,
   });
+
+  // Get robot types
+  const [{ data: robotTypes, loading: getLoading, error: getError }, getRobotTypes] = useGet();
+
+  useEffect(() => {
+    getRobotTypes({ url: `/robots/all` });
+  }, []);
+
+  const selectRobot = useCallback(
+    ({ value }) => {
+      console.log('SELECTING ROBOT', value);
+      console.log('TYPES', robotTypes[value]);
+      setConfig(robotTypes[value]);
+    },
+    [robotTypes]
+  );
 
   const toggleColorScheme = () => {
     setColorScheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -182,6 +108,8 @@ const AppProvider = ({ children }) => {
     control,
     extraOpen,
     toggleExtra,
+    robotTypes,
+    selectRobot,
     socket: socketRef.current,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -56,7 +56,7 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, setConfig, config, socket } = useApp();
+  const { extraOpen, toggleExtra, config, socket, robotTypes, selectRobot } = useApp();
 
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
@@ -82,6 +82,15 @@ export const RobotNav = () => {
 
   // Get selected robot meta
   const selectedRobotMeta = robots && robots[selectedRobot];
+
+  const robotTypeOptions = useMemo(() => {
+    if (robotTypes) {
+      return Object.keys(robotTypes).map((t) => {
+        return { value: t, label: t };
+      });
+    }
+    return [];
+  }, [robotTypes]);
 
   // Update some fields when the selected robot changes
   useEffect(() => {
@@ -202,21 +211,11 @@ export const RobotNav = () => {
     robotUpdate();
   };
 
-  const onValueChange =
-    (name) =>
-    ({ value }) => {
-      setConfig((prev) => {
-        const newConfig = { ...prev };
-        newConfig[name] = value;
-        console.log('SETTING', name, 'to', value, 'wtf', triggers.includes(name));
-
-        if (triggers.includes(name)) {
-          robotUpdate();
-        }
-
-        return newConfig;
-      });
-    };
+  const onValueChange = (name) => () => {
+    if (triggers.includes(name)) {
+      robotUpdate();
+    }
+  };
 
   const onJointChange =
     (name) =>
@@ -243,7 +242,6 @@ export const RobotNav = () => {
     (key) =>
     ({ value }) => {
       // Example key = "j0.limitAdj"
-      console.log('WTF');
       updateConfig(key, value);
     };
 
@@ -312,6 +310,13 @@ export const RobotNav = () => {
               defaultValue="na"
               aria-label="Robot"
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
+            />
+            <Select
+              label="Robot Type"
+              name="robotType"
+              defaultValue="Example"
+              onNativeChange={selectRobot}
+              options={[...robotTypeOptions]}
             />
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider

@@ -7,6 +7,7 @@ import health from './routes/health.js';
 import fail from './routes/fail.js';
 import waypoints from './routes/waypoints.js';
 import recipes from './routes/recipes.js';
+import robots from './routes/robots.js';
 import errorHandler from './middleware/errorHandler.js';
 import proxy from './middleware/proxy.js';
 
@@ -37,7 +38,11 @@ const createApp = ({ corsConfig }) => {
   // Waypoint endpoints
   app.use('/waypoints', waypoints);
 
+  // Recipe endpoints
   app.use('/recipes', recipes);
+
+  // Robot endpoints
+  app.use('/robots', robots);
 
   // Route for static content
   if (process.env.NODE_ENV === 'development') {
