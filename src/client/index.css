@@ -1,5 +1,10 @@
 /* ---------- Main ---------- */
 
+body {
+  /* height: 100%;
+  overflow-y: hidden; */
+}
+
 main {
   box-sizing: border-box;
   /* min-height: 100vh; */
@@ -10,6 +15,8 @@ main {
   display: flex;
   align-items: center;
   transition: margin-left 0.2s;
+  height: 100%;
+  overflow-y: hidden;
 }
 
 main.extra {

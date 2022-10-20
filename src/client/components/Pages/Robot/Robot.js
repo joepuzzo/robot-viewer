@@ -13,6 +13,7 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotController from '../../../hooks/useRobotController';
 import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
+import { useOverFlowHidden } from '../../../hooks/useOverflowHidden';
 
 const DEG45 = Math.PI / 4;
 
@@ -143,6 +144,8 @@ export const Robot = () => {
   const { units } = config;
 
   const controlRef = useRef();
+
+  useOverFlowHidden();
 
   return (
     <>
