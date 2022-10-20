@@ -84,6 +84,7 @@ export const Cookbook = () => {
       <Flex direction="row" justifyContent="space-between" UNSAFE_style={{ width: '100%' }}>
         {listToShow === 'actions' && (
           <Flex direction="column">
+            <h3>Add New Action</h3>
             <Flex direction="row" alignItems="end" gap="size-100">
               <Input
                 name="actionName"
@@ -95,6 +96,7 @@ export const Cookbook = () => {
                 Add Action
               </ActionButton>
             </Flex>
+            <h3>Select Existing Action</h3>
             <ListBoxInput
               label="Action"
               name="selectedAction"

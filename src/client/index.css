@@ -215,3 +215,7 @@ canvas {
 .icon-green svg {
   fill: #36881a !important;
 }
+
+div[aria-selected='true'] {
+  background-color: rgb(71, 71, 71) !important;
+}
