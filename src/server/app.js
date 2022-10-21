@@ -53,11 +53,11 @@ const createApp = ({ corsConfig }) => {
   } else {
     // Routes for static content
     app.use('/static', express.static(path.join(__dirname, './static')));
-    app.use(express.static(path.join(__dirname, './client'), { redirect: false }));
+    app.use(express.static(path.join(__dirname, '../client'), { redirect: false }));
 
     /* final catch-all route to index.html defined last */
     app.get('/*', (req, res) => {
-      res.sendFile(path.join(__dirname, './client/index.html'));
+      res.sendFile(path.join(__dirname, '../client/index.html'));
     });
   }
 

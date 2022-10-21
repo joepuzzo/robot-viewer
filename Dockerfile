@@ -25,6 +25,7 @@ RUN npm i
 ## Copy the rest of the shit
 COPY ["babel.config.cjs", "./"]
 COPY src ./src
+COPY robots ./robots
 
 ## Build!!!
 RUN npm run build
@@ -41,11 +42,13 @@ FROM base AS release
 WORKDIR /app
 
 # copy app sources
-COPY --from=build /app/src/server ./
+COPY --from=build /app/src/server ./server
+COPY --from=build /app/src/lib ./lib
 COPY --from=build /app/src/client/build ./client
+COPY --from=build /app/robots ./robots
 
 # Expose port
 EXPOSE 3000
 
 # Start that shit
-CMD [ "node", "index.js" ]
+CMD [ "node", "server/index.js" ]
