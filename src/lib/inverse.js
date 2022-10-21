@@ -279,7 +279,7 @@ export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
   /**
    * Ok so the following code is very wierd but it makes the angles that the kinimatics created much cleaner
    *
-   * Basically depending on how big the angle is we flip it or take recipricals resulting in same location but again...
+   * Basically depending on how big the angle is we flip it or take reciprocals resulting in same location but again...
    * better angles
    *
    * Example:
