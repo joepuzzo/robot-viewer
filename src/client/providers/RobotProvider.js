@@ -208,6 +208,9 @@ const RobotProvider = ({ children }) => {
     return debounce(updateForward);
   }, []);
 
+  const configRef = useRef();
+  configRef.current = config;
+
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3, speed) => {
     // Get fixed values off of form state
@@ -229,7 +232,7 @@ const RobotProvider = ({ children }) => {
       a6: v5,
       x0,
       y0,
-      flip: config.flip,
+      flip: configRef.current.flip,
     });
 
     console.log('Setting angles to', angles);

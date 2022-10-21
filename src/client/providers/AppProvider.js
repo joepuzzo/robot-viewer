@@ -45,6 +45,7 @@ const AppProvider = ({ children }) => {
     rangej3: [-180, 180],
     rangej4: [-90, 90],
     rangej5: [-180, 180],
+    flip: true,
   });
 
   // Get robot types
