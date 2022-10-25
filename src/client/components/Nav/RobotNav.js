@@ -9,6 +9,7 @@ import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
 import Compass from '@spectrum-icons/workflow/Compass';
 import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
+import RemoveCircle from '@spectrum-icons/workflow/RemoveCircle';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -197,6 +198,14 @@ export const RobotNav = () => {
     }
   };
 
+  const resetErrors = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotResetErrors', robotId);
+    }
+  };
+
   const resetRobot = () => {
     formApi.reset();
     formApi.setTheseValues({
@@ -285,11 +294,14 @@ export const RobotNav = () => {
         >
           <AlignCenter.default />
         </ActionButton>
-        <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
+        {/* <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
           <Compass.default />
-        </ActionButton>
+        </ActionButton> */}
         <ActionButton title="Split Home" onPress={() => splitHome()} isDisabled={disabled}>
           <MoveUpDown.default />
+        </ActionButton>
+        <ActionButton title="Split Home" onPress={() => resetErrors()} isDisabled={disabled}>
+          <RemoveCircle.default />
         </ActionButton>
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
