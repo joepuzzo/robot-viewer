@@ -132,6 +132,7 @@ export const Motor = () => {
   const motorHome = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
+    formApi.setValue('motorPos', 0);
     // only send if we are connected and have selected motor
     if (connectedRef.current && motorId != 'na') {
       socket.emit('motorHome', robotId, motorId);
