@@ -10,21 +10,6 @@ import Input from '../../Informed/Input';
 
 // import { useSpring, animated } from 'react-spring';
 
-const MotorState = ({ robotId, motorId }) => {
-  const { robotStates } = useRobotState();
-
-  // Get the selected motor state
-  const motorState =
-    robotStates[robotId] && robotStates[robotId]?.motors[motorId]
-      ? robotStates[robotId].motors[motorId]
-      : {};
-  return (
-    <div>
-      <pre>{JSON.stringify(motorState, null, 2)}</pre>
-    </div>
-  );
-};
-
 export const Motor = () => {
   const { socket } = useApp();
 
@@ -228,7 +213,6 @@ export const Motor = () => {
           </ActionButton>
         </Flex>
       </Flex>
-      <MotorState robotId={robotId} motorId={motorId} />
     </>
   );
 };

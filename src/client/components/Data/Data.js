@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import useApp from '../../hooks/useApp';
 
 import useOutsideAlerter from '../../hooks/useOutsideAlerter';
-
+import { MotorData } from './MotorData';
 import { RobotData } from './RobotData';
 
 export const Data = () => {
@@ -19,6 +19,7 @@ export const Data = () => {
     <nav className={`databar ${navOpen ? 'databar-visible' : ''}`} ref={navRef}>
       <Routes>
         <Route path="/" element={<RobotData />} />
+        <Route path="/motor" element={<MotorData />} />
       </Routes>
     </nav>
   );
