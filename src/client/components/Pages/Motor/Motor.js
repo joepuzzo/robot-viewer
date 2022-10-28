@@ -10,14 +10,51 @@ import Input from '../../Informed/Input';
 
 // import { useSpring, animated } from 'react-spring';
 
+const MotorCircle = () => {
+  const { value } = useFieldState('motorPos');
+
+  let motorPos = value;
+
+  const { robotStates } = useRobotState();
+
+  // Get value of robotId && motorId
+  const { value: robotId } = useFieldState('robotId');
+  const { value: motorId } = useFieldState('motorId');
+
+  // Get the selected robot state
+  const robotState = robotStates[robotId];
+
+  const { value: robotType } = useFieldState('robotType');
+
+  // If we are connected to motor use its real position instead
+  if (robotId && motorId != 'na' && robotState && robotState.motors[motorId]) {
+    motorPos =
+      robotType === 'AR4'
+        ? robotState.motors[motorId].encoderPosition
+        : robotState.motors[motorId].currentPosition;
+  }
+
+  return (
+    <svg width="375" height="375">
+      <g transform={`rotate(${motorPos ?? 0} 187.5 187.5)`}>
+        <circle
+          cx="187.5"
+          cy="187.5"
+          r="150"
+          fill="grey"
+          stroke="rgb(107,18,10)"
+          strokeWidth="12"
+        />
+        <circle cx="187.5" cy="75" r="12" fill="black" />
+      </g>
+    </svg>
+  );
+};
+
 export const Motor = () => {
   const { socket } = useApp();
 
   const formApi = useFormApi();
-
-  const controlRef = useRef();
-
-  const { value: motorPos } = useFieldState('motorPos');
 
   // const { rotation: motorPos } = useSpring({
   //   rotation: value,
@@ -171,19 +208,7 @@ export const Motor = () => {
           </ActionButton>
         </Flex>
         <Flex direction="column" alignItems="center" gap="size-100" width="400px">
-          <svg width="375" height="375">
-            <g transform={`rotate(${motorPos ?? 0} 187.5 187.5)`}>
-              <circle
-                cx="187.5"
-                cy="187.5"
-                r="150"
-                fill="grey"
-                stroke="rgb(107,18,10)"
-                strokeWidth="12"
-              />
-              <circle ref={controlRef} cx="187.5" cy="75" r="12" fill="black" />
-            </g>
-          </svg>
+          <MotorCircle />
           <Flex alignItems="end" gap="size-100">
             <Input name="parameterIndex" label="Parameter Index" />
             <Input name="parameterSubindex" label="Parameter SubIndex" />
