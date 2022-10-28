@@ -28,6 +28,7 @@ import { Waypoints } from './Waypoints';
 import useRobotController from '../../hooks/useRobotController';
 import useRobotKinematics from '../../hooks/useRobotKinematics';
 import useSimulateController from '../../hooks/useSimulateController';
+import { RobotType } from '../Shared/RobotType';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -57,7 +58,7 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, config, socket, robotTypes, selectRobot } = useApp();
+  const { extraOpen, toggleExtra, config, socket } = useApp();
 
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
@@ -83,15 +84,6 @@ export const RobotNav = () => {
 
   // Get selected robot meta
   const selectedRobotMeta = robots && robots[selectedRobot];
-
-  const robotTypeOptions = useMemo(() => {
-    if (robotTypes) {
-      return Object.keys(robotTypes).map((t) => {
-        return { value: t, label: t };
-      });
-    }
-    return [];
-  }, [robotTypes]);
 
   // Update some fields when the selected robot changes
   useEffect(() => {
@@ -323,13 +315,7 @@ export const RobotNav = () => {
               aria-label="Robot"
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
-            <Select
-              label="Robot Type"
-              name="robotType"
-              defaultValue="Example"
-              onNativeChange={selectRobot}
-              options={[...robotTypeOptions]}
-            />
+            <RobotType />
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="gripper"

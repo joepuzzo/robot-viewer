@@ -170,18 +170,18 @@ export const Motor = () => {
             Query Motor Pos
           </ActionButton>
         </Flex>
-        <Flex direction="column" alignItems="center" gap="size-100">
-          <svg width="500" height="500">
-            <g transform={`rotate(${motorPos ?? 0} 250 250)`}>
+        <Flex direction="column" alignItems="center" gap="size-100" width="400px">
+          <svg width="375" height="375">
+            <g transform={`rotate(${motorPos ?? 0} 187.5 187.5)`}>
               <circle
-                cx="250"
-                cy="250"
-                r="200"
+                cx="187.5"
+                cy="187.5"
+                r="150"
                 fill="grey"
                 stroke="rgb(107,18,10)"
-                strokeWidth="20"
+                strokeWidth="12"
               />
-              <circle ref={controlRef} cx="250" cy="100" r="20" fill="black" />
+              <circle ref={controlRef} cx="187.5" cy="75" r="12" fill="black" />
             </g>
           </svg>
           <Flex alignItems="end" gap="size-100">

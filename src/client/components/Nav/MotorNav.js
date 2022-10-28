@@ -8,6 +8,7 @@ import { Debug, useFieldState, useFormApi } from 'informed';
 import useRobotMeta from '../../hooks/useRobotMeta';
 import Switch from '../Informed/Switch';
 import useRobotController from '../../hooks/useRobotController';
+import { RobotType } from '../Shared/RobotType';
 
 export const MotorNav = () => {
   console.log('RENDER MOTOR NAV');
@@ -80,6 +81,7 @@ export const MotorNav = () => {
               aria-label="Motor"
               options={[{ value: 'na', label: 'Disconnect' }, ...motorOptions]}
             />
+            <RobotType />
             <br />
             <br />
             <Switch

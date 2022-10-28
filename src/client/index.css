@@ -10,7 +10,7 @@ main {
   /* min-height: 100vh; */
   flex-direction: column;
   margin-left: 400px;
-  margin-right: 280px;
+  margin-right: 400px;
   padding: 40px 52px 0;
   display: flex;
   align-items: center;
@@ -104,7 +104,7 @@ main.extra {
 /* ---------- Data ---------- */
 
 .databar {
-  width: 280px;
+  width: 400px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;
