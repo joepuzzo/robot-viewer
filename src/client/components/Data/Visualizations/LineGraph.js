@@ -3,14 +3,14 @@ import { line, scaleLinear, select } from "d3";
 import  * as d3 from "d3";
 import './LineGraph.css';
 
-const LineGraph = ({ data }) => {
+const LineGraph = ({ data, xMin, xMax, yMin, yMax }) => {
 
     const ref = useRef()
 
     const layout = {
         width: 1000,
         height: 500,
-        marginBottom: 475,
+        marginBottom: 480,
         marginLeft: 30
     };
 
@@ -23,23 +23,24 @@ const LineGraph = ({ data }) => {
 
 
     useEffect(() => {
-        const svgElement = d3.select(ref.current)
+        const svgElement = d3.select(ref.current);
+        svgElement.selectAll("g").remove();
+
         const bottomAxisGenerator = d3.axisBottom(graphDetails.xScale);
         const leftAxisGenerator = d3.axisLeft(graphDetails.yScale);
+
         svgElement.append("g")
-          .attr("transform", `translate(0,${layout.marginBottom})`)
+          .attr("transform", `translate(${layout.marginLeft},${layout.marginBottom})`)
           .call(bottomAxisGenerator)
         svgElement.append("g")
-          .attr("transform", `translate(${layout.marginLeft},0)`)
+          .attr("transform", `translate(${layout.marginLeft},10)`)
           .call(leftAxisGenerator)
-      }, [])
+      }, [data])
 
     
 
-    graphDetails.xScale.domain([0, data.length ]);
-    const yVals = data.map((dataPoint) => dataPoint.y);
-    const yMax = Math.max(...yVals);
-    graphDetails.yScale.domain([0,yMax]);
+    graphDetails.xScale.domain([xMin, xMax ]);
+    graphDetails.yScale.domain([yMin,yMax]);
 
     graphDetails.lineGenerator.x(d => graphDetails.xScale(d["x"]));
     graphDetails.lineGenerator.y(d => graphDetails.yScale(d["y"]));
