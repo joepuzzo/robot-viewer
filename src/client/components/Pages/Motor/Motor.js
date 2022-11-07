@@ -7,6 +7,7 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useRobotState from '../../../hooks/useRobotState';
 import useRobotMeta from '../../../hooks/useRobotMeta';
 import Input from '../../Informed/Input';
+import { MotorVisualizations } from '../../Data/Visualizations/MotorVisualizations';
 
 // import { useSpring, animated } from 'react-spring';
 
@@ -238,6 +239,10 @@ export const Motor = () => {
           </ActionButton>
         </Flex>
       </Flex>
+      <Flex direction="row" alignItems="center" gap="size-100">
+        <h1>Motor Data Visualizations</h1>
+      </Flex>
+      <MotorVisualizations />
     </>
   );
 };
