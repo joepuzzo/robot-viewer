@@ -2,12 +2,11 @@
 import { Line } from '@react-three/drei';
 import { useSpring, animated } from '@react-spring/three';
 
-import { inverse } from '../../../lib/inverse';
-
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
 import { toRadians } from '../../../lib/toRadians';
 import { toDeg } from '../../../lib/toDeg';
+import ArmContext from '../../context/ArmContext';
 
 function useDrag(onDrag, onStart, onEnd, toggle) {
   const active = React.useRef(false);
@@ -68,21 +67,13 @@ function useKeyPress({ targetKey, targetKeyCode }) {
   return keyPressed;
 }
 
-const Pos = ({
-  name,
-  setSelected,
-  selected,
-  args,
-  grid,
-  formApi,
-  toggleOrbital,
-  animate,
-  robotController,
-  ...props
-}) => {
+const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...props }) => {
   // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
+
+  // Get Arm State
+  const { animate } = useContext(ArmContext);
 
   // Get robot control
   const { updateRobot } = robotController;
@@ -205,8 +196,6 @@ const Pos = ({
 
 const Tool = ({
   name,
-  setSelected,
-  selected,
   args,
   grid,
   formApi,
@@ -268,8 +257,6 @@ const ErrorBall = () => {
 const Component = ({
   children,
   name,
-  setSelected,
-  selected,
   args,
   grid,
   actual,
@@ -278,20 +265,17 @@ const Component = ({
   jointRotation: userJointRotation,
   doubleV,
   error,
-  hide,
-  hideNegatives,
   lineColor,
   lineOffset1: userLineOffset1,
   lineOffset2: userLineOffset2,
-  linkColor,
-  animate,
-  updateMotion,
-  runOnRobot,
   xOffset,
   yOffset = 0,
-  simulating,
   ...props
 }) => {
+  // Get Arm Context
+  const { hide, hideNegatives, linkColor, animate, updateMotion, runOnRobot, simulating } =
+    useContext(ArmContext);
+
   const { rotation: jointRotation } = useSpring({
     rotation: userJointRotation,
     config: {
@@ -457,238 +441,163 @@ export function Arm({
   const v4 = values.v4 - 7.5;
   const v5 = values.v5 - 2.5;
 
-  const [selected, setSelected] = useState();
-
   // const jointGrid = false;
   const vertexGrid = false;
 
+  const value = {
+    jointGrid,
+    vertexGrid,
+    hide,
+    hideNegatives,
+    linkColor,
+    animate,
+    updateMotion,
+    runOnRobot,
+    simulating,
+  };
+
   return (
-    <group rotation={[Math.PI * -0.5, 0, 0]}>
-      {mainGrid ? <Grid size={gridSize} /> : null}
-      <Component
-        name="base"
-        setSelected={setSelected}
-        selected={selected}
-        position={[0, 0, base / 2]}
-        args={[5, 10, base, 32]}
-        rotation={[Math.PI * 0.5, 0, 0]}
-        actual={values.base}
-        hide={hide}
-        hideNegatives={hideNegatives}
-        animate={animate}
-        runOnRobot={runOnRobot}
-        simulating={simulating}
-        // grid
-      >
+    <ArmContext.Provider value={value}>
+      <group rotation={[Math.PI * -0.5, 0, 0]}>
+        {mainGrid ? <Grid size={gridSize} /> : null}
         <Component
-          name="j0"
-          setSelected={setSelected}
-          selected={selected}
-          args={[5, 5, 5, 32]}
-          error={outside(j0, config.rangej0)}
+          name="base"
+          position={[0, 0, base / 2]}
+          args={[5, 10, base, 32]}
           rotation={[Math.PI * 0.5, 0, 0]}
-          jointRotation={[0, 0, j0]}
-          position={[0, 0, base / 2 + 2.5]}
-          grid={jointGrid}
-          hide={hide}
-          hideNegatives={hideNegatives}
-          animate={animate}
-          runOnRobot={runOnRobot}
-          updateMotion={updateMotion}
-          simulating={simulating}
+          actual={values.base}
         >
           <Component
-            name="v0"
-            setSelected={setSelected}
-            selected={selected}
-            radius={0.1}
-            actual={values.v0}
-            args={[5, 5, v0, 32]}
-            position={[0, 0, v0 / 2 + 2.5]}
+            name="j0"
+            args={[5, 5, 5, 32]}
+            error={outside(j0, config.rangej0)}
             rotation={[Math.PI * 0.5, 0, 0]}
-            grid={vertexGrid}
-            hide={hide}
-            hideNegatives={hideNegatives}
-            lineColor="red"
-            lineOffset1={0}
-            linkColor={linkColor}
-            animate={animate}
-            runOnRobot={runOnRobot}
-            xOffset={x0}
-            yOffset={y0}
-            simulating={simulating}
+            jointRotation={[0, 0, j0]}
+            position={[0, 0, base / 2 + 2.5]}
+            grid={jointGrid}
+            updateMotion={updateMotion}
           >
             <Component
-              name="j1"
-              jointRotation={[Math.PI * 0.5, 0, j1]}
-              rotation={[Math.PI * -0.5, 0, 0]}
-              setSelected={setSelected}
-              selected={selected}
-              args={[5, 5, 5, 32]}
-              position={[x0, y0, v0 / 2 + 5]}
-              grid={jointGrid}
-              error={outside(j1, config.rangej1)}
-              hide={hide}
-              hideNegatives={hideNegatives}
-              animate={animate}
-              runOnRobot={runOnRobot}
-              updateMotion={updateMotion}
-              simulating={simulating}
+              name="v0"
+              radius={0.1}
+              actual={values.v0}
+              args={[5, 5, v0, 32]}
+              position={[0, 0, v0 / 2 + 2.5]}
+              rotation={[Math.PI * 0.5, 0, 0]}
+              grid={vertexGrid}
+              lineColor="red"
+              lineOffset1={0}
+              linkColor={linkColor}
+              xOffset={x0}
+              yOffset={y0}
             >
               <Component
-                name="v1"
-                setSelected={setSelected}
-                selected={selected}
-                rotation={[0, 0, 0]}
-                args={[5, 5, v1, 32]}
-                position={[0, v1 / 2 + 5, 0]}
-                doubleV
-                grid={vertexGrid}
-                actual={values.v1}
-                hide={hide}
-                hideNegatives={hideNegatives}
-                lineColor="green"
-                lineOffset1={0}
-                lineOffset2={0}
-                linkColor={linkColor}
-                animate={animate}
-                runOnRobot={runOnRobot}
-                simulating={simulating}
-                yOffset={y0}
+                name="j1"
+                jointRotation={[Math.PI * 0.5, 0, j1]}
+                rotation={[Math.PI * -0.5, 0, 0]}
+                args={[5, 5, 5, 32]}
+                position={[x0, y0, v0 / 2 + 5]}
+                grid={jointGrid}
+                error={outside(j1, config.rangej1)}
+                updateMotion={updateMotion}
               >
                 <Component
-                  name="j2"
-                  rotation={[-Math.PI / 2, 0, 0]}
-                  jointRotation={[0, 0, j2 + Math.PI * 0.5]}
-                  setSelected={setSelected}
-                  selected={selected}
-                  args={[5, 5, 5, 32]}
+                  name="v1"
+                  rotation={[0, 0, 0]}
+                  args={[5, 5, v1, 32]}
                   position={[0, v1 / 2 + 5, 0]}
-                  grid={jointGrid}
-                  error={outside(j2, config.rangej2)}
-                  hide={hide}
-                  hideNegatives={hideNegatives}
-                  animate={animate}
-                  updateMotion={updateMotion}
-                  runOnRobot={runOnRobot}
-                  simulating={simulating}
+                  doubleV
+                  grid={vertexGrid}
+                  actual={values.v1}
+                  lineColor="green"
+                  lineOffset1={0}
+                  lineOffset2={0}
+                  linkColor={linkColor}
+                  yOffset={y0}
                 >
                   <Component
-                    name="v2"
-                    setSelected={setSelected}
-                    selected={selected}
-                    rotation={[0, 0, Math.PI * 0.5]}
-                    args={[5, 5, v2, 32]}
-                    position={[v2 / 2 + 5, 0, 0]}
-                    grid={vertexGrid}
-                    actual={values.v2}
-                    hide={hide}
-                    hideNegatives={hideNegatives}
-                    lineColor="blue"
-                    linkColor={linkColor}
-                    animate={animate}
-                    lineOffset1={1.25}
-                    lineOffset2={1.25}
-                    runOnRobot={runOnRobot}
-                    simulating={simulating}
+                    name="j2"
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    jointRotation={[0, 0, j2 + Math.PI * 0.5]}
+                    args={[5, 5, 5, 32]}
+                    position={[0, v1 / 2 + 5, 0]}
+                    grid={jointGrid}
+                    error={outside(j2, config.rangej2)}
+                    updateMotion={updateMotion}
                   >
                     <Component
-                      name="j3"
-                      jointRotation={[-Math.PI * 0.5, Math.PI * 0.5, j3]}
-                      rotation={[Math.PI * 0.5, 0, 0]}
-                      setSelected={setSelected}
-                      selected={selected}
-                      args={[5, 5, 5, 32]}
-                      position={[v2 / 2 + 2.5, 0, 0]}
-                      grid={jointGrid}
-                      error={outside(j3, config.rangej3)}
-                      hide={hide}
-                      hideNegatives={hideNegatives}
-                      animate={animate}
-                      updateMotion={updateMotion}
-                      runOnRobot={runOnRobot}
-                      simulating={simulating}
+                      name="v2"
+                      rotation={[0, 0, Math.PI * 0.5]}
+                      args={[5, 5, v2, 32]}
+                      position={[v2 / 2 + 5, 0, 0]}
+                      grid={vertexGrid}
+                      actual={values.v2}
+                      lineColor="blue"
+                      linkColor={linkColor}
+                      lineOffset1={1.25}
+                      lineOffset2={1.25}
                     >
                       <Component
-                        name="v3"
-                        setSelected={setSelected}
-                        selected={selected}
+                        name="j3"
+                        jointRotation={[-Math.PI * 0.5, Math.PI * 0.5, j3]}
                         rotation={[Math.PI * 0.5, 0, 0]}
-                        args={[5, 5, v3, 32]}
-                        position={[0, 0, v3 / 2 + 2.5]}
-                        grid={vertexGrid}
-                        actual={values.v3}
-                        hide={hide}
-                        hideNegatives={hideNegatives}
-                        lineColor="orange"
-                        linkColor={linkColor}
-                        animate={animate}
-                        runOnRobot={runOnRobot}
-                        simulating={simulating}
+                        args={[5, 5, 5, 32]}
+                        position={[v2 / 2 + 2.5, 0, 0]}
+                        grid={jointGrid}
+                        error={outside(j3, config.rangej3)}
+                        updateMotion={updateMotion}
                       >
                         <Component
-                          name="j4"
+                          name="v3"
                           rotation={[Math.PI * 0.5, 0, 0]}
-                          jointRotation={[Math.PI * 0.5, 0, j4]}
-                          setSelected={setSelected}
-                          selected={selected}
-                          args={[5, 5, 5, 32]}
-                          position={[0, 0, v3 / 2 + 5]}
-                          grid={jointGrid}
-                          error={outside(j4, config.rangej4)}
-                          hide={hide}
-                          hideNegatives={hideNegatives}
-                          animate={animate}
-                          updateMotion={updateMotion}
-                          runOnRobot={runOnRobot}
-                          simulating={simulating}
+                          args={[5, 5, v3, 32]}
+                          position={[0, 0, v3 / 2 + 2.5]}
+                          grid={vertexGrid}
+                          actual={values.v3}
+                          lineColor="orange"
+                          linkColor={linkColor}
                         >
                           <Component
-                            name="v4"
-                            setSelected={setSelected}
-                            selected={selected}
-                            rotation={[Math.PI, 0, 0]}
-                            args={[5, 5, v4, 32]}
-                            position={[0, v4 / 2 + 5, 0]}
-                            grid={vertexGrid}
-                            actual={values.v4}
-                            hide={hide}
-                            hideNegatives={hideNegatives}
-                            lineColor="purple"
-                            linkColor={linkColor}
-                            animate={animate}
-                            runOnRobot={runOnRobot}
-                            simulating={simulating}
+                            name="j4"
+                            rotation={[Math.PI * 0.5, 0, 0]}
+                            jointRotation={[Math.PI * 0.5, 0, j4]}
+                            args={[5, 5, 5, 32]}
+                            position={[0, 0, v3 / 2 + 5]}
+                            grid={jointGrid}
+                            error={outside(j4, config.rangej4)}
+                            updateMotion={updateMotion}
                           >
                             <Component
-                              name="j5"
-                              rotation={[Math.PI * 0.5, 0, 0]}
-                              jointRotation={[-Math.PI * 0.5, 0, j5]}
-                              setSelected={setSelected}
-                              selected={selected}
-                              args={[5, 5, 5, 32]}
-                              position={[0, v4 / 2 + 2.5, 0]}
-                              error={outside(j5, config.rangej5)}
-                              hide={hide}
-                              hideNegatives={hideNegatives}
-                              grid={jointGrid}
-                              animate={animate}
-                              updateMotion={updateMotion}
-                              runOnRobot={runOnRobot}
-                              simulating={simulating}
+                              name="v4"
+                              rotation={[Math.PI, 0, 0]}
+                              args={[5, 5, v4, 32]}
+                              position={[0, v4 / 2 + 5, 0]}
+                              grid={vertexGrid}
+                              actual={values.v4}
+                              lineColor="purple"
+                              linkColor={linkColor}
                             >
-                              <Tool
-                                name="tool"
+                              <Component
+                                name="j5"
                                 rotation={[Math.PI * 0.5, 0, 0]}
-                                setSelected={setSelected}
-                                selected={selected}
-                                args={[0.5, 0.5, v5, 32]}
-                                position={[0, 0, v5 / 2 + 2.5]}
-                                grid
-                                actual={values.v5}
-                                lineOffset1={-1.25}
-                                lineOffset2={-1.25}
-                              />
+                                jointRotation={[-Math.PI * 0.5, 0, j5]}
+                                args={[5, 5, 5, 32]}
+                                position={[0, v4 / 2 + 2.5, 0]}
+                                error={outside(j5, config.rangej5)}
+                                grid={jointGrid}
+                                updateMotion={updateMotion}
+                              >
+                                <Tool
+                                  name="tool"
+                                  rotation={[Math.PI * 0.5, 0, 0]}
+                                  args={[0.5, 0.5, v5, 32]}
+                                  position={[0, 0, v5 / 2 + 2.5]}
+                                  grid
+                                  actual={values.v5}
+                                  lineOffset1={-1.25}
+                                  lineOffset2={-1.25}
+                                />
+                              </Component>
                             </Component>
                           </Component>
                         </Component>
@@ -700,18 +609,15 @@ export function Arm({
             </Component>
           </Component>
         </Component>
-      </Component>
-      <Pos
-        name="pos"
-        setSelected={setSelected}
-        selected={selected}
-        args={[3, 30, 30]}
-        grid
-        animate={animate}
-        formApi={formApi}
-        toggleOrbital={toggleOrbital}
-        robotController={robotController}
-      />
-    </group>
+        <Pos
+          name="pos"
+          args={[3, 30, 30]}
+          grid
+          formApi={formApi}
+          toggleOrbital={toggleOrbital}
+          robotController={robotController}
+        />
+      </group>
+    </ArmContext.Provider>
   );
 }
