@@ -7,7 +7,7 @@ import StopCircle from '@spectrum-icons/workflow/StopCircle';
 import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
-import Compass from '@spectrum-icons/workflow/Compass';
+import Contrast from '@spectrum-icons/workflow/Contrast';
 import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
 import RemoveCircle from '@spectrum-icons/workflow/RemoveCircle';
 
@@ -58,7 +58,7 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, config, socket } = useApp();
+  const { extraOpen, toggleExtra, config, socket, toggleColorScheme } = useApp();
 
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
@@ -298,6 +298,13 @@ export const RobotNav = () => {
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
         <br />
+        {/* <ActionButton
+          title="Switch Theme"
+          aria-label="Switch Theme"
+          onClick={() => toggleColorScheme()}
+        >
+          <Contrast.default />
+        </ActionButton> */}
       </Flex>
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
