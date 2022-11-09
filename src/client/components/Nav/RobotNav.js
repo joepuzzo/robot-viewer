@@ -523,24 +523,6 @@ export const RobotNav = () => {
               trackGradient="black"
             />
             <InputSlider
-              name="x0"
-              label="X1"
-              type="number"
-              minValue={0}
-              maxValue={100}
-              step={0.1}
-              trackGradient="black"
-            />
-            <InputSlider
-              name="y0"
-              label="Y1"
-              type="number"
-              minValue={0}
-              maxValue={100}
-              step={0.1}
-              trackGradient="black"
-            />
-            <InputSlider
               name="v0"
               label="V1"
               type="number"
@@ -586,6 +568,24 @@ export const RobotNav = () => {
               trackGradient="purple"
             />
             <InputSlider name="v5" label="V6" type="number" minValue={0} maxValue={100} step={1} />
+            <InputSlider
+              name="x0"
+              label="X1"
+              type="number"
+              minValue={0}
+              maxValue={100}
+              step={0.1}
+              trackGradient="black"
+            />
+            <InputSlider
+              name="y0"
+              label="Y1"
+              type="number"
+              minValue={0}
+              maxValue={100}
+              step={0.1}
+              trackGradient="black"
+            />
             <InputSlider
               name="gridSize"
               initialValue={100}
