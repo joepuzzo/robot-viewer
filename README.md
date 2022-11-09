@@ -60,3 +60,7 @@ To run it locally simply run
 ```bash
 npm run run:docker
 ```
+
+## Kinematics
+
+![Kinematics Diagram](https://github.com/joepuzzo/robot-viewer/blob/main/src/server/static/KinematicsDiagram.pdf?raw=true)
