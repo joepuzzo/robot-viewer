@@ -1,4 +1,5 @@
-import { inv } from 'mathjs';
+// import { inv } from 'mathjs';
+import { inv } from './math';
 import { toRadians } from './toRadians';
 import { round, roundOne } from './round';
 import { matrixSubset } from './matrixSubset';

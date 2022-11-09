@@ -17,7 +17,8 @@
 // cos(t)	= adjacent
 // tan(t)	= opposite / adjacent
 
-import { inv, dot, matrix } from 'mathjs';
+// import { inv } from 'mathjs';
+import { inv } from './math.js';
 import { cleanAndRoundMatrix } from './roundMatrix.js';
 
 const toRadians = (deg) => {

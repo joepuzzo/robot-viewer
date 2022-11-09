@@ -109,6 +109,6 @@ describe('inverse', () => {
    */
   it('should take inverse of -5, 0, 10, 0, 0, 0 when flip is turned on', () => {
     // prettier-ignore
-    expect(inverse(-5, 0, 10, 0, 0, 0, {...robotConfig, flip: true})).toEqual([Math.PI, 0, -Math.PI/2, 0, Math.PI/2, -Math.PI]);
+    expect(inverse(-5, 0, 10, 0, 0, 0, {...robotConfig, flip: true})).toEqual([Math.PI, 0, -Math.PI/2, 0, Math.PI/2, 0]);
   });
 });
