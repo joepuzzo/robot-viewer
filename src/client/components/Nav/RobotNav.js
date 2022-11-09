@@ -524,7 +524,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="x0"
-              label="X0"
+              label="X1"
               type="number"
               minValue={0}
               maxValue={100}
@@ -533,7 +533,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="y0"
-              label="Y0"
+              label="Y1"
               type="number"
               minValue={0}
               maxValue={100}
@@ -542,7 +542,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="v0"
-              label="V0"
+              label="V1"
               type="number"
               minValue={0}
               maxValue={100}
@@ -551,7 +551,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="v1"
-              label="V1"
+              label="V2"
               type="number"
               minValue={0}
               maxValue={100}
@@ -560,7 +560,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="v2"
-              label="V2"
+              label="V3"
               type="number"
               minValue={0}
               maxValue={100}
@@ -569,7 +569,7 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="v3"
-              label="V3"
+              label="V4"
               type="number"
               minValue={0}
               maxValue={100}
@@ -578,14 +578,14 @@ export const RobotNav = () => {
             />
             <InputSlider
               name="v4"
-              label="V4"
+              label="V5"
               type="number"
               minValue={0}
               maxValue={100}
               step={0.1}
               trackGradient="purple"
             />
-            <InputSlider name="v5" label="V5" type="number" minValue={0} maxValue={100} step={1} />
+            <InputSlider name="v5" label="V6" type="number" minValue={0} maxValue={100} step={1} />
             <InputSlider
               name="gridSize"
               initialValue={100}
