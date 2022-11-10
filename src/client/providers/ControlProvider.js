@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FormProvider } from 'informed';
 
 // Hooks
-import { inverse } from '../../lib/inverse';
+import { inverse } from 'kinematics-js';
 import { toRadians } from '../../lib/toRadians';
 import { toDeg } from '../../lib/toDeg';
 import useApp from '../hooks/useApp';
@@ -22,12 +22,13 @@ const ControlProvider = ({ children }) => {
     console.log('Initial getting angles for', [config.x, config.y, config.z, ro1, ro2, ro3]);
 
     const angles = inverse(config.x, config.y, config.z, ro1, ro2, ro3, {
-      a1: config.base + config.v0,
-      a2: config.v1,
-      a3: config.v2,
-      a4: config.v3,
-      a5: config.v4,
-      a6: config.v5,
+      base: config.base,
+      v1: config.v0,
+      v2: config.v1,
+      v3: config.v2,
+      v4: config.v3,
+      v5: config.v4,
+      v6: config.v5,
       flip: config.flip,
       x0: config.x0,
       y0: config.y0,

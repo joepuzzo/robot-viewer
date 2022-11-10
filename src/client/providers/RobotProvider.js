@@ -9,9 +9,9 @@ import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../lib/toRadians';
-import { inverse } from '../../lib/inverse';
+import { inverse } from 'kinematics-js';
 import { toDeg } from '../../lib/toDeg';
-import { forward } from '../../lib/forward';
+import { forward } from 'kinematics-js';
 import { debounce } from '../utils/debounce';
 
 /**
@@ -178,12 +178,13 @@ const RobotProvider = ({ children }) => {
       formApi.getFormState().values;
 
     const robotConfig = {
-      a1: base + v0,
-      a2: v1,
-      a3: v2,
-      a4: v3,
-      a5: v4,
-      a6: v5,
+      base: base,
+      v1: v0,
+      v2: v1,
+      v3: v2,
+      v4: v3,
+      v5: v4,
+      v6: v5,
       x0,
     };
 
@@ -221,21 +222,22 @@ const RobotProvider = ({ children }) => {
     const ro2 = toRadians(r2);
     const ro3 = toRadians(r3);
 
-    console.log('Getting angles for', [x, y, z]);
+    // console.log('Getting angles for', [x, y, z]);
 
     const angles = inverse(x, y, z, ro1, ro2, ro3, {
-      a1: base + v0,
-      a2: v1,
-      a3: v2,
-      a4: v3,
-      a5: v4,
-      a6: v5,
+      base: base,
+      v1: v0,
+      v2: v1,
+      v3: v2,
+      v4: v3,
+      v5: v4,
+      v6: v5,
       x0,
       y0,
       flip: configRef.current.flip,
     });
 
-    console.log('Setting angles to', angles);
+    // console.log('Setting angles to', angles);
 
     if (!angles.find((a) => isNaN(a))) {
       // Step1: Update the form

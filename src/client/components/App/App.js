@@ -12,10 +12,6 @@ import { Header } from '../Header/Header';
 import { Nav } from '../Nav/Nav';
 import { Data } from '../Data/Data';
 
-import { inverse } from '../../../lib/inverse';
-import { toRadians } from '../../../lib/toRadians';
-import { toDeg } from '../../../lib/toDeg';
-
 import { Routes } from '../Routes/Routes';
 
 const App = () => {
