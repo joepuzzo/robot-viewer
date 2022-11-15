@@ -5,10 +5,11 @@ import NumberInput from '../Informed/NumberInput';
 import Select from '../Informed/Select';
 import Switch from '../Informed/Switch';
 import Input from '../Informed/Input';
-import { ArrayField, Debug, Relevant, useArrayFieldState, useFormApi } from 'informed';
+import { ArrayField, Debug, DebugField, Relevant, useArrayFieldState, useFormApi } from 'informed';
 import useSimulateState from '../../hooks/useSimulateState';
 import { usetPost } from '../../hooks/usePost';
 import { useGet } from '../../hooks/useGet';
+import { Draggable, DraggableProvider } from '../Shared/Draggable';
 
 const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   const { fields } = useArrayFieldState();
@@ -204,105 +205,115 @@ export const Waypoints = () => {
       <br />
       <div>{`Playing: ${JSON.stringify(simulating.play)}, Step: ${simulating.step}`}</div>
       <br />
-      {/* <Debug values /> */}
+      {/* <DebugField name="waypoints" /> */}
       <ArrayField
         name="waypoints"
         defaultValue={defaultValue}
         initialValue={initialValue}
         arrayFieldApiRef={arrayFieldApiRef}
       >
-        {({ add }) => {
+        {({ add, swap: swapper }) => {
           return (
             <Flex direction="column" alignItems="center" gap="size-100">
-              <ArrayField.Items>
-                {({ remove, name, index }) => (
-                  <div
-                    className={`waypoint ${
-                      simulating.step - 1 === index && simulating.play ? 'highlight' : ''
-                    }`}
-                  >
-                    <Flex direction="row" alignItems="end" gap="size-100" width={460}>
-                      <Select
-                        isDisabled={loading}
-                        width={100}
-                        defaultValue="z"
-                        name="orientation"
-                        aria-label="Select Oriantaion"
-                        options={[
-                          { label: 'X', value: 'x' },
-                          { label: '-X', value: '-x' },
-                          { label: 'Y', value: 'y' },
-                          { label: '-Y', value: '-y' },
-                          { label: 'Z', value: 'z' },
-                          { label: '-Z', value: '-z' },
-                          { label: 'G', value: 'g' },
-                        ]}
-                      />
-                      <NumberInput
-                        isDisabled={loading}
-                        name="wait"
-                        label="Hold"
-                        hideStepper
-                        defaultValue={0}
-                        width={80}
-                      />
-                      <Relevant
-                        when={({ scope, formApi }) =>
-                          formApi.getValue(`${scope}.orientation`) != 'g'
-                        }
+              <DraggableProvider>
+                <ArrayField.Items>
+                  {({ remove, name, index }) => (
+                    <Draggable index={index} swapper={swapper}>
+                      <div
+                        className={`waypoint ${
+                          simulating.step - 1 === index && simulating.play ? 'highlight' : ''
+                        }`}
                       >
-                        <NumberInput
-                          name="x"
-                          label="X"
-                          hideStepper
-                          defaultValue={0}
-                          width={90}
-                          isDisabled={loading}
-                        />
-                        <NumberInput
-                          name="y"
-                          label="Y"
-                          hideStepper
-                          defaultValue={0}
-                          width={90}
-                          isDisabled={loading}
-                        />
-                        <NumberInput
-                          name="z"
-                          label="Z"
-                          hideStepper
-                          defaultValue={0}
-                          width={90}
-                          isDisabled={loading}
-                        />
-                        {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
+                        <Flex direction="row" alignItems="end" gap="size-100" width={460}>
+                          <Select
+                            isDisabled={loading}
+                            width={100}
+                            defaultValue="z"
+                            name="orientation"
+                            aria-label="Select Oriantaion"
+                            options={[
+                              { label: 'X', value: 'x' },
+                              { label: '-X', value: '-x' },
+                              { label: 'Y', value: 'y' },
+                              { label: '-Y', value: '-y' },
+                              { label: 'Z', value: 'z' },
+                              { label: '-Z', value: '-z' },
+                              { label: 'G', value: 'g' },
+                            ]}
+                          />
+                          <NumberInput
+                            isDisabled={loading}
+                            name="wait"
+                            label="Hold"
+                            hideStepper
+                            defaultValue={0}
+                            width={80}
+                          />
+                          <Relevant
+                            when={({ scope, formApi }) =>
+                              formApi.getValue(`${scope}.orientation`) != 'g'
+                            }
+                          >
+                            <NumberInput
+                              name="x"
+                              label="X"
+                              hideStepper
+                              defaultValue={0}
+                              width={90}
+                              isDisabled={loading}
+                            />
+                            <NumberInput
+                              name="y"
+                              label="Y"
+                              hideStepper
+                              defaultValue={0}
+                              width={90}
+                              isDisabled={loading}
+                            />
+                            <NumberInput
+                              name="z"
+                              label="Z"
+                              hideStepper
+                              defaultValue={0}
+                              width={90}
+                              isDisabled={loading}
+                            />
+                            {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
                     <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
                     <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
-                        <NumberInput
-                          name="speed"
-                          label="Speed"
-                          hideStepper
-                          defaultValue={1500}
-                          width={90}
-                          isDisabled={loading}
-                        />
-                      </Relevant>
-                      <Relevant
-                        when={({ scope, formApi }) =>
-                          formApi.getValue(`${scope}.orientation`) === 'g'
-                        }
-                      >
-                        <Switch name="grip" defaultValue={false} isDisabled={loading} />
-                      </Relevant>
-                      <ArrayButtons index={index} add={add} remove={remove} isDisabled={loading} />
-                    </Flex>
-                  </div>
-                )}
-              </ArrayField.Items>
+                            <NumberInput
+                              name="speed"
+                              label="Speed"
+                              hideStepper
+                              defaultValue={1500}
+                              width={90}
+                              isDisabled={loading}
+                            />
+                          </Relevant>
+                          <Relevant
+                            when={({ scope, formApi }) =>
+                              formApi.getValue(`${scope}.orientation`) === 'g'
+                            }
+                          >
+                            <Switch name="grip" defaultValue={false} isDisabled={loading} />
+                          </Relevant>
+                          <ArrayButtons
+                            index={index}
+                            add={add}
+                            remove={remove}
+                            isDisabled={loading}
+                          />
+                        </Flex>
+                      </div>
+                    </Draggable>
+                  )}
+                </ArrayField.Items>
+              </DraggableProvider>
             </Flex>
           );
         }}
       </ArrayField>
+      {/* <Debug values /> */}
     </div>
   );
 };

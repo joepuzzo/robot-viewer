@@ -226,3 +226,15 @@ canvas {
 div[aria-selected='true'] {
   background-color: rgb(71, 71, 71) !important;
 }
+
+.draggable {
+  cursor: move;
+  user-select: none;
+  background-color: rgba(99, 24, 24, 0.2);
+  margin: 5px;
+}
+
+.placeholder {
+  border: 1px dashed;
+  width: 100%;
+}
