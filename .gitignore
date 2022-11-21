@@ -5,3 +5,4 @@ coverage
 .vscode
 waypoints
 recipes
+.DS_Store
