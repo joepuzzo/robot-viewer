@@ -73,7 +73,7 @@ const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...pro
   const [active, setActive] = useState(false);
 
   // Get Arm State
-  const { animate } = useContext(ArmContext);
+  const { animate, hideNegatives, showPlanes, showArrows } = useContext(ArmContext);
 
   // Get robot control
   const { updateRobot } = robotController;
@@ -189,7 +189,15 @@ const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...pro
         <sphereBufferGeometry args={args} position={[0, 0, -1.5]} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
-      {grid ? <Grid size={10} /> : null}
+      {grid ? (
+        <Grid
+          size={10}
+          hideNegatives={true}
+          hidePosatives={true}
+          showPlanes={false}
+          showArrows={false}
+        />
+      ) : null}
     </animated.group>
   );
 };
@@ -215,6 +223,9 @@ const Tool = ({
 
   const ref = useRef();
 
+  // Get Arm State
+  const { hideNegatives, showPlanes, showArrows } = useContext(ArmContext);
+
   // ...bind()
 
   let cylinderArgs = [...args];
@@ -231,7 +242,9 @@ const Tool = ({
         <cylinderGeometry args={cylinderArgs} />
         <meshStandardMaterial color={hovered ? 'hotpink' : '#f9c74f'} opacity={0.4} transparent />
       </mesh>
-      {grid ? <Grid size={10} /> : null}
+      {grid ? (
+        <Grid size={10} hideNegatives={true} showPlanes={showPlanes} showArrows={showArrows} />
+      ) : null}
       <Line
         rotation={rotation}
         points={[
@@ -273,8 +286,17 @@ const Component = ({
   ...props
 }) => {
   // Get Arm Context
-  const { hide, hideNegatives, linkColor, animate, updateMotion, runOnRobot, simulating } =
-    useContext(ArmContext);
+  const {
+    hide,
+    hideNegatives,
+    showPlanes,
+    showArrows,
+    linkColor,
+    animate,
+    updateMotion,
+    runOnRobot,
+    simulating,
+  } = useContext(ArmContext);
 
   const { rotation: jointRotation } = useSpring({
     rotation: userJointRotation,
@@ -355,7 +377,14 @@ const Component = ({
           ) : null}
         </group>
         {children}
-        {grid ? <Grid size={hide ? 10 : 30} hideNegatives={hideNegatives} /> : null}
+        {grid ? (
+          <Grid
+            size={hide ? 10 : 30}
+            hideNegatives={hideNegatives}
+            showPlanes={showPlanes}
+            showArrows={showArrows}
+          />
+        ) : null}
         {hide && actual ? (
           <>
             <Line
@@ -379,7 +408,14 @@ const Component = ({
           <meshStandardMaterial color={color} opacity={opacity} transparent={transparent} />
         </mesh>
         {children}
-        {grid ? <Grid size={hide ? 10 : 30} hideNegatives={hideNegatives} /> : null}
+        {grid ? (
+          <Grid
+            size={hide ? 10 : 30}
+            hideNegatives={hideNegatives}
+            showPlanes={showPlanes}
+            showArrows={showArrows}
+          />
+        ) : null}
         {error ? <ErrorBall /> : null}
         {hide && actual ? (
           <Line
@@ -417,8 +453,18 @@ export function Arm({
   formApi,
   toggleOrbital,
 }) {
-  const { jointGrid, mainGrid, gridSize, hide, linkColor, animate, hideNegatives, runOnRobot } =
-    values;
+  const {
+    jointGrid,
+    mainGrid,
+    gridSize,
+    hide,
+    linkColor,
+    animate,
+    showPlanes,
+    showArrows,
+    hideNegatives,
+    runOnRobot,
+  } = values;
 
   const { updateMotion } = simulateController;
   const { simulating } = simulateState;
@@ -454,12 +500,17 @@ export function Arm({
     updateMotion,
     runOnRobot,
     simulating,
+    showPlanes,
+    showArrows,
   };
 
   return (
     <ArmContext.Provider value={value}>
       <group rotation={[Math.PI * -0.5, 0, 0]}>
-        {mainGrid ? <Grid size={gridSize} /> : null}
+        {mainGrid ? <Grid size={gridSize} showArrows /> : null}
+        {/* <group position={[gridSize / 2 - 10, -gridSize / 2, 0]}>
+          <Grid size={10} showArrows hideNegatives showPlanes={false} />
+        </group> */}
         <Component
           name="base"
           position={[0, 0, base / 2]}

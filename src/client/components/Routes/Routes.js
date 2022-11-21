@@ -6,6 +6,7 @@ import { Cookbook } from '../Pages/Cookbook/Cookbook';
 import { Robot } from '../Pages/Robot/Robot';
 import { Motor } from '../Pages/Motor/Motor';
 import { NotFound } from '../Pages/NotFound/NotFound';
+import { Framer } from '../Pages/Framer/Framer';
 
 // Routes ------------------------------------------------------------
 
@@ -15,6 +16,7 @@ export const Routes = () => {
       <Route path="/" element={<Robot />} />
       <Route path="/motor" element={<Motor />} />
       <Route path="/cookbook" element={<Cookbook />} />
+      <Route path="/framer" element={<Framer />} />
       <Route path="*" element={<NotFound />} />
     </RouterRoutes>
   );

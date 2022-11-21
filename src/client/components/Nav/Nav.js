@@ -6,6 +6,7 @@ import useApp from '../../hooks/useApp';
 
 import useOutsideAlerter from '../../hooks/useOutsideAlerter';
 import { CookbookNav } from './CookbookNav';
+import { FramerNav } from './FramerNav';
 
 import { MotorNav } from './MotorNav';
 import { RobotNav } from './RobotNav';
@@ -26,6 +27,7 @@ export const Nav = () => {
         <Route path="/" element={<RobotNav />} />
         <Route path="/motor" element={<MotorNav />} />
         <Route path="/cookbook" element={<CookbookNav />} />
+        <Route path="/framer" element={<FramerNav />} />
       </Routes>
     </nav>
   );

@@ -606,6 +606,10 @@ export const RobotNav = () => {
             <br />
             <Switch name="hideNegatives" label="Hide Nagatives" />
             <br />
+            <Switch name="showPlanes" label="Show Planes" initialValue={false} />
+            <br />
+            <Switch name="showArrows" label="Show Arrows" initialValue={true} />
+            <br />
             <hr />
             <h2>Robot Config</h2>
             <NumberInput

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Text } from '@react-three/drei';
+import { Line, Plane, Text } from '@react-three/drei';
 
 const XZPlane = ({ size }) => (
   <Plane
@@ -27,18 +27,41 @@ const YZPlane = ({ size }) => (
   </Plane>
 );
 
-export default function Grid({ size, hideNegatives }) {
+export default function Grid({
+  size,
+  hideNegatives,
+  hidePosatives,
+  showArrows,
+  showPlanes = true,
+  transparent,
+  lineWidth = 3,
+}) {
   return (
     <group>
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[size / 2 + 10, 0, 0]}
-        scale={[40, 40, 40]}
-      >
-        X+
-      </Text>
+      {!hidePosatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[size / 2 + 10, 0, 0]}
+          scale={[40, 40, 40]}
+        >
+          X+
+        </Text>
+      ) : null}
+      {showArrows ? (
+        <Line
+          rotation={[0, 0, 0]}
+          points={[
+            [0, 0, 0],
+            [size / 2 + 5, 0, 0],
+          ]}
+          color="red"
+          lineWidth={lineWidth}
+          opacity={transparent ? 0.3 : 1}
+          transparent={transparent}
+        />
+      ) : null}
       {!hideNegatives ? (
         <Text
           color="white" // default
@@ -50,15 +73,30 @@ export default function Grid({ size, hideNegatives }) {
           X-
         </Text>
       ) : null}
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[0, size / 2 + 10, 0]}
-        scale={[40, 40, 40]}
-      >
-        Y+
-      </Text>
+      {!hidePosatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[0, size / 2 + 10, 0]}
+          scale={[40, 40, 40]}
+        >
+          Y+
+        </Text>
+      ) : null}
+      {showArrows ? (
+        <Line
+          rotation={[0, 0, 0]}
+          points={[
+            [0, 0, 0],
+            [0, size / 2 + 5, 0],
+          ]}
+          color="green"
+          lineWidth={lineWidth}
+          opacity={transparent ? 0.3 : 1}
+          transparent={transparent}
+        />
+      ) : null}
       {!hideNegatives ? (
         <Text
           color="white" // default
@@ -70,15 +108,30 @@ export default function Grid({ size, hideNegatives }) {
           Y-
         </Text>
       ) : null}
-      <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[0, 0, size / 2 + 10]}
-        scale={[40, 40, 40]}
-      >
-        Z+
-      </Text>
+      {!hidePosatives ? (
+        <Text
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={[0, 0, size / 2 + 10]}
+          scale={[40, 40, 40]}
+        >
+          Z+
+        </Text>
+      ) : null}
+      {showArrows ? (
+        <Line
+          rotation={[0, 0, 0]}
+          points={[
+            [0, 0, 0],
+            [0, 0, size / 2 + 5],
+          ]}
+          color="blue"
+          lineWidth={lineWidth}
+          opacity={transparent ? 0.3 : 1}
+          transparent={transparent}
+        />
+      ) : null}
       {!hideNegatives ? (
         <Text
           color="white" // default
@@ -90,9 +143,9 @@ export default function Grid({ size, hideNegatives }) {
           Z-
         </Text>
       ) : null}
-      <XZPlane size={size} />
-      <XYPlane size={size} />
-      <YZPlane size={size} />
+      {showPlanes ? <XZPlane size={size} /> : null}
+      {showPlanes ? <XYPlane size={size} /> : null}
+      {showPlanes ? <YZPlane size={size} /> : null}
     </group>
   );
 }
