@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Button, Flex, StatusLight } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
+import Graphic from '@spectrum-icons/workflow/Graphic';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
 import StopCircle from '@spectrum-icons/workflow/StopCircle';
@@ -207,6 +208,25 @@ export const RobotNav = () => {
       r1: 0,
       r2: 0,
       r3: 0,
+    });
+
+    robotUpdate();
+  };
+
+  const skeleton = () => {
+    formApi.setTheseValues({
+      x: zeroPosition[0],
+      y: zeroPosition[1],
+      z: zeroPosition[2],
+      r1: 0,
+      r2: 0,
+      r3: 0,
+      mainGrid: false,
+      jointGrid: true,
+      hide: true,
+      showCylinder: true,
+      showArrows: true,
+      hideNegatives: true,
     });
 
     robotUpdate();
@@ -596,6 +616,12 @@ export const RobotNav = () => {
               step={10}
             />
             <br />
+            <ActionButton title="Skeleton" onPress={() => skeleton()}>
+              <Graphic.default />
+            </ActionButton>
+            <br />
+
+            <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={true} />
             <br />
             <Switch name="jointGrid" label="Joint Grids" />
@@ -609,6 +635,8 @@ export const RobotNav = () => {
             <Switch name="showPlanes" label="Show Planes" initialValue={false} />
             <br />
             <Switch name="showArrows" label="Show Arrows" initialValue={true} />
+            <br />
+            <Switch name="showCylinder" label="Show Joints" initialValue={false} />
             <br />
             <hr />
             <h2>Robot Config</h2>

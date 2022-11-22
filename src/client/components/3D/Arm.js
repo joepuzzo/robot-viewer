@@ -291,6 +291,7 @@ const Component = ({
     hideNegatives,
     showPlanes,
     showArrows,
+    showCylinder,
     linkColor,
     animate,
     updateMotion,
@@ -383,6 +384,7 @@ const Component = ({
             hideNegatives={hideNegatives}
             showPlanes={showPlanes}
             showArrows={showArrows}
+            showCylinder={showCylinder}
           />
         ) : null}
         {hide && actual ? (
@@ -414,6 +416,7 @@ const Component = ({
             hideNegatives={hideNegatives}
             showPlanes={showPlanes}
             showArrows={showArrows}
+            showCylinder={showCylinder}
           />
         ) : null}
         {error ? <ErrorBall /> : null}
@@ -464,6 +467,7 @@ export function Arm({
     showArrows,
     hideNegatives,
     runOnRobot,
+    showCylinder,
   } = values;
 
   const { updateMotion } = simulateController;
@@ -502,12 +506,13 @@ export function Arm({
     simulating,
     showPlanes,
     showArrows,
+    showCylinder,
   };
 
   return (
     <ArmContext.Provider value={value}>
       <group rotation={[Math.PI * -0.5, 0, 0]}>
-        {mainGrid ? <Grid size={gridSize} showArrows /> : null}
+        {mainGrid ? <Grid size={gridSize} showArrows shift /> : null}
         {/* <group position={[gridSize / 2 - 10, -gridSize / 2, 0]}>
           <Grid size={10} showArrows hideNegatives showPlanes={false} />
         </group> */}

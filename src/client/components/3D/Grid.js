@@ -2,15 +2,21 @@ import React from 'react';
 import { Line, Plane, Text } from '@react-three/drei';
 import { toRadians } from '../../../lib/toRadians';
 
-const XZPlane = ({ size }) => (
-  <Plane
-    args={[size, size, size / 10, size / 10]}
-    rotation={[1.5 * Math.PI, 0, 0]}
-    position={[0, 0, 0]}
-  >
-    <meshStandardMaterial attach="material" color="#f9c74f" wireframe />
-  </Plane>
-);
+const XZPlane = ({ size, shift }) => {
+  const height = shift ? size / 2 : size;
+
+  const shifted = shift ? height / 2 : 0;
+
+  return (
+    <Plane
+      args={[size, height, size / 10, height / 10]}
+      rotation={[1.5 * Math.PI, 0, 0]}
+      position={[0, 0, shifted]}
+    >
+      <meshStandardMaterial attach="material" color="#f9c74f" wireframe />
+    </Plane>
+  );
+};
 
 const XYPlane = ({ size }) => (
   <Plane args={[size, size, size / 10, size / 10]} rotation={[0, 0, 0]} position={[0, 0, 0]}>
@@ -18,15 +24,20 @@ const XYPlane = ({ size }) => (
   </Plane>
 );
 
-const YZPlane = ({ size }) => (
-  <Plane
-    args={[size, size, size / 10, size / 10]}
-    rotation={[0, Math.PI / 2, 0]}
-    position={[0, 0, 0]}
-  >
-    <meshStandardMaterial attach="material" color="#80ffdb" wireframe />
-  </Plane>
-);
+const YZPlane = ({ size, shift }) => {
+  const width = shift ? size / 2 : size;
+  const shifted = shift ? width / 2 : 0;
+
+  return (
+    <Plane
+      args={[width, size, width / 10, size / 10]}
+      rotation={[0, Math.PI / 2, 0]}
+      position={[0, 0, shifted]}
+    >
+      <meshStandardMaterial attach="material" color="#80ffdb" wireframe />
+    </Plane>
+  );
+};
 
 export default function Grid({
   size,
@@ -37,6 +48,7 @@ export default function Grid({
   transparent,
   lineWidth = 3,
   showCylinder,
+  shift,
 }) {
   return (
     <group>
@@ -145,9 +157,9 @@ export default function Grid({
           Z-
         </Text>
       ) : null}
-      {showPlanes ? <XZPlane size={size} /> : null}
+      {showPlanes ? <XZPlane size={size} shift={shift} /> : null}
       {showPlanes ? <XYPlane size={size} /> : null}
-      {showPlanes ? <YZPlane size={size} /> : null}
+      {showPlanes ? <YZPlane size={size} shift={shift} /> : null}
       {showCylinder ? (
         <group rotation={[toRadians(90), 0, 0]}>
           <mesh>
