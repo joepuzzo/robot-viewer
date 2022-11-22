@@ -4,7 +4,7 @@ import { useFormApi, useInformed } from 'informed';
 import { useStateWithGetter } from '../hooks/useStateWithGetter';
 import useRobotController from '../hooks/useRobotController';
 import useApp from '../hooks/useApp';
-import { getZXZ } from '../utils/getEulers';
+import { getXYZ, getZXZ } from '../utils/getEulers';
 
 const SimulateProvider = ({ children }) => {
   // So we can access all of our form values!

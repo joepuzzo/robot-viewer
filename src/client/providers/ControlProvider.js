@@ -3,6 +3,7 @@ import { FormProvider } from 'informed';
 
 // Hooks
 import { inverse } from 'kinematics-js';
+// import { inverse } from '../../lib/inverse';
 import { toRadians } from '../../lib/toRadians';
 import { toDeg } from '../../lib/toDeg';
 import useApp from '../hooks/useApp';

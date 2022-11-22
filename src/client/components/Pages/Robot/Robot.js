@@ -14,7 +14,7 @@ import useRobotController from '../../../hooks/useRobotController';
 import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
 import { useOverFlowHidden } from '../../../hooks/useOverflowHidden';
-import { getZXZ } from '../../../utils/getEulers';
+import { getXYZ, getZXZ } from '../../../utils/getEulers';
 
 const DEG45 = Math.PI / 4;
 

@@ -10,6 +10,7 @@ import useApp from '../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../lib/toRadians';
 import { inverse } from 'kinematics-js';
+// import { inverse } from '../../lib/inverse';
 import { toDeg } from '../../lib/toDeg';
 import { forward } from 'kinematics-js';
 import { debounce } from '../utils/debounce';

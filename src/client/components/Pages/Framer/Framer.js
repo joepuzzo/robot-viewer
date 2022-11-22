@@ -10,52 +10,7 @@ import useApp from '../../../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
-
-/**
- *
- * X = Yaw
- * Y = pitch
- * Z = roll
- *
- *       Z
- *       ^
- *       |
- *       |
- *       |
- *       |
- *       + -----------> Y
- *      /
- *     /
- *    /
- *   X
- *
- */
-
-const orientations = {
-  xyz: {
-    x: [0, 90, 0],
-    '-x': [0, -90, 0],
-    y: [-90, 0, 0],
-    '-y': [90, 0, 0],
-    z: [0, 0, 0],
-    '-z': [0, 180, 0],
-  },
-  zxz: {
-    x: [90, 90, 90],
-    '-x': [-270, -90, -90],
-    y: [0, -90, 0],
-    '-y': [-180, -90, 0],
-    z: [0, 0, 0],
-    // '-z': [90, 180, 0],
-    '-z': [-90, -180, 0],
-    // '-z': [180, 180, 90],
-  },
-};
-
-const getRotations = (orientation, type) => {
-  console.log('WTF', orientation, type);
-  return orientations[type][orientation];
-};
+import { getEulers } from '../../../utils/getEulers';
 
 const Control = ({ controlRef }) => {
   const formApi = useFormApi();
@@ -103,11 +58,9 @@ export const Framer = () => {
   const { value: rot3 } = useFieldState('r3');
   const { value: type } = useFieldState('eulerType');
 
-  const [rotation, setRotation] = useState([0, 0, 0]);
-
   useEffect(() => {
     if (orientation && type) {
-      const [r1, r2, r3] = getRotations(orientation, type);
+      const [r1, r2, r3] = getEulers(orientation, type);
       formApi.setTheseValues({
         r1,
         r2,

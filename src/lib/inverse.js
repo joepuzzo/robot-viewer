@@ -7,7 +7,7 @@ import { matrixDot } from './matrixDot';
 import { buildHomogeneousDenavitForTable } from './denavitHartenberg';
 import { inverse1_3 } from './inverse1_3';
 import { Debug } from './debug';
-import { zxz } from './euler';
+import { xyz, zxz } from './euler';
 import { cleanAndRoundMatrix } from './roundMatrix';
 
 const logger = Debug('ik:inverse' + '\t');
@@ -26,6 +26,17 @@ const d90 = toRadians(90);
  * @returns
  */
 export const inverse = (x, y, z, r1, r2, r3, robotConfig) => {
+  // const robotConfig = {
+  //   ...config,
+  //   a1: config.v1 + (config.base ? config.base : 0),
+  //   a2: config.v2,
+  //   a3: config.v3,
+  //   a4: config.v4,
+  //   a5: config.v5,
+  //   a6: config.v6,
+  //   flip: config.flip ?? true,
+  // };
+
   const r0_6 = cleanAndRoundMatrix(zxz(r1, r2, r3));
 
   // console.table(r0_6);
