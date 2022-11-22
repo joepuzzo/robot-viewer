@@ -59,7 +59,8 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, config, socket, toggleColorScheme } = useApp();
+  const { extraOpen, toggleExtra, config, socket, toggleColorScheme, orbitControl, cameraControl } =
+    useApp();
 
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
@@ -211,25 +212,8 @@ export const RobotNav = () => {
     });
 
     robotUpdate();
-  };
-
-  const skeleton = () => {
-    formApi.setTheseValues({
-      x: zeroPosition[0],
-      y: zeroPosition[1],
-      z: zeroPosition[2],
-      r1: 0,
-      r2: 0,
-      r3: 0,
-      mainGrid: false,
-      jointGrid: true,
-      hide: true,
-      showCylinder: true,
-      showArrows: true,
-      hideNegatives: true,
-    });
-
-    robotUpdate();
+    orbitControl.current.current.target.set(0, 20, 0);
+    cameraControl.current.current.position.set(90, 100, 90);
   };
 
   const onValueChange = (name) => () => {
@@ -616,11 +600,6 @@ export const RobotNav = () => {
               step={10}
             />
             <br />
-            <ActionButton title="Skeleton" onPress={() => skeleton()}>
-              <Graphic.default />
-            </ActionButton>
-            <br />
-
             <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={true} />
             <br />

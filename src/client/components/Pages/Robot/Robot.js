@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useRef } from 'react';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei';
+import Graphic from '@spectrum-icons/workflow/Graphic';
 import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
@@ -18,7 +19,7 @@ import { getXYZ, getZXZ } from '../../../utils/getEulers';
 
 const DEG45 = Math.PI / 4;
 
-const Control = ({ controlRef }) => {
+const Control = ({ controlRef, virtualCam }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
   const { updateRobot, setBallRef } = useRobotController();
@@ -55,17 +56,46 @@ const Control = ({ controlRef }) => {
     controlRef.current.reset();
   };
 
+  const skeleton = () => {
+    formApi.setTheseValues({
+      x: zeroPosition[0],
+      y: zeroPosition[1],
+      z: zeroPosition[2],
+      r1: 0,
+      r2: 0,
+      r3: 0,
+      mainGrid: false,
+      jointGrid: true,
+      hide: true,
+      showCylinder: true,
+      showArrows: true,
+      hideNegatives: true,
+    });
+
+    // Get pos
+    const { x, y, z, r1, r2, r3 } = formApi.getFormState().values;
+
+    // Update the robot
+    updateRobot(x, y, z, r1, r2, r3);
+
+    virtualCam.current.position.set(70, 80, 70);
+    controlRef.current.target.set(0, 50, 0);
+  };
+
   return (
     <>
       <Flex
         direction="row"
-        width={500}
+        width={600}
         justifyContent="space-between"
         alignItems="end"
         gap="size-100"
       >
         <ActionButton type="button" onPress={reset} minWidth="100">
           Reset
+        </ActionButton>
+        <ActionButton title="Skeleton" onPress={() => skeleton()}>
+          <Graphic.default />
         </ActionButton>
         <NumberInput
           name="goToX"
@@ -110,7 +140,7 @@ const Control = ({ controlRef }) => {
 };
 
 export const Robot = () => {
-  const { config, orbitEnabled, toggleOrbital } = useApp();
+  const { config, orbitEnabled, toggleOrbital, orbitControl, cameraControl } = useApp();
 
   const { values } = useFormState();
   const formApi = useFormApi();
@@ -126,6 +156,10 @@ export const Robot = () => {
   const { units } = config;
 
   const controlRef = useRef();
+  const virtualCam = useRef();
+
+  orbitControl.current = controlRef;
+  cameraControl.current = virtualCam;
 
   useOverFlowHidden();
 
@@ -143,17 +177,27 @@ export const Robot = () => {
         Location: X: {round(endPosition.x, 1000)} {units} Y: {round(endPosition.y, 1000)} {units} Z:{' '}
         {round(endPosition.z, 1000)} {units}
       </h3>
-      <Control controlRef={controlRef} />
+      <Control controlRef={controlRef} virtualCam={virtualCam} />
       <Canvas
-        camera={{
-          fov: 75,
-          aspect: window.innerWidth / window.innerHeight,
-          near: 0.1,
-          far: 10000,
-          position: [70, 80, 70],
-          zoom: 1.2,
-        }}
+      // camera={{
+      //   fov: 75,
+      //   aspect: window.innerWidth / window.innerHeight,
+      //   near: 0.1,
+      //   far: 10000,
+      //   position: [70, 80, 70],
+      //   zoom: 1.2,
+      // }}
       >
+        <PerspectiveCamera
+          ref={virtualCam}
+          makeDefault={true}
+          fov={75}
+          aspect={window.innerWidth / window.innerHeight}
+          far={10000}
+          near={0.1}
+          position={[70, 80, 70]}
+          zoom={1.2}
+        />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />

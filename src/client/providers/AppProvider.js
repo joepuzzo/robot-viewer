@@ -112,6 +112,9 @@ const AppProvider = ({ children }) => {
     setExtraOpen((prev) => !prev);
   };
 
+  const orbitControl = useRef();
+  const cameraControl = useRef();
+
   const socketRef = useRef();
   useState(() => {
     const socket = io('/client', {
@@ -138,6 +141,8 @@ const AppProvider = ({ children }) => {
     robotTypes,
     selectRobot,
     socket: socketRef.current,
+    orbitControl,
+    cameraControl,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
