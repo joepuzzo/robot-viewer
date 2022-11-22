@@ -8,7 +8,6 @@ import RadioGroup from '../../Informed/RadioGroup';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useApp from '../../../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
-import { zxz } from '../../../../lib/euler';
 import { toRadians } from '../../../../lib/toRadians';
 
 // Z = roll
@@ -136,7 +135,14 @@ export const Framer = () => {
           <group rotation={[Math.PI * -0.5, 0, 0]}>
             <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
             <group rotation={rotation}>
-              <Grid size={20} hideNegatives showArrows showPlanes={false} lineWidth={5} />
+              <Grid
+                size={20}
+                hideNegatives
+                showArrows
+                showPlanes={false}
+                lineWidth={5}
+                showCylinder
+              />
             </group>
           </group>
         </Suspense>

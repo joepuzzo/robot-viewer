@@ -1,5 +1,6 @@
 import React from 'react';
 import { Line, Plane, Text } from '@react-three/drei';
+import { toRadians } from '../../../lib/toRadians';
 
 const XZPlane = ({ size }) => (
   <Plane
@@ -35,6 +36,7 @@ export default function Grid({
   showPlanes = true,
   transparent,
   lineWidth = 3,
+  showCylinder,
 }) {
   return (
     <group>
@@ -146,6 +148,14 @@ export default function Grid({
       {showPlanes ? <XZPlane size={size} /> : null}
       {showPlanes ? <XYPlane size={size} /> : null}
       {showPlanes ? <YZPlane size={size} /> : null}
+      {showCylinder ? (
+        <group rotation={[toRadians(90), 0, 0]}>
+          <mesh>
+            <cylinderGeometry args={[5, 5, 5, 32]} />
+            <meshStandardMaterial color="yellow" opacity={0.5} transparent />
+          </mesh>
+        </group>
+      ) : null}
     </group>
   );
 }
