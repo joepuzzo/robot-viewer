@@ -9,6 +9,7 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useApp from '../../../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
+import { useSpring, animated } from '@react-spring/three';
 
 // Z = roll
 // Y = pitch
@@ -94,26 +95,70 @@ export const Framer = () => {
   const formApi = useFormApi();
 
   const { value: orientation } = useFieldState('orientation');
-  const { value: roll } = useFieldState('roll');
-  const { value: pitch } = useFieldState('pitch');
-  const { value: yaw } = useFieldState('yaw');
+  const { value: rot1 } = useFieldState('r1');
+  const { value: rot2 } = useFieldState('r2');
+  const { value: rot3 } = useFieldState('r3');
+  const { value: type } = useFieldState('eulerType');
 
   const [rotation, setRotation] = useState([0, 0, 0]);
 
   useEffect(() => {
     if (orientation) {
-      const [x, y, z] = getRollPitchYaw(orientation);
+      const [r1, r2, r3] = getRollPitchYaw(orientation);
       formApi.setTheseValues({
-        yaw: x,
-        pitch: y,
-        roll: z,
+        r1,
+        r2,
+        r3,
       });
     }
   }, [orientation]);
 
-  useEffect(() => {
-    setRotation([toRadians(yaw), toRadians(pitch), toRadians(roll)]);
-  }, [yaw, pitch, roll]);
+  // useEffect(() => {
+  //   setRotation([toRadians(rot1), toRadians(rot2), toRadians(rot3)]);
+  // }, [rot1, rot2, rot3]);
+
+  const [r1, r2, r3] = useMemo(() => {
+    const r1 = { x: 0, y: 0, z: 0 };
+    const r2 = { x: 0, y: 0, z: 0 };
+    const r3 = { x: 0, y: 0, z: 0 };
+
+    if (type) {
+      // Example: 'xyz'.split('')
+      // => [ 'x', 'y', 'z' ]
+      const rotations = type.split('');
+
+      // Example: r1['x']
+      r1[rotations[0]] = toRadians(rot1);
+      r2[rotations[1]] = toRadians(rot2);
+      r3[rotations[2]] = toRadians(rot3);
+    }
+
+    return [Object.values(r1), Object.values(r2), Object.values(r3)];
+  }, [type, rot1, rot2, rot3]);
+
+  const { rotation: rotation1 } = useSpring({
+    rotation: r1,
+    config: {
+      clamp: true,
+      tension: 70,
+    },
+  });
+
+  const { rotation: rotation2 } = useSpring({
+    rotation: r2,
+    config: {
+      clamp: true,
+      tension: 70,
+    },
+  });
+
+  const { rotation: rotation3 } = useSpring({
+    rotation: r3,
+    config: {
+      clamp: true,
+      tension: 70,
+    },
+  });
 
   return (
     <>
@@ -134,16 +179,20 @@ export const Framer = () => {
         <Suspense fallback={null}>
           <group rotation={[Math.PI * -0.5, 0, 0]}>
             <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
-            <group rotation={rotation}>
-              <Grid
-                size={20}
-                hideNegatives
-                showArrows
-                showPlanes={false}
-                lineWidth={5}
-                showCylinder
-              />
-            </group>
+            <animated.group rotation={rotation1}>
+              <animated.group rotation={rotation2}>
+                <animated.group rotation={rotation3}>
+                  <Grid
+                    size={20}
+                    hideNegatives
+                    showArrows
+                    showPlanes={false}
+                    lineWidth={5}
+                    showCylinder
+                  />
+                </animated.group>
+              </animated.group>
+            </animated.group>
           </group>
         </Suspense>
       </Canvas>

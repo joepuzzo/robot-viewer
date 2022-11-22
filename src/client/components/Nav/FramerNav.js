@@ -1,16 +1,22 @@
-import React, { useCallback, useMemo, useRef } from 'react';
-import { ActionButton, Flex } from '@adobe/react-spectrum';
-import Home from '@spectrum-icons/workflow/Home';
-import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
-import useApp from '../../hooks/useApp';
+import React, { useMemo } from 'react';
+import { Flex } from '@adobe/react-spectrum';
+
 import Select from '../Informed/Select';
-import { Debug, useFieldState, useFormApi } from 'informed';
-import useRobotMeta from '../../hooks/useRobotMeta';
 import InputSlider from '../Informed/InputSlider';
-import useRobotController from '../../hooks/useRobotController';
-import { RobotType } from '../Shared/RobotType';
+import { useFieldState } from 'informed';
 
 export const FramerNav = () => {
+  const { value: type } = useFieldState('eulerType');
+
+  const [label1, label2, label3] = useMemo(() => {
+    if (type) {
+      // Example: 'xyz'.split('')
+      // => [ 'x', 'y', 'z' ]
+      return type.split('').map((l) => `Rotation ${l}`);
+    }
+    return ['Rotation1', 'Rotation2', 'Rotation3'];
+  }, [type]);
+
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
@@ -19,9 +25,18 @@ export const FramerNav = () => {
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
+            <Select
+              label="Euler Type"
+              name="eulerType"
+              defaultValue="xyz"
+              options={[
+                { value: 'xyz', label: 'XYZ ( Yaw Pitch Roll )' },
+                { value: 'zxz', label: 'ZXZ' },
+              ]}
+            />
             <InputSlider
-              name="yaw"
-              label="Yaw(X)"
+              name="r1"
+              label={label1}
               type="number"
               minValue={-180}
               maxValue={180}
@@ -29,8 +44,8 @@ export const FramerNav = () => {
               step={1}
             />
             <InputSlider
-              name="pitch"
-              label="Pitch(Y)"
+              name="r2"
+              label={label2}
               type="number"
               minValue={-180}
               maxValue={180}
@@ -38,8 +53,8 @@ export const FramerNav = () => {
               step={1}
             />
             <InputSlider
-              name="roll"
-              label="Roll(Z)"
+              name="r3"
+              label={label3}
               type="number"
               minValue={-180}
               maxValue={180}
