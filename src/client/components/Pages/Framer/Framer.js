@@ -11,10 +11,6 @@ import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 
-// Z = roll
-// Y = pitch
-// X = yaw
-
 /**
  *
  * X = Yaw
@@ -35,23 +31,30 @@ import { useSpring, animated } from '@react-spring/three';
  *
  */
 
-const getRollPitchYaw = (orientation) => {
-  switch (orientation) {
-    case 'x':
-      return [0, 90, 0];
-    case '-x':
-      return [0, -90, 0];
-    case 'y':
-      return [-90, 0, 0];
-    case '-y':
-      return [90, 0, 0];
-    case 'z':
-      return [0, 0, 0];
-    case '-z':
-      return [0, 180, 0];
-    default:
-      break;
-  }
+const orientations = {
+  xyz: {
+    x: [0, 90, 0],
+    '-x': [0, -90, 0],
+    y: [-90, 0, 0],
+    '-y': [90, 0, 0],
+    z: [0, 0, 0],
+    '-z': [0, 180, 0],
+  },
+  zxz: {
+    x: [90, 90, 90],
+    '-x': [-270, -90, -90],
+    y: [0, -90, 0],
+    '-y': [-180, -90, 0],
+    z: [0, 0, 0],
+    // '-z': [90, 180, 0],
+    '-z': [-90, -180, 0],
+    // '-z': [180, 180, 90],
+  },
+};
+
+const getRotations = (orientation, type) => {
+  console.log('WTF', orientation, type);
+  return orientations[type][orientation];
 };
 
 const Control = ({ controlRef }) => {
@@ -103,15 +106,15 @@ export const Framer = () => {
   const [rotation, setRotation] = useState([0, 0, 0]);
 
   useEffect(() => {
-    if (orientation) {
-      const [r1, r2, r3] = getRollPitchYaw(orientation);
+    if (orientation && type) {
+      const [r1, r2, r3] = getRotations(orientation, type);
       formApi.setTheseValues({
         r1,
         r2,
         r3,
       });
     }
-  }, [orientation]);
+  }, [orientation, type]);
 
   // useEffect(() => {
   //   setRotation([toRadians(rot1), toRadians(rot2), toRadians(rot3)]);

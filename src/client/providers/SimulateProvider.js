@@ -4,25 +4,7 @@ import { useFormApi, useInformed } from 'informed';
 import { useStateWithGetter } from '../hooks/useStateWithGetter';
 import useRobotController from '../hooks/useRobotController';
 import useApp from '../hooks/useApp';
-
-const getZXZ = (orientation) => {
-  switch (orientation) {
-    case 'x':
-      return [90, 90, 90];
-    case '-x':
-      return [-270, -90, -90];
-    case 'y':
-      return [0, -90, 0];
-    case '-y':
-      return [-180, -90, 0];
-    case 'z':
-      return [0, 0, 0];
-    case '-z':
-      return [-90, -180, 0];
-    default:
-      break;
-  }
-};
+import { getZXZ } from '../utils/getEulers';
 
 const SimulateProvider = ({ children }) => {
   // So we can access all of our form values!
