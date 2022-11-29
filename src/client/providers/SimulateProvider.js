@@ -108,11 +108,20 @@ const SimulateProvider = ({ children }) => {
         // Increase the step
         const current = getSimulating();
         setSimulating({ ...current, step: current.step + 1 });
-      }, [wait * 1000]);
+      }, wait * 1000);
     } else {
       // Stop simulation
       const current = getSimulating();
       setSimulating({ ...current, step: 0, play: false });
+
+      const { repeat } = formApi.getFormState().values;
+
+      // If we are on repeat keep going
+      if (repeat) {
+        setTimeout(() => {
+          play();
+        }, 100);
+      }
     }
   };
 

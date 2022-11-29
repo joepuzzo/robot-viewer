@@ -3,7 +3,6 @@ import { OrbitControls } from '@react-three/drei';
 import Grid from '../../3D/Grid';
 import { Canvas } from '@react-three/fiber';
 
-import Switch from '../../Informed/Switch';
 import RadioGroup from '../../Informed/RadioGroup';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useApp from '../../../hooks/useApp';

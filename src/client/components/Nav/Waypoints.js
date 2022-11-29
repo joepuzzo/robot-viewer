@@ -187,9 +187,13 @@ export const Waypoints = () => {
         </div>
       ) : null}
       {error ? <span style={{ color: 'red' }}>{JSON.stringify(error)}</span> : null}
-      <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
-        Run Waypoints
-      </ActionButton>
+      <Flex direction="row" alignItems="end" gap="size-100">
+        <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
+          Run Waypoints
+        </ActionButton>
+        <br />
+        <Switch name="repeat" label="Repeat" initialValue={false} />
+      </Flex>
       <br />
       <br />
       <Flex direction="row" alignItems="end" gap="size-100">
