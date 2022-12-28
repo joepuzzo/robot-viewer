@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 import useApp from '../../hooks/useApp';
 
 import useOutsideAlerter from '../../hooks/useOutsideAlerter';
+import { BuilderNav } from './BuilderNav';
 import { CookbookNav } from './CookbookNav';
 import { FramerNav } from './FramerNav';
 
@@ -28,6 +29,7 @@ export const Nav = () => {
         <Route path="/motor" element={<MotorNav />} />
         <Route path="/cookbook" element={<CookbookNav />} />
         <Route path="/framer" element={<FramerNav />} />
+        <Route path="/builder" element={<BuilderNav />} />
       </Routes>
     </nav>
   );
