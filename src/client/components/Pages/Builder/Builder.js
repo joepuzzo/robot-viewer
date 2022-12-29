@@ -12,7 +12,7 @@ import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 import { getEulers } from '../../../utils/getEulers';
 
-const Joint = ({ index, value }) => {
+const Joint = ({ index, value, frames }) => {
   const prefix = `frames[${index}]`;
 
   // console.log('WTF', `${prefix}.r1`);
@@ -95,6 +95,9 @@ const Joint = ({ index, value }) => {
               lineWidth={5}
               showCylinder
             />
+            {frames.length ? (
+              <Joint index={index + 1} value={frames[0]} frames={frames.slice(1, frames.length)} />
+            ) : null}
           </animated.group>
         </animated.group>
       </animated.group>
@@ -109,7 +112,7 @@ export const Builder = () => {
 
   const { values } = useFormState();
 
-  const value = values?.frames;
+  const frames = values?.frames;
 
   return (
     <>
@@ -128,7 +131,10 @@ export const Builder = () => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <group rotation={[Math.PI * -0.5, 0, 0]}>
-            {value ? value.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null}
+            {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
+            {frames ? (
+              <Joint index={0} value={frames[0]} frames={frames.slice(1, frames.length)} />
+            ) : null}
           </group>
         </Suspense>
       </Canvas>

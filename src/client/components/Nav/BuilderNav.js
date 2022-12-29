@@ -88,8 +88,8 @@ const FrameControl = () => {
         name="x"
         label="X"
         type="number"
-        minValue={-10}
-        maxValue={10}
+        minValue={-100}
+        maxValue={100}
         defaultValue={0}
         step={1}
       />
@@ -97,8 +97,8 @@ const FrameControl = () => {
         name="y"
         label="Y"
         type="number"
-        minValue={-10}
-        maxValue={10}
+        minValue={-100}
+        maxValue={100}
         defaultValue={0}
         step={1}
       />
@@ -106,8 +106,8 @@ const FrameControl = () => {
         name="z"
         label="Z"
         type="number"
-        minValue={-10}
-        maxValue={10}
+        minValue={-100}
+        maxValue={100}
         defaultValue={0}
         step={1}
       />
@@ -133,7 +133,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
         </ActionButton>
         <ActionButton
           onClick={() => {
-            add();
+            add({ z: 30 });
           }}
           type="button"
           minWidth={40}
@@ -180,16 +180,17 @@ export const BuilderNav = () => {
               ]}
             />
             <ArrayField name="frames" defaultValue={[{}]}>
-              {({ add }) => {
+              {({ add, addWithInitialValue }) => {
                 return (
                   <>
                     <ArrayField.Items>
                       {({ remove, name, index }) => (
                         <label>
+                          <hr />
                           <h5>{name}</h5>
                           <FrameControl />
                           <br />
-                          <ArrayButtons index={index} add={add} remove={remove} />
+                          <ArrayButtons index={index} add={addWithInitialValue} remove={remove} />
                         </label>
                       )}
                     </ArrayField.Items>
