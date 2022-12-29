@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
+import { intersect } from 'mathjs';
 
 import Select from '../Informed/Select';
 import InputSlider from '../Informed/InputSlider';
@@ -82,6 +83,14 @@ function isXZPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
   return Math.abs(transform[2][0]) === 0;
 }
 
+function createVector(point1, point2) {
+  const x = point2[0] - point1[0];
+  const y = point2[1] - point1[1];
+  const z = point2[2] - point1[2];
+
+  return [x, y, z];
+}
+
 // For Learning Direction Vector https://www.youtube.com/watch?v=R5r1IH2hII8
 // For Learing intersections https://www.youtube.com/watch?v=N-qUfr-rz_Y
 function xIntersectsZ(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
@@ -103,27 +112,65 @@ function xIntersectsZ(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
   transform = rotateAroundYAxis(transform, ry);
   transform = rotateAroundZAxis(transform, rz);
 
-  // Extract the x and z axes of the new frame from the transform matrix
-  let xAxis = [transform[0][0], transform[1][0], transform[2][0]];
-  let zAxis = [transform[0][2], transform[1][2], transform[2][2]];
+  const xP1 = [dx, dy, dz];
+  const xP2 = [transform[0][0] + dx, transform[1][0] + dy, transform[2][0] + dz];
+  const xDirectionVector = createVector(xP1, xP2);
 
-  // Check if the x and z axes are collinear
-  return areCollinear(xAxis, zAxis);
+  const zP1 = [0, 0, 0];
+  const zP2 = [0, 0, 1];
+  const zDirectionVector = createVector(zP1, zP2);
+
+  // Vector equation
+  // r = startPoint + t * directionVector
+
+  // TODO use ours instead of maths
+  // return linesIntersect(xP1, xDirectionVector, zP1, zDirectionVector);
+
+  // console.log('--------------------------');
+  // console.log('FOR', xP1, xP2, zP1, zP2);
+  // console.log('RES', intersect(xP1, xP2, zP1, zP2));
+  return intersect(xP1, xP2, zP1, zP2);
 }
 
-function areCollinear(v1, v2) {
-  // Check if the x and z axes are collinear
-  return Math.abs(angleBetween(v1, v2)) === 0 || Math.abs(angleBetween(v1, v2)) === Math.PI;
-}
+function linesIntersect(line1Start, line1Direction, line2Start, line2Direction) {
+  const [start1X, start1Y, start1Z] = line1Start;
+  const [start2X, start2Y, start2Z] = line2Start;
+  const [dir1X, dir1Y, dir1Z] = line1Direction;
+  const [dir2X, dir2Y, dir2Z] = line2Direction;
 
-function angleBetween(v1, v2) {
-  // Calculate the dot product and magnitudes of the vectors
-  let dotProduct = v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
-  let magnitude1 = Math.sqrt(v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2]);
-  let magnitude2 = Math.sqrt(v2[0] * v2[0] + v2[1] * v2[1] + v2[2] * v2[2]);
+  // ------------------------------------------
+  // Step1: Convert lines into parametric form
+  // let x = start1X + t * dir1X;
+  // let y = start1Y + t * dir1Y;
+  // let z = start1Z + t * dir1Z;
+  //
+  // let x = start2X + s * dir2X;
+  // let y = start2Y + s * dir2Y;
+  // let z = start2Z + s * dir2Z;
 
-  // Return the angle between the vectors
-  return Math.acos(dotProduct / (magnitude1 * magnitude2));
+  // ------------------------------------------
+  // Step2: Define equations
+
+  // x = x
+  // start1X + t * dir1X = start2X + s * dir2X
+
+  // y = y
+  // start1Y + t * dir1Y = start2Y + s * dir2Y
+
+  // z = z
+  // start1Z + t * dir1Z = start2Z + s * dir2Z
+
+  // ------------------------------------------
+  // Step3: Re arrange the equations to get constants on one side
+
+  // Re arrange x = x to get constant on the right
+  // ( t * dir1X ) - ( s * dir2X ) = start2X - start1X
+
+  // Re arrange y = y to get constant on the right
+  // ( t * dir1Y ) - ( s * dir2Y ) = start2Y - start1Y
+
+  // Re arrange z = z to get constant on the right
+  // ( t * dir1Z ) - ( s * dir2Z ) = start2Z - start1Z
 }
 
 const validate = (value, values, { formApi, scope }) => {
@@ -139,7 +186,15 @@ const validate = (value, values, { formApi, scope }) => {
   // console.log(`${scope} - 1`, JSON.stringify(nMinus1));
 
   // Special case if we dont have values yet
-  if (n.r1 === undefined || n.r2 === undefined || n.r3 === undefined) return;
+  if (
+    n.r1 === undefined ||
+    n.r2 === undefined ||
+    n.r3 === undefined ||
+    n.x === undefined ||
+    n.y === undefined ||
+    n.z === undefined
+  )
+    return;
 
   // Special case if we are base frame
   if (!nMinus1) return;
@@ -148,10 +203,11 @@ const validate = (value, values, { formApi, scope }) => {
 
   // The X axis must be perpendicular to the Z axis of the frame before it
   if (!isXZPerpendicular(n.x, n.y, n.z, n.r1, n.r2, n.r3))
-    return 'X axis must be perpendicular to z axis';
+    return 'X axis must be perpendicular to the previous z axis';
 
   // Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
-  // if (!xIntersectsZ((n.x, n.y, n.z, n.r1, n.r2, n.r3))) return 'X axis must intersect z axis';
+  if (!xIntersectsZ(n.x, n.y, n.z, n.r1, n.r2, n.r3))
+    return 'X axis must intersect the previous z axis';
 };
 
 const FrameControl = () => {
@@ -193,7 +249,10 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r2', 'r3']}
+        validateWhen={['r2', 'r3', 'x', 'y', 'z']}
+        displayError
+        validateOn="change"
+        showErrorIfDirty
       />
       <InputSlider
         name="r2"
@@ -205,7 +264,10 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r1', 'r3']}
+        validateWhen={['r1', 'r3', 'x', 'y', 'z']}
+        displayError
+        validateOn="change"
+        showErrorIfDirty
       />
       <InputSlider
         name="r3"
@@ -217,7 +279,10 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r1', 'r2']}
+        validateWhen={['r1', 'r2', 'x', 'y', 'z']}
+        displayError
+        validateOn="change"
+        showErrorIfDirty
       />
       <RadioGroup
         label="Orientation"
@@ -242,6 +307,12 @@ const FrameControl = () => {
         maxValue={100}
         defaultValue={0}
         step={1}
+        validate={validate}
+        validateOn="change"
+        showErrorIfDirty
+        displayError
+        validateOnMount
+        validateWhen={['r1', 'r2', 'r3', 'y', 'z']}
       />
       <InputSlider
         name="y"
@@ -251,6 +322,12 @@ const FrameControl = () => {
         maxValue={100}
         defaultValue={0}
         step={1}
+        validate={validate}
+        validateOn="change"
+        showErrorIfDirty
+        displayError
+        validateOnMount
+        validateWhen={['r1', 'r2', 'r3', 'x', 'z']}
       />
       <InputSlider
         name="z"
@@ -260,6 +337,12 @@ const FrameControl = () => {
         maxValue={100}
         defaultValue={0}
         step={1}
+        validate={validate}
+        validateOn="change"
+        showErrorIfDirty
+        displayError
+        validateOnMount
+        validateWhen={['r1', 'r2', 'r3', 'x', 'y']}
       />
     </>
   );

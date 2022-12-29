@@ -6,7 +6,7 @@ const outside = (a, [l, h]) => {
   return a < l || a > h;
 };
 
-const Input = (props) => {
+const Input = ({ displayError, ...props }) => {
   const validate = (value) => {
     return outside(value, [props.minValue, props.maxValue]) ? 'Too far!' : undefined;
   };
@@ -47,6 +47,7 @@ const Input = (props) => {
           onChange={(v) => fieldApi.setValue(v, {})}
         />
       </Flex>
+      {showError ? <small style={{ color: 'rgb(236,91,98)' }}>{error}</small> : null}
     </div>
   );
 };
