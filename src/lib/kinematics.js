@@ -338,6 +338,8 @@ t4 = toRadians(t4);
 t5 = toRadians(t5);
 t6 = toRadians(t6);
 
+// https://youtu.be/ut4uZ6Yzv6o
+//
 // Frame Rules ( for Denavit Hartenberg - shortcuts )
 // 1. The Z axis must be the axis of rotation for a revolute joint,
 //    or direction of motion if you have prismatic joint.
@@ -349,7 +351,7 @@ t6 = toRadians(t6);
 //     y
 //     ^
 //     |
-//  ( thumb -z ) ------- fingers --> X
+//  ( thumb ) ------- fingers --> X
 //
 // 4. Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
 //
@@ -691,7 +693,7 @@ console.log('H0_6 --------------------------------------------------');
 printMatrix(H0_6);
 
 // ---------- Time for Denavit Hartenberg!!!!! ----------
-
+// https://youtu.be/4WRhVqQaZTE
 //
 // 						             Zn
 // 					                ^

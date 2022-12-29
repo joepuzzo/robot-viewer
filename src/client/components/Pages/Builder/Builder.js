@@ -122,7 +122,7 @@ export const Builder = () => {
           aspect: window.innerWidth / window.innerHeight,
           near: 0.1,
           far: 10000,
-          position: [70, 80, 70],
+          position: [70, 50, 70],
           zoom: 1.5,
         }}
       >
@@ -130,7 +130,7 @@ export const Builder = () => {
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
-          <group rotation={[Math.PI * -0.5, 0, 0]}>
+          <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, -40, 0]}>
             {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
             {frames ? (
               <Joint index={0} value={frames[0]} frames={frames.slice(1, frames.length)} />
