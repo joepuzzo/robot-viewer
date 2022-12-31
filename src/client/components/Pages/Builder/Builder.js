@@ -12,7 +12,16 @@ import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 import { getEulers } from '../../../utils/getEulers';
 
-const Joint = ({ index, value, frames }) => {
+const ErrorBall = () => {
+  return (
+    <mesh>
+      <sphereBufferGeometry args={[10, 30, 30]} />
+      <meshStandardMaterial color="#880808" opacity={0.4} transparent />
+    </mesh>
+  );
+};
+
+const Joint = ({ index, value, error, frames, frameErrors }) => {
   const prefix = `frames[${index}]`;
 
   // console.log('WTF', `${prefix}.r1`);
@@ -23,7 +32,7 @@ const Joint = ({ index, value, frames }) => {
   const rot1 = value.r1;
   const rot2 = value.r2;
   const rot3 = value.r3;
-  const { x, y, z } = value;
+  const { x, y, z, moveBack, moveBackBy } = value;
 
   const { value: type } = useFieldState(`eulerType`);
 
@@ -72,18 +81,48 @@ const Joint = ({ index, value, frames }) => {
 
   // const foo = `${rot1} ${rot1} ${rot1}`;
 
+  const moveBackPos = [0, 0, 0];
+
+  if (moveBack === 'x') moveBackPos[0] = moveBackPos[0] + moveBackBy;
+  if (moveBack === '-x') moveBackPos[0] = moveBackPos[0] - moveBackBy;
+
+  if (moveBack === 'y') moveBackPos[1] = moveBackPos[1] + moveBackBy;
+  if (moveBack === '-y') moveBackPos[1] = moveBackPos[1] - moveBackBy;
+
+  if (moveBack === 'z') moveBackPos[2] = moveBackPos[2] + moveBackBy;
+  if (moveBack === '-z') moveBackPos[2] = moveBackPos[2] - moveBackBy;
+
   return (
     <group position={[x, y, z]}>
-      <Text
+      {/* <Text
         color="white" // default
         anchorX="center" // default
         anchorY="middle" // default
         position={[0, -10, 0]}
         scale={[40, 40, 40]}
       >
-        {prefix}
-      </Text>
-      <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
+        {prefix} {JSON.stringify(moveBackPos)}
+      </Text> */}
+      {/* <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent /> */}
+      {moveBack ? (
+        <group position={moveBackPos}>
+          <animated.group rotation={rotation1}>
+            <animated.group rotation={rotation2}>
+              <animated.group rotation={rotation3}>
+                <Grid
+                  size={20}
+                  hideNegatives
+                  showArrows
+                  showPlanes={false}
+                  lineWidth={5}
+                  axisLabel={index}
+                  transparent
+                />
+              </animated.group>
+            </animated.group>
+          </animated.group>
+        </group>
+      ) : null}
       <animated.group rotation={rotation1}>
         <animated.group rotation={rotation2}>
           <animated.group rotation={rotation3}>
@@ -94,10 +133,18 @@ const Joint = ({ index, value, frames }) => {
               showPlanes={false}
               lineWidth={5}
               showCylinder
+              axisLabel={index}
             />
             {frames.length ? (
-              <Joint index={index + 1} value={frames[0]} frames={frames.slice(1, frames.length)} />
+              <Joint
+                index={index + 1}
+                value={frames[0]}
+                error={frameErrors[0]}
+                frames={frames.slice(1, frames.length)}
+                frameErrors={frameErrors.slice(1, frameErrors.length)}
+              />
             ) : null}
+            {error ? <ErrorBall /> : null}
           </animated.group>
         </animated.group>
       </animated.group>
@@ -110,9 +157,10 @@ export const Builder = () => {
 
   const { orbitEnabled } = useApp();
 
-  const { values } = useFormState();
+  const { values, errors } = useFormState();
 
-  const frames = values?.frames;
+  const frames = values?.frames || [];
+  const frameErrors = errors?.frames || [];
 
   return (
     <>
@@ -133,7 +181,13 @@ export const Builder = () => {
           <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, -40, 0]}>
             {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
             {frames ? (
-              <Joint index={0} value={frames[0]} frames={frames.slice(1, frames.length)} />
+              <Joint
+                index={0}
+                value={frames[0]}
+                error={frameErrors[0]}
+                frames={frames.slice(1, frames.length)}
+                frameErrors={frameErrors.slice(1, frameErrors.length)}
+              />
             ) : null}
           </group>
         </Suspense>

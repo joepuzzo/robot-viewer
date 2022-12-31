@@ -49,6 +49,7 @@ export default function Grid({
   lineWidth = 3,
   showCylinder,
   shift,
+  axisLabel,
 }) {
   return (
     <group>
@@ -60,7 +61,7 @@ export default function Grid({
           position={[size / 2 + 10, 0, 0]}
           scale={[40, 40, 40]}
         >
-          X+
+          {axisLabel ? `X${axisLabel}+` : 'X+'}
         </Text>
       ) : null}
       {showArrows ? (
@@ -84,7 +85,7 @@ export default function Grid({
           position={[-size / 2 - 10, 0, 0]}
           scale={[40, 40, 40]}
         >
-          X-
+          {axisLabel ? `X${axisLabel}-` : 'X-'}
         </Text>
       ) : null}
       {!hidePosatives ? (
@@ -95,7 +96,7 @@ export default function Grid({
           position={[0, size / 2 + 10, 0]}
           scale={[40, 40, 40]}
         >
-          Y+
+          {axisLabel ? `Y${axisLabel}+` : 'Y+'}
         </Text>
       ) : null}
       {showArrows ? (
@@ -119,7 +120,7 @@ export default function Grid({
           position={[0, -size / 2 - 10, 0]}
           scale={[40, 40, 40]}
         >
-          Y-
+          {axisLabel ? `Y${axisLabel}-` : 'Y-'}
         </Text>
       ) : null}
       {!hidePosatives ? (
@@ -130,7 +131,7 @@ export default function Grid({
           position={[0, 0, size / 2 + 10]}
           scale={[40, 40, 40]}
         >
-          Z+
+          {axisLabel ? `Z${axisLabel}+` : 'Z+'}
         </Text>
       ) : null}
       {showArrows ? (
@@ -154,7 +155,7 @@ export default function Grid({
           position={[0, 0, -size / 2 - 10]}
           scale={[40, 40, 40]}
         >
-          Z-
+          {axisLabel ? `Z${axisLabel}-` : 'Z-'}
         </Text>
       ) : null}
       {showPlanes ? <XZPlane size={size} shift={shift} /> : null}

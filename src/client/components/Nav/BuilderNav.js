@@ -5,12 +5,14 @@ import { intersect } from 'mathjs';
 import Select from '../Informed/Select';
 import InputSlider from '../Informed/InputSlider';
 import RadioGroup from '../Informed/RadioGroup';
+import Switch from '../Informed/Switch';
 import {
   ArrayField,
   useFieldState,
   useArrayFieldState,
   useArrayFieldItemApi,
   Debug,
+  Relevant,
 } from 'informed';
 import { getEulers } from '../../utils/getEulers';
 import { matrixDot } from '../../../lib/matrixDot';
@@ -201,19 +203,73 @@ const validate = (value, values, { formApi, scope }) => {
 
   // console.log('RES', isXZPerpendicular(n.x, n.y, n.z, n.r1, n.r2, n.r3));
 
+  const { moveBack, moveBackBy } = n;
+  let x = n.x;
+  let y = n.y;
+  let z = n.z;
+
+  if (moveBack === 'x') x = x + moveBackBy;
+  if (moveBack === '-x') x = x - moveBackBy;
+
+  if (moveBack === 'y') y = y + moveBackBy;
+  if (moveBack === '-y') y = y - moveBackBy;
+
+  if (moveBack === 'z') z = z + moveBackBy;
+  if (moveBack === '-z') z = z - moveBackBy;
+
+  // console.log('WTF', 'MoeBack', moveBack, 'MoeBackBy', moveBackBy, 'XYZ', x, y, z);
+
   // The X axis must be perpendicular to the Z axis of the frame before it
-  if (!isXZPerpendicular(n.x, n.y, n.z, n.r1, n.r2, n.r3))
+  if (!isXZPerpendicular(x, y, z, n.r1, n.r2, n.r3))
     return 'X axis must be perpendicular to the previous z axis';
 
   // Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
-  if (!xIntersectsZ(n.x, n.y, n.z, n.r1, n.r2, n.r3))
-    return 'X axis must intersect the previous z axis';
+  if (!xIntersectsZ(x, y, z, n.r1, n.r2, n.r3)) return 'X axis must intersect the previous z axis';
 };
+
+const defaultValue = [
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    // orientation: 'z',
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  {
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    // orientation: 'z',
+    x: 0,
+    y: 0,
+    z: 30,
+  },
+  {
+    r1: 0,
+    r2: 0,
+    r3: 90,
+    // orientation: 'z',
+    x: 0,
+    y: 30,
+    z: 0,
+  },
+  {
+    r1: 0,
+    r2: 90,
+    r3: -90,
+    // orientation: 'z',
+    x: 30,
+    y: 0,
+    z: 0,
+  },
+];
 
 const FrameControl = () => {
   const { value: type } = useFieldState('eulerType', false);
 
-  const { value: orientation } = useFieldState('orientation');
+  // const { value: orientation } = useFieldState('orientation');
 
   const itemApi = useArrayFieldItemApi();
 
@@ -228,14 +284,14 @@ const FrameControl = () => {
   }, [type]);
 
   // For setting rotations
-  useEffect(() => {
-    if (orientation && type) {
-      const [r1, r2, r3] = getEulers(orientation, type);
-      itemApi.setValue('r1', r1);
-      itemApi.setValue('r2', r2);
-      itemApi.setValue('r3', r3);
-    }
-  }, [orientation, type]);
+  // useEffect(() => {
+  //   if (orientation && type) {
+  //     const [r1, r2, r3] = getEulers(orientation, type);
+  //     itemApi.setValue('r1', r1);
+  //     itemApi.setValue('r2', r2);
+  //     itemApi.setValue('r3', r3);
+  //   }
+  // }, [orientation, type]);
 
   return (
     <>
@@ -249,7 +305,7 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r2', 'r3', 'x', 'y', 'z']}
+        validateWhen={['r2', 'r3', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
         showErrorIfDirty
@@ -264,7 +320,7 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r1', 'r3', 'x', 'y', 'z']}
+        validateWhen={['r1', 'r3', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
         showErrorIfDirty
@@ -279,12 +335,12 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOnMount
-        validateWhen={['r1', 'r2', 'x', 'y', 'z']}
+        validateWhen={['r1', 'r2', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
         showErrorIfDirty
       />
-      <RadioGroup
+      {/* <RadioGroup
         label="Orientation"
         initialValue="z"
         orientation="horizontal"
@@ -298,7 +354,7 @@ const FrameControl = () => {
           { label: 'Z', value: 'z' },
           { label: '-Z', value: '-z' },
         ]}
-      />
+      /> */}
       <InputSlider
         name="x"
         label="X"
@@ -312,7 +368,7 @@ const FrameControl = () => {
         showErrorIfDirty
         displayError
         validateOnMount
-        validateWhen={['r1', 'r2', 'r3', 'y', 'z']}
+        validateWhen={['r1', 'r2', 'r3', 'y', 'z', 'moveBackBy']}
       />
       <InputSlider
         name="y"
@@ -327,7 +383,7 @@ const FrameControl = () => {
         showErrorIfDirty
         displayError
         validateOnMount
-        validateWhen={['r1', 'r2', 'r3', 'x', 'z']}
+        validateWhen={['r1', 'r2', 'r3', 'x', 'z', 'moveBackBy']}
       />
       <InputSlider
         name="z"
@@ -342,8 +398,35 @@ const FrameControl = () => {
         showErrorIfDirty
         displayError
         validateOnMount
-        validateWhen={['r1', 'r2', 'r3', 'x', 'y']}
+        validateWhen={['r1', 'r2', 'r3', 'x', 'y', 'moveBackBy']}
       />
+      <br />
+      <Switch name="moveFrame" label="MoveFrame" initialValue={false} />
+      <br />
+      <Relevant when={({ formApi, scope }) => formApi.getValue(`${scope}.moveFrame`)}>
+        <RadioGroup
+          label="MoveBack"
+          orientation="horizontal"
+          name="moveBack"
+          options={[
+            { label: 'X', value: 'x' },
+            { label: '-X', value: '-x' },
+            { label: 'Y', value: 'y' },
+            { label: '-Y', value: '-y' },
+            { label: 'Z', value: 'z' },
+            { label: '-Z', value: '-z' },
+          ]}
+        />
+        <InputSlider
+          name="moveBackBy"
+          label="Move"
+          type="number"
+          minValue={-100}
+          maxValue={100}
+          defaultValue={0}
+          step={1}
+        />
+      </Relevant>
     </>
   );
 };
@@ -412,7 +495,7 @@ export const BuilderNav = () => {
                 { value: 'zxz', label: 'ZXZ' },
               ]}
             />
-            <ArrayField name="frames" defaultValue={[{}]}>
+            <ArrayField name="frames" defaultValue={defaultValue}>
               {({ add, addWithInitialValue }) => {
                 return (
                   <>
