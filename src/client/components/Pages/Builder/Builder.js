@@ -1,5 +1,5 @@
-import React, { Suspense, useContext, useMemo, useRef, useState } from 'react';
-import { OrbitControls } from '@react-three/drei';
+import React, { Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import Grid from '../../3D/Grid';
 import { Canvas } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
@@ -152,8 +152,26 @@ const Joint = ({ index, value, error, frames, frameErrors }) => {
   );
 };
 
+const Control = ({ controlRef, virtualCam }) => {
+  const reset = () => {
+    virtualCam.current.position.set(70, 80, 70);
+    controlRef.current.target.set(0, 20, 0);
+  };
+
+  return (
+    <>
+      <Flex direction="row" width={600} justifyContent="center" alignItems="center" gap="size-100">
+        <ActionButton type="button" onPress={reset} minWidth="100">
+          Reset View
+        </ActionButton>
+      </Flex>
+    </>
+  );
+};
+
 export const Builder = () => {
   const controlRef = useRef();
+  const virtualCam = useRef();
 
   const { orbitEnabled } = useApp();
 
@@ -164,16 +182,28 @@ export const Builder = () => {
 
   return (
     <>
+      <Control controlRef={controlRef} virtualCam={virtualCam} />
+
       <Canvas
-        camera={{
-          fov: 75,
-          aspect: window.innerWidth / window.innerHeight,
-          near: 0.1,
-          far: 10000,
-          position: [70, 50, 70],
-          zoom: 1.5,
-        }}
+      // camera={{
+      //   fov: 75,
+      //   aspect: window.innerWidth / window.innerHeight,
+      //   near: 0.1,
+      //   far: 10000,
+      //   position: [70, 80, 70],
+      //   zoom: 1.2,
+      // }}
       >
+        <PerspectiveCamera
+          ref={virtualCam}
+          makeDefault={true}
+          fov={75}
+          aspect={window.innerWidth / window.innerHeight}
+          far={10000}
+          near={0.1}
+          position={[70, 80, 70]}
+          zoom={1.2}
+        />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
