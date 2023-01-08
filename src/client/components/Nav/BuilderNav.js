@@ -237,33 +237,33 @@ const defaultValue = [
     y: 0,
     z: 0,
   },
-  {
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    // orientation: 'z',
-    x: 0,
-    y: 0,
-    z: 30,
-  },
-  {
-    r1: 0,
-    r2: 0,
-    r3: 90,
-    // orientation: 'z',
-    x: 0,
-    y: 30,
-    z: 0,
-  },
-  {
-    r1: 0,
-    r2: 90,
-    r3: -90,
-    // orientation: 'z',
-    x: 30,
-    y: 0,
-    z: 0,
-  },
+  // {
+  //   r1: 90,
+  //   r2: 0,
+  //   r3: 0,
+  //   // orientation: 'z',
+  //   x: 0,
+  //   y: 0,
+  //   z: 30,
+  // },
+  // {
+  //   r1: 0,
+  //   r2: 0,
+  //   r3: 90,
+  //   // orientation: 'z',
+  //   x: 0,
+  //   y: 30,
+  //   z: 0,
+  // },
+  // {
+  //   r1: 0,
+  //   r2: 90,
+  //   r3: -90,
+  //   // orientation: 'z',
+  //   x: 30,
+  //   y: 0,
+  //   z: 0,
+  // },
 ];
 
 const FrameControl = () => {
@@ -308,7 +308,7 @@ const FrameControl = () => {
         validateWhen={['r2', 'r3', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
       />
       <InputSlider
         name="r2"
@@ -323,7 +323,7 @@ const FrameControl = () => {
         validateWhen={['r1', 'r3', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
       />
       <InputSlider
         name="r3"
@@ -338,7 +338,7 @@ const FrameControl = () => {
         validateWhen={['r1', 'r2', 'x', 'y', 'z', 'moveBackBy']}
         displayError
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
       />
       {/* <RadioGroup
         label="Orientation"
@@ -365,7 +365,7 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
         displayError
         validateOnMount
         validateWhen={['r1', 'r2', 'r3', 'y', 'z', 'moveBackBy']}
@@ -380,7 +380,7 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
         displayError
         validateOnMount
         validateWhen={['r1', 'r2', 'r3', 'x', 'z', 'moveBackBy']}
@@ -395,7 +395,7 @@ const FrameControl = () => {
         step={1}
         validate={validate}
         validateOn="change"
-        showErrorIfDirty
+        showErrorIfError
         displayError
         validateOnMount
         validateWhen={['r1', 'r2', 'r3', 'x', 'y', 'moveBackBy']}
@@ -494,6 +494,42 @@ export const BuilderNav = () => {
                 { value: 'xyz', label: 'XYZ ( Yaw Pitch Roll )' },
                 { value: 'zxz', label: 'ZXZ' },
               ]}
+            />
+            <InputSlider
+              name="cameraX"
+              label="Camera X"
+              type="number"
+              minValue={-500}
+              maxValue={500}
+              defaultValue={70}
+              step={10}
+            />
+            <InputSlider
+              name="cameraY"
+              label="Camera Y"
+              type="number"
+              minValue={-500}
+              maxValue={500}
+              defaultValue={80}
+              step={10}
+            />
+            <InputSlider
+              name="cameraZ"
+              label="Camera Z"
+              type="number"
+              minValue={-500}
+              maxValue={500}
+              defaultValue={70}
+              step={10}
+            />
+            <InputSlider
+              name="cameraZoom"
+              label="Camera Zoom"
+              type="number"
+              minValue={0}
+              maxValue={3}
+              defaultValue={3}
+              step={0.1}
             />
             <ArrayField name="frames" defaultValue={defaultValue}>
               {({ add, addWithInitialValue }) => {

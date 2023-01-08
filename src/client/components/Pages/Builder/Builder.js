@@ -176,39 +176,44 @@ export const Builder = () => {
   const { orbitEnabled } = useApp();
 
   const { values, errors } = useFormState();
+  const formApi = useFormApi();
 
   const frames = values?.frames || [];
   const frameErrors = errors?.frames || [];
 
+  const position = [values?.cameraX, values?.cameraY, values?.cameraZ];
+  const cameraZoom = values?.cameraZoom;
+
+  // This will zoom out and re pos the camera view when we add frames
+  useEffect(() => {
+    if (frames && controlRef.current) {
+      // Set new camera target
+      controlRef.current.target.set(0, frames.length * 15, 0);
+      // Zoom out
+      formApi.setValue('cameraZoom', 3 / (frames.length * 0.8));
+    }
+  }, [frames, frames?.length]);
+
   return (
     <>
-      <Control controlRef={controlRef} virtualCam={virtualCam} />
+      {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
 
-      <Canvas
-      // camera={{
-      //   fov: 75,
-      //   aspect: window.innerWidth / window.innerHeight,
-      //   near: 0.1,
-      //   far: 10000,
-      //   position: [70, 80, 70],
-      //   zoom: 1.2,
-      // }}
-      >
+      <Canvas>
         <PerspectiveCamera
           ref={virtualCam}
           makeDefault={true}
           fov={75}
           aspect={window.innerWidth / window.innerHeight}
           far={10000}
-          near={0.1}
-          position={[70, 80, 70]}
-          zoom={1.2}
+          near={0.5}
+          position={position}
+          zoom={cameraZoom}
         />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
-          <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, -40, 0]}>
+          <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, 0, 0]}>
             {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
             {frames ? (
               <Joint
