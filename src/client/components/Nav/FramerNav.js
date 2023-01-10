@@ -3,6 +3,7 @@ import { Flex } from '@adobe/react-spectrum';
 
 import Select from '../Informed/Select';
 import InputSlider from '../Informed/InputSlider';
+import Switch from '../Informed/Switch';
 import { useFieldState } from 'informed';
 
 export const FramerNav = () => {
@@ -61,6 +62,9 @@ export const FramerNav = () => {
               defaultValue={0}
               step={1}
             />
+            <br />
+            <Switch name="axisLabels" label="Axis Labels" initialValue={false} />
+            <br />
           </ul>
         </div>
       </Flex>

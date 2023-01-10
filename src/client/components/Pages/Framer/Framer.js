@@ -56,6 +56,7 @@ export const Framer = () => {
   const { value: rot2 } = useFieldState('r2');
   const { value: rot3 } = useFieldState('r3');
   const { value: type } = useFieldState('eulerType');
+  const { value: axisLabels } = useFieldState('axisLabels');
 
   useEffect(() => {
     if (orientation && type) {
@@ -133,7 +134,15 @@ export const Framer = () => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <group rotation={[Math.PI * -0.5, 0, 0]}>
-            <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
+            <Grid
+              size={40}
+              hideNegatives
+              hidePosatives={!axisLabels}
+              showArrows
+              showPlanes={false}
+              transparent
+              axisLabel={axisLabels ? 0 : null}
+            />
             <animated.group rotation={rotation1}>
               <animated.group rotation={rotation2}>
                 <animated.group rotation={rotation3}>
@@ -144,6 +153,7 @@ export const Framer = () => {
                     showPlanes={false}
                     lineWidth={5}
                     showCylinder
+                    axisLabel={axisLabels ? 1 : null}
                   />
                 </animated.group>
               </animated.group>

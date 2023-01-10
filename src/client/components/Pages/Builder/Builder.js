@@ -21,7 +21,7 @@ const ErrorBall = () => {
   );
 };
 
-const Joint = ({ index, value, error, frames, frameErrors }) => {
+const Joint = ({ index, value, error, frames, frameErrors, base }) => {
   const prefix = `frames[${index}]`;
 
   // console.log('WTF', `${prefix}.r1`);
@@ -103,7 +103,9 @@ const Joint = ({ index, value, error, frames, frameErrors }) => {
       >
         {prefix} {JSON.stringify(moveBackPos)}
       </Text> */}
-      {/* <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent /> */}
+      {base ? (
+        <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
+      ) : null}
       {moveBack ? (
         <group position={moveBackPos}>
           <animated.group rotation={rotation1}>
@@ -222,6 +224,7 @@ export const Builder = () => {
                 error={frameErrors[0]}
                 frames={frames.slice(1, frames.length)}
                 frameErrors={frameErrors.slice(1, frameErrors.length)}
+                base
               />
             ) : null}
           </group>
