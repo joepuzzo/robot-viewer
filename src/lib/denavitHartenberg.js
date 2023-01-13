@@ -1,4 +1,6 @@
+import { matrixSubset } from 'kinematics-js/dist/cjs/matrixSubset';
 import { matrixDot } from './matrixDot';
+import { matrixDotString } from './matrixDotString';
 import { round } from './round';
 
 // Frame Rules ( for Denavit Hartenberg - shortcuts )
