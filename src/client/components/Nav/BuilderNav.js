@@ -227,44 +227,131 @@ const validate = (value, values, { formApi, scope }) => {
   if (!xIntersectsZ(x, y, z, n.r1, n.r2, n.r3)) return 'X axis must intersect the previous z axis';
 };
 
-const defaultValue = [
+let DEFAULT_VALUE = [
   {
     r1: 0,
     r2: 0,
     r3: 0,
-    // orientation: 'z',
     x: 0,
     y: 0,
     z: 0,
   },
-  // {
-  //   r1: 90,
-  //   r2: 0,
-  //   r3: 0,
-  //   // orientation: 'z',
-  //   x: 0,
-  //   y: 0,
-  //   z: 30,
-  // },
-  // {
-  //   r1: 0,
-  //   r2: 0,
-  //   r3: 90,
-  //   // orientation: 'z',
-  //   x: 0,
-  //   y: 30,
-  //   z: 0,
-  // },
-  // {
-  //   r1: 0,
-  //   r2: 90,
-  //   r3: -90,
-  //   // orientation: 'z',
-  //   x: 30,
-  //   y: 0,
-  //   z: 0,
-  // },
 ];
+
+let MY_DEFAULT_VALUE = [
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  {
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 30,
+  },
+  {
+    r1: 0,
+    r2: 0,
+    r3: 90,
+    x: 0,
+    y: 30,
+    z: 0,
+  },
+  {
+    r1: 0,
+    r2: 90,
+    r3: -90,
+    x: 30,
+    y: 0,
+    z: 0,
+  },
+];
+
+const PT = [
+  [0, 90, 0, 'a1'],
+  [90, 0, 'a2', 0],
+  [90, -90, 0, 0],
+  [0, 90, 0, 'a3' + 'a4'],
+  [0, -90, 0, 0],
+  [0, 0, 0, 'a5' + 'a6'],
+];
+
+// UR
+
+const UR_DEFAULT_VALUE = [
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 15.185,
+    moveFrame: false,
+  },
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: -24.355,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: -21.32,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 13.105,
+    moveFrame: false,
+  },
+  {
+    r1: -90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 8.535,
+    moveFrame: false,
+  },
+  {
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 9.21,
+    moveFrame: false,
+    frameType: 'stationary',
+  },
+];
+
+const defaultValue = DEFAULT_VALUE;
 
 const FrameControl = () => {
   const { value: type } = useFieldState('eulerType', false);
@@ -295,6 +382,17 @@ const FrameControl = () => {
 
   return (
     <>
+      <RadioGroup
+        label="Frame Type"
+        orientation="horizontal"
+        name="frameType"
+        defaultValue="rotary"
+        options={[
+          { label: 'Rotary', value: 'rotary' },
+          { label: 'Linear', value: 'linear' },
+          { label: 'Stationary', value: 'stationary' },
+        ]}
+      />
       <InputSlider
         name="r1"
         label={label1}
@@ -410,11 +508,8 @@ const FrameControl = () => {
           name="moveBack"
           options={[
             { label: 'X', value: 'x' },
-            { label: '-X', value: '-x' },
             { label: 'Y', value: 'y' },
-            { label: '-Y', value: '-y' },
             { label: 'Z', value: 'z' },
-            { label: '-Z', value: '-z' },
           ]}
         />
         <InputSlider

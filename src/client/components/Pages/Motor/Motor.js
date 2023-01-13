@@ -52,6 +52,31 @@ const MotorCircle = () => {
   );
 };
 
+const MotorInfo = () => {
+  const { robotStates } = useRobotState();
+
+  // Get value of robotId && motorId
+  const { value: robotId } = useFieldState('robotId');
+  const { value: motorId } = useFieldState('motorId');
+
+  // Get the selected robot state
+  const robotState = robotStates[robotId];
+
+  if (!robotState?.motors && !motorId) {
+    return null;
+  }
+
+  const motorState = robotState?.motors[motorId];
+
+  return (
+    <div>
+      <pre>
+        <code>{JSON.stringify(motorState?.parameters, null, 2)}</code>
+      </pre>
+    </div>
+  );
+};
+
 export const Motor = () => {
   const { socket } = useApp();
 
@@ -239,6 +264,7 @@ export const Motor = () => {
           </ActionButton>
         </Flex>
       </Flex>
+      <MotorInfo />
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Motor Data Visualizations</h1>
       </Flex>

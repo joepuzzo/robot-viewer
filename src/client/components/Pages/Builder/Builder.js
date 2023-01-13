@@ -32,7 +32,7 @@ const Joint = ({ index, value, error, frames, frameErrors, base }) => {
   const rot1 = value.r1;
   const rot2 = value.r2;
   const rot3 = value.r3;
-  const { x, y, z, moveBack, moveBackBy } = value;
+  const { x, y, z, moveBack, moveBackBy, frameType } = value;
 
   const { value: type } = useFieldState(`eulerType`);
 
@@ -134,7 +134,7 @@ const Joint = ({ index, value, error, frames, frameErrors, base }) => {
               showArrows
               showPlanes={false}
               lineWidth={5}
-              showCylinder
+              showCylinder={frameType == 'rotary'}
               axisLabel={index}
             />
             {frames.length ? (
