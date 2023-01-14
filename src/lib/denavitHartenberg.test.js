@@ -50,6 +50,7 @@ describe('denavitHartenberg', () => {
 
   describe('buildHomogeneousDenavitStringForTable', () => {
     it('should build rotation transformation matrix from given P Table', () => {
+      // Note: this is the H3_6 P table for my kinematics
       const PT = [
         ['t4', 'd90', '0', 'v2 + v3'],
         ['t5', '-d90', '0', '0'],
@@ -57,6 +58,36 @@ describe('denavitHartenberg', () => {
       ];
 
       const { endRotation } = buildHomogeneousDenavitStringForTable(PT);
+
+      const expectedEndRotation = [
+        [
+          'Math.cos(t4) * Math.cos(t5) * Math.cos(t6) + -Math.sin(t4) * Math.sin(t6)',
+          'Math.cos(t4) * Math.cos(t5) * -Math.sin(t6) + -Math.sin(t4) * Math.cos(t6)',
+          'Math.cos(t4) * -Math.sin(t5)',
+        ],
+        [
+          'Math.sin(t4) * Math.cos(t5) * Math.cos(t6) + Math.cos(t4) * Math.sin(t6)',
+          'Math.sin(t4) * Math.cos(t5) * -Math.sin(t6) + Math.cos(t4) * Math.cos(t6)',
+          'Math.sin(t4) * -Math.sin(t5)',
+        ],
+        ['Math.sin(t5) * Math.cos(t6)', 'Math.sin(t5) * -Math.sin(t6)', 'Math.cos(t5)'],
+      ];
+
+      expect(endRotation).toEqual(expectedEndRotation);
+    });
+
+    it('should build rotation transformation matrix from given P Table', () => {
+      // prettier-ignore
+      // Note: this is the H3_6 P table for the UR robot
+      const PT = [
+        ['t4', 'd90',   '0', 'v3'],
+        ['t5', '-d90',  '0', 'v4'],
+        ['t6', '0',     '0', 'v5'],
+      ];
+
+      const { endRotation } = buildHomogeneousDenavitStringForTable(PT);
+
+      console.log(endRotation);
 
       const expectedEndRotation = [
         [
