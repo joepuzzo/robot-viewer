@@ -10,7 +10,15 @@ import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
 import Switch from '../../Informed/Switch';
 import RadioGroup from '../../Informed/RadioGroup';
-import { ActionButton, Flex } from '@adobe/react-spectrum';
+import {
+  ActionButton,
+  Content,
+  ContextualHelp,
+  Flex,
+  Heading,
+  Text,
+  Well,
+} from '@adobe/react-spectrum';
 import useRobotController from '../../../hooks/useRobotController';
 import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
@@ -139,6 +147,31 @@ const Control = ({ controlRef, virtualCam }) => {
   );
 };
 
+function Info() {
+  let [state, setState] = React.useState(false);
+
+  return (
+    <Flex alignItems="center" gap="size-100">
+      <ContextualHelp variant="info" onOpenChange={(isOpen) => setState(isOpen)}>
+        <Heading>How to control the arm</Heading>
+        <Content>
+          <Text>
+            Use the arrow keys to control the X and Y position of the ball. Up and down will change
+            the Y, Left and write will change the X. To move the Z axis hold the space key and use
+            the up and down arrows.
+          </Text>
+          <br />
+          <br />
+          <Text>
+            You can also use the sliders on the left panel to control each joint individually.
+          </Text>
+        </Content>
+      </ContextualHelp>
+      <Text>How to control the arm</Text>
+    </Flex>
+  );
+}
+
 export const Robot = () => {
   const { config, orbitEnabled, toggleOrbital, orbitControl, cameraControl } = useApp();
 
@@ -178,6 +211,8 @@ export const Robot = () => {
         {round(endPosition.z, 1000)} {units}
       </h3>
       <Control controlRef={controlRef} virtualCam={virtualCam} />
+      <br />
+      <Info />
       <Canvas
       // camera={{
       //   fov: 75,
