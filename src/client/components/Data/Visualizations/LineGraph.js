@@ -3,7 +3,7 @@ import { line, scaleLinear, select } from 'd3';
 import * as d3 from 'd3';
 import './LineGraph.css';
 
-const LineGraph = ({ data, xMin, xMax, yMin, yMax }) => {
+const LineGraph = ({ data, data2, xMin, xMax, yMin, yMax }) => {
   const ref = useRef();
 
   const layout = {
@@ -45,6 +45,7 @@ const LineGraph = ({ data, xMin, xMax, yMin, yMax }) => {
   graphDetails.lineGenerator.y((d) => graphDetails.yScale(d['y']));
 
   const lineData = graphDetails.lineGenerator(data);
+  const lineData2 = data2 ? graphDetails.lineGenerator(data2) : null;
 
   return (
     <svg
@@ -57,6 +58,13 @@ const LineGraph = ({ data, xMin, xMax, yMin, yMax }) => {
       preserveAspectRatio="none"
     >
       <path transform={`translate(${layout.marginLeft}, 0)`} className="graphData" d={lineData} />
+      {lineData2 ? (
+        <path
+          transform={`translate(${layout.marginLeft}, 0)`}
+          className="graphData2"
+          d={lineData2}
+        />
+      ) : null}
     </svg>
   );
 };

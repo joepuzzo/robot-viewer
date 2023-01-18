@@ -63,18 +63,23 @@ export const MotorVisualizations = () => {
   0;
   const [capture, setCapture, getCapture] = useStateWithGetter(true);
 
+  const [positionData, setPositionData] = useState([{ x: Date.now(), y: 0 }]);
+  const [velocityData, setVelocityData] = useState([{ x: Date.now(), y: 0 }]);
+  const [actualVelocityData, setActualVelocityData] = useState([{ x: Date.now(), y: 0 }]);
+
   // Use me for fake position updates
+  // const [positionData, setPositionData] = useState(
+  //   selectedMotor.positionHistory.map((i) => ({ x: i.time, y: i.position }))
+  // );
   // useEffect(() => {
   //   const interval = setInterval(() => {
-  //       positionData.push({x:positionData.length, y: positionData.length})
-  //       setPositionData([...positionData]);
+  //     setPositionData((prev) => {
+  //       prev.push({ x: positionData.length, y: positionData.length });
+  //       return [...prev];
+  //     });
   //   }, 1000);
   //   return () => clearInterval(interval);
   // }, []);
-  //const [positionData, setPositionData] = useState(selectedMotor.positionHistory.map((i) => ({ x: i.time, y: i.position }))  );
-
-  const [positionData, setPositionData] = useState([{ x: Date.now(), y: 0 }]);
-  const [velocityData, setVelocityData] = useState([{ x: Date.now(), y: 0 }]);
 
   const stateHandler = (id, robotState) => {
     const motorId = formApi.getFormState().values?.motorId;
@@ -91,6 +96,13 @@ export const MotorVisualizations = () => {
           prev.shift();
         }
         prev.push({ x: Date.now(), y: robotState?.motors?.[motorId]?.currentVelocity || 0 });
+        return [...prev];
+      });
+      setActualVelocityData((prev) => {
+        if (prev.length >= 500) {
+          prev.shift();
+        }
+        prev.push({ x: Date.now(), y: robotState?.motors?.[motorId]?.calculatedVelocity || 0 });
         return [...prev];
       });
     }
@@ -120,6 +132,7 @@ export const MotorVisualizations = () => {
       <h2>Position</h2>
       <LineGraph
         data={positionData}
+        // data2={positionData.map((d) => ({ x: d.x, y: d.y * 2 }))}
         xMin={positionData[0]?.x || Date.now()}
         xMax={positionData[positionData.length - 1]?.x || Date.now()}
         yMin={0}
@@ -128,6 +141,7 @@ export const MotorVisualizations = () => {
       <h2>Velocity</h2>
       <LineGraph
         data={velocityData}
+        data2={actualVelocityData}
         xMin={velocityData[0]?.x || Date.now()}
         xMax={velocityData[velocityData.length - 1]?.x || Date.now()}
         yMin={0}
