@@ -62,7 +62,7 @@ export const CookbookNav = () => {
             <Switch
               name="motorAccel"
               label="Motor Acceleration"
-              initialValue={true}
+              initialValue={false}
               onNativeChange={onAccelChange}
             />
             <br />
