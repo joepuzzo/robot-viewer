@@ -19,7 +19,7 @@ export const Data = () => {
   return (
     <nav className={`databar ${navOpen ? 'databar-visible' : ''}`} ref={navRef}>
       <Routes>
-        <Route path="/" element={<RobotData />} />
+        {/* <Route path="/" element={<RobotData />} /> */}
         <Route path="/motor" element={<MotorData />} />
         <Route path="/builder" element={<BuilderData />} />
       </Routes>

@@ -152,6 +152,15 @@ export class Controller {
     }
   }
 
+  robotAccelEnabled(robotId, value) {
+    logger(`controller client says robotAccelEnabled`, robotId, value);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotAccelEnabled', value);
+    }
+  }
+
   robotSplitHome(robotId) {
     logger(`controller client says robotSplitHome`, robotId);
     // only send if we are connected
@@ -241,6 +250,7 @@ export class Controller {
     this.clientMessenger.on('robotHome', (...args) => this.robotHome(...args));
     this.clientMessenger.on('robotCalibrate', (...args) => this.robotCalibrate(...args));
     this.clientMessenger.on('robotResetErrors', (...args) => this.robotResetErrors(...args));
+    this.clientMessenger.on('robotAccelEnabled', (...args) => this.robotAccelEnabled(...args));
     this.clientMessenger.on('robotSplitHome', (...args) => this.robotSplitHome(...args));
     this.clientMessenger.on('robotStop', (...args) => this.robotStop(...args));
     this.clientMessenger.on('robotFreeze', (...args) => this.robotFreeze(...args));

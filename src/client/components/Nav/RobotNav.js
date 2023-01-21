@@ -250,6 +250,14 @@ export const RobotNav = () => {
       updateConfig(key, value);
     };
 
+  const onAccelChange = useCallback(({ value }) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotAccelEnabled', robotId, value);
+    }
+  }, []);
+
   const disabled = !connected;
 
   return (
@@ -327,6 +335,14 @@ export const RobotNav = () => {
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
             <RobotType />
+            <br />
+            <Switch
+              name="robotAccel"
+              label="Robot Acceleration"
+              initialValue={false}
+              onNativeChange={onAccelChange}
+            />
+            <br />
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="gripper"
