@@ -263,8 +263,9 @@ const RobotProvider = ({ children }) => {
         socket.emit(
           'robotSetAngles',
           robotId,
-          angles.map((angle) => toDeg(angle)),
-          speed
+          angles.map((angle) => toDeg(angle))
+          // TODO add back but need to be careful different speed for AR vs Igus At the moment ( steps/s vs deg/s )
+          // speed
         );
       }
 

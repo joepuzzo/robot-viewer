@@ -339,7 +339,7 @@ export const RobotNav = () => {
             <Switch
               name="robotAccel"
               label="Robot Acceleration"
-              initialValue={false}
+              initialValue={true}
               onNativeChange={onAccelChange}
             />
             <br />

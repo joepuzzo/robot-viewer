@@ -66,7 +66,13 @@ const exampleIgus = {
   sendInterval: 20,
   calculatedVelocity: 29,
   currentVelocity: 30,
-  positionHistory: [{time: 1, pos:10}, {time: 2, pos:20},{time: 3, pos:30},{time: 4, pos:30},{time: 5, pos:10},]
+  positionHistory: [
+    { time: 1, pos: 10 },
+    { time: 2, pos: 20 },
+    { time: 3, pos: 30 },
+    { time: 4, pos: 30 },
+    { time: 5, pos: 10 },
+  ],
 };
 
 export const JointsData = () => {
@@ -82,6 +88,8 @@ export const JointsData = () => {
   if (!robotState) {
     return null;
   }
+
+  console.log('RENDER');
 
   const motors = Object.values(robotState.motors);
 
