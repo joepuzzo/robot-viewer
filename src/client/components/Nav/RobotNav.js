@@ -122,6 +122,30 @@ export const RobotNav = () => {
     }
   }, []);
 
+  const motorZero = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('motorZero', robotId, motorId);
+    }
+  }, []);
+
+  const motorResetErrors = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('motorResetErrors', robotId, motorId);
+    }
+  }, []);
+
+  const motorEnable = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('motorEnable', robotId, motorId);
+    }
+  }, []);
+
   const centerJoint = (name) => {
     updateJoint(name, 0);
   };
@@ -141,6 +165,15 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotFreeze', robotId);
+    }
+  };
+
+  const referenceRobot = () => {
+    const robotId = formApi.getValue('robotId');
+    stopSimulation();
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotReference', robotId);
     }
   };
 
@@ -290,10 +323,18 @@ export const RobotNav = () => {
         <ActionButton title="Enable" onPress={() => home()} isDisabled={disabled}>
           <Home.default />
         </ActionButton>
-        <ActionButton
+        {/* <ActionButton
           title="Center Robot"
           aria-label="Center Robot"
           onPress={() => centerRobot()}
+          isDisabled={disabled}
+        >
+          <AlignCenter.default />
+        </ActionButton> */}
+        <ActionButton
+          title="Reference Robot"
+          aria-label="Reference Robot"
+          onPress={() => referenceRobot()}
           isDisabled={disabled}
         >
           <AlignCenter.default />
@@ -418,6 +459,7 @@ export const RobotNav = () => {
               maxValue={180}
               step={1}
             />
+            <hr />
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="j0"
@@ -433,8 +475,14 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j0')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j0')}>
+              <ActionButton onPress={() => motorZero('j0')}>
                 <AlignCenter.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j0')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j0')}>
+                <LockOpen.default />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -452,8 +500,14 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j1')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j1')}>
+              <ActionButton onPress={() => motorZero('j1')}>
                 <AlignCenter.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j1')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j1')}>
+                <LockOpen.default />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -471,8 +525,14 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j2')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j2')}>
+              <ActionButton onPress={() => motorZero('j2')}>
                 <AlignCenter.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j2')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j2')}>
+                <LockOpen.default />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -490,8 +550,14 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j3')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j3')}>
+              <ActionButton onPress={() => motorZero('j3')}>
                 <AlignCenter.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j3')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j3')}>
+                <LockOpen.default />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -509,8 +575,14 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j4')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j4')}>
+              <ActionButton onPress={() => motorZero('j4')}>
                 <AlignCenter.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j4')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j4')}>
+                <LockOpen.default />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -528,11 +600,17 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j5')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => centerJoint('j5')}>
+              <ActionButton onPress={() => motorZero('j5')}>
                 <AlignCenter.default />
               </ActionButton>
+              <ActionButton onPress={() => motorResetErrors('j5')}>
+                <RemoveCircle.default />
+              </ActionButton>
+              <ActionButton onPress={() => motorEnable('j5')}>
+                <LockOpen.default />
+              </ActionButton>
             </Flex>
-
+            <hr />
             <InputSlider
               name="base"
               label="Base"
@@ -616,6 +694,7 @@ export const RobotNav = () => {
               step={10}
             />
             <br />
+            <hr />
             <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={true} />
             <br />

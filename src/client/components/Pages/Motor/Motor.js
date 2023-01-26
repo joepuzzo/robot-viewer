@@ -147,6 +147,15 @@ export const Motor = () => {
     }
   }, []);
 
+  const motorReference = useCallback(() => {
+    const motorId = formApi.getValue('motorId');
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      socket.emit('motorReference', robotId, motorId);
+    }
+  }, []);
+
   const queryMotorPosition = useCallback(() => {
     const motorId = formApi.getValue('motorId');
     const robotId = formApi.getValue('robotId');
@@ -226,8 +235,11 @@ export const Motor = () => {
           <ActionButton width="size-2400" onPress={motorZero}>
             Zero Motor
           </ActionButton>
-          <ActionButton width="size-2400" onPress={robotHome}>
+          {/* <ActionButton width="size-2400" onPress={robotHome}>
             Robot Home
+          </ActionButton> */}
+          <ActionButton width="size-2400" onPress={motorReference}>
+            Reference Motor
           </ActionButton>
           <ActionButton width="size-2400" onPress={queryMotorPosition}>
             Query Motor Pos

@@ -9,7 +9,7 @@ main {
   box-sizing: border-box;
   /* min-height: 100vh; */
   flex-direction: column;
-  margin-left: 400px;
+  margin-left: 450px;
   margin-right: 400px;
   padding: 40px 52px 0;
   display: flex;
@@ -39,7 +39,7 @@ main.extra {
 /* ---------- Nav ---------- */
 
 .sidenav {
-  width: 400px;
+  width: 450px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;
@@ -87,14 +87,17 @@ main.extra {
 }
 
 .sidenav-extra {
-  visibility: hidden;
+  display: none;
   transition: transform 0.2s, visibility 0s 0.2s;
+  /* width: 0px; */
   /* z-index: 100; */
   /* inset: 0 100% 0 auto; */
 }
 .sidenav-extra-visible {
-  visibility: unset;
+  /* visibility: unset; */
+  display: block;
   transition-delay: 0s;
+  /* width: 100%; */
 }
 
 .sidenav-controls {
@@ -161,7 +164,7 @@ main.extra {
 
 @media (min-width: 1200px) {
   .pageHeader {
-    margin-left: 400px;
+    margin-left: 450px;
   }
 }
 
@@ -237,4 +240,8 @@ div[aria-selected='true'] {
 .placeholder {
   border: 1px dashed;
   width: 100%;
+}
+
+hr {
+  opacity: 0.2;
 }
