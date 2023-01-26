@@ -71,6 +71,12 @@ export const IgusRebelJointData = ({ motor }) => {
             </Cell>
           </Row>
           <Row>
+            <Cell>Zeroed</Cell>
+            <Cell>
+              <Status status={motor.zeroed} />
+            </Cell>
+          </Row>
+          <Row>
             <Cell>Moving</Cell>
             <Cell>
               <Status status={motor.moving} />
@@ -249,7 +255,9 @@ export const IgusRebelJointData = ({ motor }) => {
             <Cell>MTR/ADC/RBL/CTRL</Cell>
             <Cell>
               <span>
-                {`${motor.motorError} / ${motor.adcError} / ${motor.rebelError} / ${motor.controlError}`}
+                {`${motor.motorError ?? ''} / ${motor.adcError ?? ''} / ${
+                  motor.rebelError ?? ''
+                } / ${motor.controlError ?? ''}`}
               </span>
             </Cell>
           </Row>

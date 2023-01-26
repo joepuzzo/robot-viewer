@@ -5,6 +5,7 @@ import useRobotState from '../../../hooks/useRobotState';
 import { Flex } from '@adobe/react-spectrum';
 import { ARJointData } from './ARJointData';
 import { IgusRebelJointData } from './IgusRebelJointData';
+import { If } from '../../Shared/If';
 
 const JointData = ({ motor }) => {
   const { value: robotType } = useFieldState('robotType');
@@ -103,9 +104,14 @@ export const JointsData = () => {
       alignItems="center"
       gap="size-100"
     >
-      {motors.map((motor, i) => (
-        <JointData motor={motor} key={`motor-${i}`} />
-      ))}
+      <If condition={motorId != 'na' && motorId != null}>
+        <JointData motor={robotState.motors[motorId]} />
+      </If>
+      <If condition={motorId == 'na' || motorId == null}>
+        {motors.map((motor, i) => (
+          <JointData motor={motor} key={`motor-${i}`} />
+        ))}
+      </If>
     </Flex>
   );
 };
