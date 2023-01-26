@@ -15,6 +15,7 @@ const MotorCircle = () => {
   const { value } = useFieldState('motorPos');
 
   let motorPos = value;
+  let referencePos = value;
 
   const { robotStates } = useRobotState();
 
@@ -33,6 +34,9 @@ const MotorCircle = () => {
       robotType === 'AR4'
         ? robotState.motors[motorId].encoderPosition
         : robotState.motors[motorId].currentPosition;
+
+    referencePos = robotState.motors[motorId].encoderOffset;
+    motorPos += referencePos;
   }
 
   return (
@@ -47,6 +51,36 @@ const MotorCircle = () => {
           strokeWidth="12"
         />
         <circle cx="187.5" cy="75" r="12" fill="black" />
+      </g>
+      <g transform={`rotate(${motorPos ?? 0} 187.5 187.5)`}>
+        {/* <text x="140" y="95">
+          Absolute Zero
+        </text> */}
+        <line
+          x1="187.5"
+          y1="187.5"
+          x2="187.5"
+          y2="90"
+          style={{ stroke: '#880808', strokeWidth: 4 }}
+        />
+      </g>
+      <g transform={`rotate(${referencePos ?? 0} 187.5 187.5)`}>
+        <line
+          x1="187.5"
+          y1="187.5"
+          x2="187.5"
+          y2="100"
+          style={{ stroke: '#49173E', strokeWidth: 4 }}
+        />
+      </g>
+      <g transform={`rotate(${0} 187.5 187.5)`}>
+        <line
+          x1="187.5"
+          y1="187.5"
+          x2="187.5"
+          y2="100"
+          style={{ stroke: '#E8C714', strokeWidth: 4 }}
+        />
       </g>
     </svg>
   );
