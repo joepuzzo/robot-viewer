@@ -8,6 +8,7 @@ import StopCircle from '@spectrum-icons/workflow/StopCircle';
 import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
+import Gauge3 from '@spectrum-icons/workflow/Gauge3';
 import Contrast from '@spectrum-icons/workflow/Contrast';
 import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
 import RemoveCircle from '@spectrum-icons/workflow/RemoveCircle';
@@ -122,11 +123,19 @@ export const RobotNav = () => {
     }
   }, []);
 
-  const motorZero = useCallback((motorId) => {
+  // const motorZero = useCallback((motorId) => {
+  //   const robotId = formApi.getValue('robotId');
+  //   // only send if we are connected
+  //   if (connectedRef.current) {
+  //     socket.emit('motorZero', robotId, motorId);
+  //   }
+  // }, []);
+
+  const motorReference = useCallback((motorId) => {
     const robotId = formApi.getValue('robotId');
     // only send if we are connected
     if (connectedRef.current) {
-      socket.emit('motorZero', robotId, motorId);
+      socket.emit('motorReference', robotId, motorId);
     }
   }, []);
 
@@ -174,6 +183,15 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotReference', robotId);
+    }
+  };
+
+  const zeroRobot = () => {
+    const robotId = formApi.getValue('robotId');
+    stopSimulation();
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotZero', robotId);
     }
   };
 
@@ -331,6 +349,9 @@ export const RobotNav = () => {
         >
           <AlignCenter.default />
         </ActionButton> */}
+        <ActionButton title="Split Home" onPress={() => zeroRobot()} isDisabled={disabled}>
+          <Gauge3.default />
+        </ActionButton>
         <ActionButton
           title="Reference Robot"
           aria-label="Reference Robot"
@@ -351,6 +372,7 @@ export const RobotNav = () => {
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
         <br />
+
         {/* <ActionButton
           title="Switch Theme"
           aria-label="Switch Theme"
@@ -376,7 +398,6 @@ export const RobotNav = () => {
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
             <br />
-
             <RobotType />
             <br />
             <Switch
@@ -477,7 +498,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j0')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j0')}>
+              <ActionButton onPress={() => motorReference('j0')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j0')}>
@@ -502,7 +523,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j1')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j1')}>
+              <ActionButton onPress={() => motorReference('j1')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j1')}>
@@ -527,7 +548,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j2')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j2')}>
+              <ActionButton onPress={() => motorReference('j2')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j2')}>
@@ -552,7 +573,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j3')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j3')}>
+              <ActionButton onPress={() => motorReference('j3')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j3')}>
@@ -577,7 +598,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j4')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j4')}>
+              <ActionButton onPress={() => motorReference('j4')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j4')}>
@@ -602,7 +623,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j5')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorZero('j5')}>
+              <ActionButton onPress={() => motorReference('j5')}>
                 <AlignCenter.default />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j5')}>
