@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   TableView,
@@ -11,6 +11,7 @@ import {
 } from '@adobe/react-spectrum';
 import { Status } from '../../Shared/Status';
 import { ARJointData } from './ARJointData';
+import useApp from '../../../hooks/useApp';
 
 // const exampleIgus = {
 //   id: 'j0',
@@ -49,6 +50,26 @@ import { ARJointData } from './ARJointData';
 export const IgusRebelJointData = ({ motor }) => {
   const verbose = true;
 
+  // const { socket } = useApp();
+  // const [on, setOn] = useState(false);
+
+  // useEffect(() => {
+  //   const pulseHandler = (id, pos) => {
+  //     console.log('HERE', id, motor.id);
+  //     if (motor.id === id) {
+  //       setOn(true);
+  //       setTimeout(() => {
+  //         setOn((p) => !p);
+  //       }, 500);
+  //     }
+  //   };
+
+  //   socket.on('pulse', pulseHandler);
+  //   return () => {
+  //     socket.removeListener('pulse', pulseHandler);
+  //   };
+  // }, []);
+
   return (
     <div>
       <h3>{motor.id}</h3>
@@ -58,6 +79,12 @@ export const IgusRebelJointData = ({ motor }) => {
           <Column>Status</Column>
         </TableHeader>
         <TableBody>
+          {/* <Row>
+            <Cell>Heartbeat</Cell>
+            <Cell>
+              <Status status={on} />
+            </Cell>
+          </Row> */}
           <Row>
             <Cell>Ready</Cell>
             <Cell>

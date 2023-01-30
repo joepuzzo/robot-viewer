@@ -345,6 +345,11 @@ export class Controller {
     this.clientMessenger.send('robotMoved', id, state);
   }
 
+  pulse(id, pos) {
+    // logger(`controller robot pulse id: ${id} pos: ${pos}`);
+    this.clientMessenger.send('pulse', id, pos);
+  }
+
   subscribeToRobotMessenger() {
     this.robotMessenger.on('connect', (...args) => this.robotConnect(...args));
     this.robotMessenger.on('disconnect', (...args) => this.robotDisconnect(...args));
@@ -352,5 +357,6 @@ export class Controller {
     this.robotMessenger.on('encoder', (...args) => this.robotEncoder(...args));
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
     this.robotMessenger.on('moved', (...args) => this.robotMoved(...args));
+    // this.robotMessenger.on('pulse', (...args) => this.pulse(...args));
   }
 }
