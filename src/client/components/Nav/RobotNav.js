@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Button, Flex, StatusLight } from '@adobe/react-spectrum';
+import { Button, Flex, StatusLight, Tooltip, TooltipTrigger } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import Graphic from '@spectrum-icons/workflow/Graphic';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
@@ -12,6 +12,7 @@ import Gauge3 from '@spectrum-icons/workflow/Gauge3';
 import Contrast from '@spectrum-icons/workflow/Contrast';
 import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
 import RemoveCircle from '@spectrum-icons/workflow/RemoveCircle';
+import MoreVertical from '@spectrum-icons/workflow/MoreVertical';
 
 import { ActionButton } from '@adobe/react-spectrum';
 
@@ -310,6 +311,7 @@ export const RobotNav = () => {
   }, []);
 
   const disabled = !connected;
+  // const disabled = false;
 
   return (
     <>
@@ -321,14 +323,20 @@ export const RobotNav = () => {
         <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
           <Stopwatch.default />
         </ActionButton>
-        <ActionButton title="Enable" onPress={() => enable()} isDisabled={disabled}>
-          <LockOpen.default />
-        </ActionButton>
-        <div className="icon-red">
-          <ActionButton title="Stop" onPress={() => stop()} isDisabled={disabled}>
-            <StopCircle.default />
+        <TooltipTrigger>
+          <ActionButton aria-label="Enable Robot" onPress={() => enable()} isDisabled={disabled}>
+            <LockOpen.default />
           </ActionButton>
-        </div>
+          <Tooltip>Enable Robot - This will enable all motors on the robot.</Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <div className="icon-red">
+            <ActionButton title="Stop" onPress={() => stop()} isDisabled={disabled}>
+              <StopCircle.default />
+            </ActionButton>
+          </div>
+          <Tooltip>Stop Robot - This will stop all motors on the robot.</Tooltip>
+        </TooltipTrigger>
         <ActionButton
           title="Open Waypoints"
           aria-label="Open Waypoints"
@@ -338,41 +346,60 @@ export const RobotNav = () => {
         </ActionButton>
       </Flex>
       <Flex direction="row" alignItems="center" gap="size-100">
-        <ActionButton title="Enable" onPress={() => home()} isDisabled={disabled}>
-          <Home.default />
-        </ActionButton>
-        {/* <ActionButton
-          title="Center Robot"
-          aria-label="Center Robot"
-          onPress={() => centerRobot()}
-          isDisabled={disabled}
-        >
-          <AlignCenter.default />
-        </ActionButton> */}
-        <ActionButton title="Split Home" onPress={() => zeroRobot()} isDisabled={disabled}>
-          <strong>0</strong>
-        </ActionButton>
-        <ActionButton
-          title="Reference Robot"
-          aria-label="Reference Robot"
-          onPress={() => referenceRobot()}
-          isDisabled={disabled}
-        >
-          <AlignCenter.default />
-        </ActionButton>
+        <TooltipTrigger>
+          <ActionButton aria-label="Home Robot" onPress={() => home()} isDisabled={disabled}>
+            <Home.default />
+          </ActionButton>
+          <Tooltip>Home Robot - This will send all the motors in the robot to home.</Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton
+            title="Center Robot"
+            aria-label="Center Robot"
+            onPress={() => centerRobot()}
+            isDisabled={disabled}
+          >
+            <MoreVertical.default />
+          </ActionButton>
+          <Tooltip>
+            Center Robot - This will send all the motors in the robot to their center position.
+          </Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton aria-label="Zero Robot" onPress={() => zeroRobot()} isDisabled={disabled}>
+            <strong>0</strong>
+          </ActionButton>
+          <Tooltip>Zero Robot - This will zero out all motors in the robot.</Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton
+            aria-label="Reference Robot"
+            onPress={() => referenceRobot()}
+            isDisabled={disabled}
+          >
+            <AlignCenter.default />
+          </ActionButton>
+          <Tooltip>Reference Robot - This will reference all motors in the robot.</Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton
+            aria-label="Reset Errors"
+            onPress={() => resetErrors()}
+            isDisabled={disabled}
+          >
+            <RemoveCircle.default />
+          </ActionButton>
+          <Tooltip>Reset Errors - This will reset errors on all motors in the robot.</Tooltip>
+        </TooltipTrigger>
         {/* <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
           <Compass.default />
         </ActionButton> */}
-        <ActionButton title="Split Home" onPress={() => splitHome()} isDisabled={disabled}>
+        {/* <ActionButton title="Split Home" onPress={() => splitHome()} isDisabled={disabled}>
           <MoveUpDown.default />
-        </ActionButton>
-        <ActionButton title="Split Home" onPress={() => resetErrors()} isDisabled={disabled}>
-          <RemoveCircle.default />
-        </ActionButton>
+        </ActionButton> */}
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
         <br />
-
         {/* <ActionButton
           title="Switch Theme"
           aria-label="Switch Theme"
