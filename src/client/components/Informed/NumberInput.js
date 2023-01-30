@@ -10,15 +10,17 @@ const Input = (props) => {
   const { required } = userProps;
   const { error, showError } = fieldState;
   return render(
-    <NumberField
-      ref={ref}
-      validationState={!error ? null : 'invalid'}
-      errorMessage={showError ? error : undefined}
-      isRequired={required}
-      {...userProps}
-      {...informed}
-      onChange={(v) => fieldApi.setValue(v, {})}
-    />
+    <div className="number-input">
+      <NumberField
+        ref={ref}
+        validationState={!error ? null : 'invalid'}
+        errorMessage={showError ? error : undefined}
+        isRequired={required}
+        {...userProps}
+        {...informed}
+        onChange={(v) => fieldApi.setValue(v, {})}
+      />
+    </div>
   );
 };
 

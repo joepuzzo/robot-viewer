@@ -92,7 +92,7 @@ export const Cookbook = () => {
                 placeholder="New Action Name"
                 autocomplete="off"
               />
-              <ActionButton type="button" minWidth="100" onPress={addAction}>
+              <ActionButton type="button" minWidth="100px" onPress={addAction}>
                 Add Action
               </ActionButton>
             </Flex>
@@ -117,7 +117,7 @@ export const Cookbook = () => {
               />
               <ActionButton
                 type="button"
-                minWidth="100"
+                minWidth="100px"
                 onPress={() => {
                   const newRecipeName = formApi.getFormState().values.recipeName;
                   if (!allRecipes?.[newRecipeName]) {

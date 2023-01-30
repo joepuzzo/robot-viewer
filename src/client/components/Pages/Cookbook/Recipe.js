@@ -82,10 +82,10 @@ export const Recipe = ({ recipe, allActions }) => {
   return (
     <Flex direction="column" gap="size-500">
       <Flex direction="row" gap="size-300">
-        <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={play} minWidth="100px" isDisabled={loading}>
           Run Recipe
         </ActionButton>
-        <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={save} minWidth="100px" isDisabled={loading}>
           Save Recipe
         </ActionButton>
       </Flex>

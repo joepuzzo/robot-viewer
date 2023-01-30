@@ -62,6 +62,18 @@ main.extra {
   margin-right: 20px;
 }
 
+.input-slider div {
+  border-color: rgb(73, 73, 73) !important;
+}
+
+.input-slider div[role='presentation'] {
+  border-color: rgb(253, 253, 253) !important;
+}
+
+.number-input div {
+  border-color: rgb(73, 73, 73) !important;
+}
+
 .spectrum-SideNav-item:hover {
   background-color: var(
     --spectrum-sidenav-item-background-color-hover,
@@ -244,4 +256,12 @@ div[aria-selected='true'] {
 
 hr {
   opacity: 0.2;
+}
+
+input {
+  border-color: rgb(73, 73, 73) !important;
+}
+
+button {
+  border-color: rgb(73, 73, 73) !important;
 }

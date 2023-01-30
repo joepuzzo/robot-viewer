@@ -99,7 +99,7 @@ const Control = ({ controlRef, virtualCam }) => {
         alignItems="end"
         gap="size-100"
       >
-        <ActionButton type="button" onPress={reset} minWidth="100">
+        <ActionButton type="button" onPress={reset} minWidth="70px">
           Reset
         </ActionButton>
         <ActionButton title="Skeleton" onPress={() => skeleton()}>
@@ -110,20 +110,29 @@ const Control = ({ controlRef, virtualCam }) => {
           label={`X: ${round(values.x, 100)}`}
           step={0.1}
           initialValue={40}
+          maxWidth="100px"
         />
         <NumberInput
           name="goToY"
           label={`Y: ${round(values.y, 100)}`}
           step={0.1}
           initialValue={0}
+          maxWidth="100px"
         />
         <NumberInput
           name="goToZ"
           label={`Z: ${round(values.z, 100)}`}
           step={0.1}
           initialValue={10}
+          maxWidth="100px"
         />
-        <ActionButton title="Go" aria-label="Go" type="button" onPress={robotUpdate} minWidth="100">
+        <ActionButton
+          title="Go"
+          aria-label="Go"
+          type="button"
+          onPress={robotUpdate}
+          minWidth="50px"
+        >
           Go
         </ActionButton>
         <Switch name="animate" label="Animate" initialValue />

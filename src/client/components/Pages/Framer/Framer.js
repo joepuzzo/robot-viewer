@@ -21,7 +21,7 @@ const Control = ({ controlRef }) => {
   return (
     <>
       <Flex direction="row" width={500} justifyContent="center" alignItems="end" gap="size-100">
-        <ActionButton type="button" onPress={reset} minWidth="100">
+        <ActionButton type="button" onPress={reset} minWidth="100px">
           Reset
         </ActionButton>
       </Flex>

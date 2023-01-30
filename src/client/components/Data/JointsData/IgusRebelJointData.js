@@ -48,7 +48,7 @@ import useApp from '../../../hooks/useApp';
 // };
 
 export const IgusRebelJointData = ({ motor }) => {
-  const verbose = true;
+  const verbose = false;
 
   // const { socket } = useApp();
   // const [on, setOn] = useState(false);
@@ -141,20 +141,20 @@ export const IgusRebelJointData = ({ motor }) => {
               <span>{motor.currentPosition}</span>
             </Cell>
           </Row>
-          <Row>
-            <Cell>Current Encoder Tics</Cell>
-            <Cell>
-              <span>{motor.currentTics}</span>
-            </Cell>
-          </Row>
           {verbose ? (
             <Row>
-              <Cell>Encoder Pulse Position</Cell>
+              <Cell>Current Encoder Tics</Cell>
               <Cell>
-                <span>{motor.encoderPulsePosition}</span>
+                <span>{motor.currentTics}</span>
               </Cell>
             </Row>
           ) : null}
+          <Row>
+            <Cell>Encoder Pulse Position</Cell>
+            <Cell>
+              <span>{motor.encoderPulsePosition}</span>
+            </Cell>
+          </Row>
           {verbose ? (
             <Row>
               <Cell>Encoder Pulse Encoder Tics</Cell>
@@ -215,51 +215,45 @@ export const IgusRebelJointData = ({ motor }) => {
               />
             </Cell>
           </Row>
-          {verbose ? (
-            <Row>
-              <Cell>Voltage</Cell>
-              <Cell>
-                <ProgressBar
-                  label="Volts"
-                  minValue={0}
-                  maxValue={100}
-                  formatOptions={{}}
-                  value={motor.voltage}
-                  maxWidth="size-2000"
-                />
-              </Cell>
-            </Row>
-          ) : null}
-          {verbose ? (
-            <Row>
-              <Cell>Motor Temp</Cell>
-              <Cell>
-                <ProgressBar
-                  label="°C"
-                  minValue={0}
-                  maxValue={100}
-                  formatOptions={{}}
-                  value={motor.motorTemp}
-                  maxWidth="size-2000"
-                />
-              </Cell>
-            </Row>
-          ) : null}
-          {verbose ? (
-            <Row>
-              <Cell>Board Temp</Cell>
-              <Cell>
-                <ProgressBar
-                  label="°C"
-                  minValue={0}
-                  maxValue={100}
-                  formatOptions={{}}
-                  value={motor.boardTemp}
-                  maxWidth="size-2000"
-                />
-              </Cell>
-            </Row>
-          ) : null}
+          <Row>
+            <Cell>Voltage</Cell>
+            <Cell>
+              <ProgressBar
+                label="Volts"
+                minValue={0}
+                maxValue={100}
+                formatOptions={{}}
+                value={motor.voltage}
+                maxWidth="size-2000"
+              />
+            </Cell>
+          </Row>
+          <Row>
+            <Cell>Motor Temp</Cell>
+            <Cell>
+              <ProgressBar
+                label="°C"
+                minValue={0}
+                maxValue={100}
+                formatOptions={{}}
+                value={motor.motorTemp}
+                maxWidth="size-2000"
+              />
+            </Cell>
+          </Row>
+          <Row>
+            <Cell>Board Temp</Cell>
+            <Cell>
+              <ProgressBar
+                label="°C"
+                minValue={0}
+                maxValue={100}
+                formatOptions={{}}
+                value={motor.boardTemp}
+                maxWidth="size-2000"
+              />
+            </Cell>
+          </Row>
           <Row>
             <Cell>Direction</Cell>
             <Cell>

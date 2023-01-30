@@ -44,7 +44,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   );
 };
 
-export const Waypoints = ({data}) => {
+export const Waypoints = ({ data }) => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
@@ -185,13 +185,13 @@ export const Waypoints = ({data}) => {
         </div>
       ) : null}
       {error ? <span style={{ color: 'red' }}>{JSON.stringify(error)}</span> : null}
-      <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
+      <ActionButton type="button" onPress={play} minWidth="120px" isDisabled={loading}>
         Run Waypoints
       </ActionButton>
       <br />
       <br />
       <Flex direction="row" alignItems="end" gap="size-100">
-        <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={save} minWidth="120px" isDisabled={loading}>
           Save Waypoints
         </ActionButton>
       </Flex>
@@ -222,6 +222,7 @@ export const Waypoints = ({data}) => {
                         width={100}
                         defaultValue="z"
                         name="orientation"
+                        minWidth="70px"
                         aria-label="Select Oriantaion"
                         options={[
                           { label: 'X', value: 'x' },

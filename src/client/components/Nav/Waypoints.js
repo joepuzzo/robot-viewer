@@ -188,7 +188,7 @@ export const Waypoints = () => {
       ) : null}
       {error ? <span style={{ color: 'red' }}>{JSON.stringify(error)}</span> : null}
       <Flex direction="row" alignItems="end" gap="size-100">
-        <ActionButton type="button" onPress={play} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={play} minWidth="120px" isDisabled={loading}>
           Run Waypoints
         </ActionButton>
         <br />
@@ -198,10 +198,10 @@ export const Waypoints = () => {
       <br />
       <Flex direction="row" alignItems="end" gap="size-100">
         <Input name="filename" label="Filename" autocomplete="off" />
-        <ActionButton type="button" onPress={load} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={load} minWidth="120px" isDisabled={loading}>
           Load Waypoints
         </ActionButton>
-        <ActionButton type="button" onPress={save} minWidth="100" isDisabled={loading}>
+        <ActionButton type="button" onPress={save} minWidth="120px" isDisabled={loading}>
           Save Waypoints
         </ActionButton>
       </Flex>
@@ -234,6 +234,7 @@ export const Waypoints = () => {
                             width={100}
                             defaultValue="z"
                             name="orientation"
+                            minWidth="70px"
                             aria-label="Select Oriantaion"
                             options={[
                               { label: 'X', value: 'x' },

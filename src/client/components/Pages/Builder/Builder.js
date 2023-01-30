@@ -163,7 +163,7 @@ const Control = ({ controlRef, virtualCam }) => {
   return (
     <>
       <Flex direction="row" width={600} justifyContent="center" alignItems="center" gap="size-100">
-        <ActionButton type="button" onPress={reset} minWidth="100">
+        <ActionButton type="button" onPress={reset} minWidth="100px">
           Reset View
         </ActionButton>
       </Flex>

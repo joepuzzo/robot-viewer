@@ -350,7 +350,7 @@ export const RobotNav = () => {
           <AlignCenter.default />
         </ActionButton> */}
         <ActionButton title="Split Home" onPress={() => zeroRobot()} isDisabled={disabled}>
-          <Gauge3.default />
+          <strong>0</strong>
         </ActionButton>
         <ActionButton
           title="Reference Robot"
