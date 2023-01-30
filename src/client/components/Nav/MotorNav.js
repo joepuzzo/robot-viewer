@@ -74,6 +74,7 @@ export const MotorNav = () => {
               aria-label="Robot"
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
+            <br />
             <Select
               label="Motor"
               name="motorId"
@@ -81,6 +82,7 @@ export const MotorNav = () => {
               aria-label="Motor"
               options={[{ value: 'na', label: 'Disconnect' }, ...motorOptions]}
             />
+            <br />
             <RobotType />
             <br />
             <br />

@@ -375,6 +375,8 @@ export const RobotNav = () => {
               aria-label="Robot"
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
+            <br />
+
             <RobotType />
             <br />
             <Switch
