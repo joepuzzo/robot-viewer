@@ -174,6 +174,12 @@ function Info() {
           <Text>
             You can also use the sliders on the left panel to control each joint individually.
           </Text>
+          <br />
+          <br />
+          <Text>
+            To rotate the euler angles ( change orientation of the end effector ), use the a,s,d,w
+            keys.
+          </Text>
         </Content>
       </ContextualHelp>
       <Text>How to control the arm</Text>

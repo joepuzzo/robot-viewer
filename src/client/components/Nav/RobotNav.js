@@ -124,13 +124,13 @@ export const RobotNav = () => {
     }
   }, []);
 
-  // const motorZero = useCallback((motorId) => {
-  //   const robotId = formApi.getValue('robotId');
-  //   // only send if we are connected
-  //   if (connectedRef.current) {
-  //     socket.emit('motorZero', robotId, motorId);
-  //   }
-  // }, []);
+  const motorZero = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('motorZero', robotId, motorId);
+    }
+  }, []);
 
   const motorReference = useCallback((motorId) => {
     const robotId = formApi.getValue('robotId');
@@ -525,9 +525,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j0')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j0')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j0')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j0')}>
                 <RemoveCircle.default />
               </ActionButton>
@@ -550,9 +548,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j1')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j1')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j1')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j1')}>
                 <RemoveCircle.default />
               </ActionButton>
@@ -575,9 +571,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j2')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j2')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j2')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j2')}>
                 <RemoveCircle.default />
               </ActionButton>
@@ -600,9 +594,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j3')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j3')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j3')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j3')}>
                 <RemoveCircle.default />
               </ActionButton>
@@ -625,9 +617,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j4')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j4')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j4')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j4')}>
                 <RemoveCircle.default />
               </ActionButton>
@@ -650,9 +640,7 @@ export const RobotNav = () => {
               <ActionButton onPress={() => homeJoint('j5')}>
                 <Home.default />
               </ActionButton>
-              <ActionButton onPress={() => motorReference('j5')}>
-                <AlignCenter.default />
-              </ActionButton>
+              <ActionButton onPress={() => motorZero('j5')}>0</ActionButton>
               <ActionButton onPress={() => motorResetErrors('j5')}>
                 <RemoveCircle.default />
               </ActionButton>
