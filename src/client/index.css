@@ -265,3 +265,7 @@ input {
 button {
   border-color: rgb(73, 73, 73) !important;
 }
+
+button[aria-label='Information'] {
+  border: none !important;
+}

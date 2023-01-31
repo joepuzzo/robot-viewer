@@ -310,8 +310,8 @@ export const RobotNav = () => {
     }
   }, []);
 
-  const disabled = !connected;
-  // const disabled = false;
+  // const disabled = !connected;
+  const disabled = false;
 
   return (
     <>

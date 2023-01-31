@@ -93,7 +93,7 @@ export const MotorNav = () => {
               onNativeChange={onAccelChange}
             />
             <br />
-            <Debug values />
+            {/* <Debug values /> */}
           </ul>
         </div>
         <div className={extraOpen ? 'sidenav-extra sidenav-extra-visible' : 'sidenav-extra'}></div>

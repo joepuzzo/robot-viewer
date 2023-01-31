@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import useApp from '../../../hooks/useApp';
 import InputSlider from '../../Informed/InputSlider';
 import Alert from '@spectrum-icons/workflow/Alert';
-import { ActionButton, Flex } from '@adobe/react-spectrum';
+import { ActionButton, Content, ContextualHelp, Flex, Heading, Text } from '@adobe/react-spectrum';
 import useRobotState from '../../../hooks/useRobotState';
 import useRobotMeta from '../../../hooks/useRobotMeta';
 import Input from '../../Informed/Input';
@@ -50,6 +50,18 @@ const MotorCircle = () => {
           stroke="rgb(107,18,10)"
           strokeWidth="12"
         />
+        {/* <circle
+          transform={`rotate(-2 187.5 187.5)`}
+          cx="187.5"
+          cy="187.5"
+          r="140"
+          // fill="grey"
+          fill="transparent"
+          stroke="black"
+          strokeWidth="9"
+          stroke-dasharray="7,103"
+          // stroke-linecap="round"
+        /> */}
         <circle cx="187.5" cy="75" r="12" fill="black" />
       </g>
       <g transform={`rotate(${motorPos ?? 0} 187.5 187.5)`}>
@@ -242,7 +254,17 @@ export const Motor = () => {
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Motor Controller</h1>
-        {!connected ? <Alert.default aria-label="Negative Alert" color="negative" /> : null}
+        {!connected ? (
+          <Flex justifyContent="center" alignItems="center">
+            <Alert.default aria-label="Not Connected" color="negative" />
+            <ContextualHelp variant="info">
+              <Heading>Robot Not Connected</Heading>
+              <Content>
+                <Text>Please connect to a robot in order to control a motor.</Text>
+              </Content>
+            </ContextualHelp>
+          </Flex>
+        ) : null}
       </Flex>
       <InputSlider
         name="motorPos"
