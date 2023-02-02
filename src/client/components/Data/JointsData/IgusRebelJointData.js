@@ -110,6 +110,12 @@ export const IgusRebelJointData = ({ motor }) => {
             </Cell>
           </Row>
           <Row>
+            <Cell>Aligned</Cell>
+            <Cell>
+              <Status status={motor.aligned} />
+            </Cell>
+          </Row>
+          <Row>
             <Cell>Moving</Cell>
             <Cell>
               <Status status={motor.moving} />

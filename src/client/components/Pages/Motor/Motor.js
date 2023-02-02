@@ -30,12 +30,10 @@ const MotorCircle = () => {
 
   // If we are connected to motor use its real position instead
   if (robotId && motorId != 'na' && robotState && robotState.motors[motorId]) {
-    motorPos =
-      robotType === 'AR4'
-        ? robotState.motors[motorId].encoderPosition
-        : robotState.motors[motorId].currentPosition;
-
-    referencePos = robotState.motors[motorId].encoderOffset;
+    const motor = robotState.motors[motorId];
+    motorPos = robotType === 'AR4' ? motor.encoderPosition : motor.currentPosition;
+    // Only add offset if we were zeroed
+    referencePos = motor.zeroed ? motor.encoderOffset : 0;
     motorPos += referencePos;
   }
 
