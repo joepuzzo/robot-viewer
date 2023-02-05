@@ -56,6 +56,16 @@ export const MotorNav = () => {
     }
   }, []);
 
+  const onAdmittanceChange = useCallback(({ value }) => {
+    const motorId = formApi.getValue('motorId');
+    // only send if we are connected and have selected motor
+    if (connectedRef.current && motorId != 'na') {
+      updateConfig(`${motorId}.admittanceEnabled`, value);
+    }
+  }, []);
+
+  onAdmittanceChange;
+
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
@@ -91,6 +101,13 @@ export const MotorNav = () => {
               label="Motor Acceleration"
               initialValue={false}
               onNativeChange={onAccelChange}
+            />
+            <br />
+            <Switch
+              name="motorAdmittance"
+              label="Motor Admittance"
+              initialValue={false}
+              onNativeChange={onAdmittanceChange}
             />
             <br />
             {/* <Debug values /> */}

@@ -67,6 +67,8 @@ export const MotorVisualizations = () => {
   const [velocityData, setVelocityData] = useState([{ x: Date.now(), y: 0 }]);
   const [actualVelocityData, setActualVelocityData] = useState([{ x: Date.now(), y: 0 }]);
 
+  const [currentData, setCurrentData] = useState([{ x: Date.now(), y: 0 }]);
+
   // Use me for fake position updates
   // const [positionData, setPositionData] = useState(
   //   selectedMotor.positionHistory.map((i) => ({ x: i.time, y: i.position }))
@@ -105,6 +107,14 @@ export const MotorVisualizations = () => {
         prev.push({ x: Date.now(), y: robotState?.motors?.[motorId]?.calculatedVelocity || 0 });
         return [...prev];
       });
+
+      setCurrentData((prev) => {
+        if (prev.length >= 500) {
+          prev.shift();
+        }
+        prev.push({ x: Date.now(), y: robotState?.motors?.[motorId]?.motorCurrent || 0 });
+        return [...prev];
+      });
     }
   };
 
@@ -129,7 +139,7 @@ export const MotorVisualizations = () => {
     >
       <h2>Capture</h2>
       <Button onPress={toggleCapture}>{capture ? 'Stop' : 'Start'}</Button>
-      <h2>Position</h2>
+      <h2>Position {'( deg )'}</h2>
       <LineGraph
         data={positionData}
         // data2={positionData.map((d) => ({ x: d.x, y: d.y * 2 }))}
@@ -138,7 +148,7 @@ export const MotorVisualizations = () => {
         yMin={0}
         yMax={360}
       />
-      <h2>Velocity</h2>
+      <h2>Velocity {'( deg / s )'}</h2>
       <LineGraph
         data={velocityData}
         data2={actualVelocityData}
@@ -146,6 +156,14 @@ export const MotorVisualizations = () => {
         xMax={velocityData[velocityData.length - 1]?.x || Date.now()}
         yMin={0}
         yMax={100}
+      />
+      <h2> Current {'( MA )'}</h2>
+      <LineGraph
+        data={currentData}
+        xMin={currentData[0]?.x || Date.now()}
+        xMax={currentData[currentData.length - 1]?.x || Date.now()}
+        yMin={0}
+        yMax={200}
       />
     </Flex>
   );

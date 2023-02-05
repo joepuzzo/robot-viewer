@@ -173,9 +173,9 @@ export const IgusRebelJointData = ({ motor }) => {
             <Cell>Current</Cell>
             <Cell>
               <ProgressBar
-                label="Amps"
+                label="Miliamps"
                 minValue={0}
-                maxValue={200}
+                maxValue={300}
                 formatOptions={{}}
                 value={motor.motorCurrent}
                 maxWidth="size-2000"
@@ -225,9 +225,9 @@ export const IgusRebelJointData = ({ motor }) => {
             <Cell>Voltage</Cell>
             <Cell>
               <ProgressBar
-                label="Volts"
+                label="Milivolts"
                 minValue={0}
-                maxValue={100}
+                maxValue={30000}
                 formatOptions={{}}
                 value={motor.voltage}
                 maxWidth="size-2000"
