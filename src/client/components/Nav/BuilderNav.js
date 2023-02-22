@@ -273,6 +273,83 @@ let MY_DEFAULT_VALUE = [
   },
 ];
 
+let NORMAL_DEFAULT_VALUE = [
+  {
+    frameType: 'rotary',
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 15,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: 0,
+    r2: 0,
+    r3: 90,
+    x: 0,
+    y: 20,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: 0,
+    r2: 90,
+    r3: -90,
+    x: 15,
+    y: 0,
+    z: 0,
+    moveFrame: true,
+    moveBackBy: -15,
+    moveBack: 'x',
+  },
+  {
+    frameType: 'rotary',
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 15,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: -90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 15,
+    z: 0,
+    moveFrame: true,
+    moveBackBy: -15,
+    moveBack: 'y',
+  },
+  {
+    frameType: 'stationary',
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 10,
+    moveFrame: false,
+  },
+];
+
 const PT = [
   [0, 90, 0, 'a1'],
   [90, 0, 'a2', 0],
@@ -351,7 +428,7 @@ const UR_DEFAULT_VALUE = [
   },
 ];
 
-const defaultValue = DEFAULT_VALUE;
+const defaultValue = MY_DEFAULT_VALUE;
 
 const FrameControl = () => {
   const { value: type } = useFieldState('eulerType', false);
@@ -499,7 +576,7 @@ const FrameControl = () => {
         validateWhen={['r1', 'r2', 'r3', 'x', 'y', 'moveBackBy']}
       />
       <br />
-      <Switch name="moveFrame" label="MoveFrame" initialValue={false} />
+      <Switch name="moveFrame" label="MoveFrame" defaultValue={false} />
       <br />
       <Relevant when={({ formApi, scope }) => formApi.getValue(`${scope}.moveFrame`)}>
         <RadioGroup
@@ -626,6 +703,15 @@ export const BuilderNav = () => {
               defaultValue={3}
               step={0.1}
             />
+            <br />
+            <Switch name="showPlanes" label="Show Planes" initialValue={false} />
+            <br />
+            <Switch name="showArrows" label="Show Arrows" initialValue={true} />
+            <br />
+            <Switch name="showCylinder" label="Show Joints" initialValue={true} />
+            <br />
+            <Switch name="showLinks" label="Show Links" initialValue={false} />
+            <br />
             <ArrayField name="frames" defaultValue={defaultValue}>
               {({ add, addWithInitialValue }) => {
                 return (

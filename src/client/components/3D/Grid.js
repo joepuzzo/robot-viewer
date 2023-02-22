@@ -59,7 +59,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[size / 2 + 10, 0, 0]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `X${axisLabel}+` : 'X+'}
         </Text>
@@ -83,7 +83,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[-size / 2 - 10, 0, 0]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `X${axisLabel}-` : 'X-'}
         </Text>
@@ -94,7 +94,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[0, size / 2 + 10, 0]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `Y${axisLabel}+` : 'Y+'}
         </Text>
@@ -118,7 +118,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[0, -size / 2 - 10, 0]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `Y${axisLabel}-` : 'Y-'}
         </Text>
@@ -129,7 +129,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[0, 0, size / 2 + 10]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `Z${axisLabel}+` : 'Z+'}
         </Text>
@@ -153,7 +153,7 @@ export default function Grid({
           anchorX="center" // default
           anchorY="middle" // default
           position={[0, 0, -size / 2 - 10]}
-          scale={[40, 40, 40]}
+          scale={[4, 4, 4]}
         >
           {axisLabel != null ? `Z${axisLabel}-` : 'Z-'}
         </Text>

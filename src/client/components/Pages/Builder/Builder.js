@@ -21,7 +21,19 @@ const ErrorBall = () => {
   );
 };
 
-const Joint = ({ index, value, error, frames, frameErrors, base }) => {
+const Joint = ({
+  index,
+  value,
+  error,
+  frames,
+  frameErrors,
+  base,
+  showArrows,
+  showCylinder,
+  showPlanes,
+  jointGrid,
+  showLinks,
+}) => {
   const prefix = `frames[${index}]`;
 
   // console.log('WTF', `${prefix}.r1`);
@@ -92,6 +104,32 @@ const Joint = ({ index, value, error, frames, frameErrors, base }) => {
   if (moveBack === 'z') moveBackPos[2] = moveBackPos[2] + moveBackBy;
   if (moveBack === '-z') moveBackPos[2] = moveBackPos[2] - moveBackBy;
 
+  // Get length to next frame
+  let v = frames[0] ? frames[0].x || frames[0].y || frames[0].z : null;
+
+  let linkRotation = [0, 0, 0];
+  let linkPosition = [0, 0, 0];
+  if (v && frames[0].z) {
+    // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+    if (frames[0].frameType != 'stationary') v = v < 0 ? v + 7.5 : v - 7.5;
+    linkRotation = [Math.PI / 2, 0, 0];
+    linkPosition = [0, 0, v / 2 + 2.5];
+  }
+  if (v && frames[0].x) {
+    // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+    if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 7.5;
+    linkRotation = [Math.PI / 2, 0, Math.PI / 2];
+    linkPosition = [v / 2 + 5, 0, 0];
+    v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
+  }
+  if (v && frames[0].y) {
+    // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+    if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 10;
+    linkRotation = [0, 0, 0];
+    linkPosition = [0, v / 2 + 5, 0];
+    v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
+  }
+
   return (
     <group position={[x, y, z]}>
       {/* <Text
@@ -131,12 +169,19 @@ const Joint = ({ index, value, error, frames, frameErrors, base }) => {
             <Grid
               size={20}
               hideNegatives
-              showArrows
-              showPlanes={false}
               lineWidth={5}
-              showCylinder={frameType == 'rotary'}
               axisLabel={index}
+              showPlanes={showPlanes}
+              showArrows={showArrows}
+              hidePosatives={!showArrows}
+              showCylinder={frameType == 'rotary' && showCylinder}
             />
+            {v && showLinks ? (
+              <mesh rotation={linkRotation} position={linkPosition}>
+                <cylinderGeometry args={[5, 5, v, 32]} opacity={1} />
+                <meshStandardMaterial color="rgb(54, 54, 54)" />
+              </mesh>
+            ) : null}
             {frames.length ? (
               <Joint
                 index={index + 1}
@@ -144,6 +189,11 @@ const Joint = ({ index, value, error, frames, frameErrors, base }) => {
                 error={frameErrors[0]}
                 frames={frames.slice(1, frames.length)}
                 frameErrors={frameErrors.slice(1, frameErrors.length)}
+                showPlanes={showPlanes}
+                showArrows={showArrows}
+                showCylinder={showCylinder}
+                jointGrid={jointGrid}
+                showLinks={showLinks}
               />
             ) : null}
             {error ? <ErrorBall /> : null}
@@ -186,6 +236,8 @@ export const Builder = () => {
   const position = [values?.cameraX, values?.cameraY, values?.cameraZ];
   const cameraZoom = values?.cameraZoom;
 
+  const { showPlanes, showArrows, showCylinder, jointGrid, showLinks } = values;
+
   // This will zoom out and re pos the camera view when we add frames
   useEffect(() => {
     if (frames && controlRef.current) {
@@ -225,6 +277,11 @@ export const Builder = () => {
                 frames={frames.slice(1, frames.length)}
                 frameErrors={frameErrors.slice(1, frameErrors.length)}
                 base
+                showPlanes={showPlanes}
+                showArrows={showArrows}
+                showCylinder={showCylinder}
+                jointGrid={jointGrid}
+                showLinks={showLinks}
               />
             ) : null}
           </group>
