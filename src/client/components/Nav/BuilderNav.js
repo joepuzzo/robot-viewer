@@ -13,6 +13,7 @@ import {
   useArrayFieldItemApi,
   Debug,
   Relevant,
+  useScope,
 } from 'informed';
 import { getEulers } from '../../utils/getEulers';
 import { matrixDot } from '../../../lib/matrixDot';
@@ -471,6 +472,16 @@ const UR_DEFAULT_VALUE = [
 ];
 
 const defaultValue = MY_DEFAULT_VALUE;
+
+const FrameInfo = () => {
+  const scope = useScope();
+
+  // Get this value and the value before
+  const n = formApi.getValue(`${scope}`);
+  const nMinus1 = formApi.getValue(decrementFrameIndex(`${scope}`));
+
+  return <div></div>;
+};
 
 const FrameControl = () => {
   const { value: type } = useFieldState('eulerType', false);
