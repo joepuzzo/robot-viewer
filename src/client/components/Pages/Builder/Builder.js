@@ -248,7 +248,7 @@ export const Builder = () => {
       // Set new camera target
       controlRef.current.target.set(0, frames.length * 15, 0);
       // Zoom out
-      formApi.setValue('cameraZoom', 3 / (frames.length * 0.8));
+      formApi.setValue('cameraZoom', 6 / frames.length);
     }
   }, [frames, frames?.length]);
 
@@ -267,7 +267,11 @@ export const Builder = () => {
           position={position}
           zoom={cameraZoom}
         />
-        <OrbitControls enabled={orbitEnabled} ref={controlRef} />
+        <OrbitControls
+          enabled={orbitEnabled}
+          ref={controlRef}
+          target={[0, frames.length * 10, 0]}
+        />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>

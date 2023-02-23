@@ -784,8 +784,8 @@ export const BuilderNav = () => {
               label="Camera Zoom"
               type="number"
               minValue={0}
-              maxValue={3}
-              defaultValue={3}
+              maxValue={6}
+              defaultValue={6 / defaultValue.length}
               step={0.1}
             />
             <br />
