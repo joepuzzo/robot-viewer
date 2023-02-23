@@ -85,6 +85,48 @@ function isXZPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
   return Math.abs(transform[2][0]) === 0;
 }
 
+/**
+ *
+ * @param {*} dx
+ * @param {*} dy
+ * @param {*} dz
+ * @param {*} rx_deg
+ * @param {*} ry_deg
+ * @param {*} rz_deg
+ * @param {*} a - the new frame
+ * @param {*} b - the previous frame
+ * @returns
+ *
+ *        X2  Y2  Z2
+ *   X1 [ 1,  0,  0,  dx]
+ *   Y1 [ 0,  1,  0,  dy]
+ *   Z1 [ 0,  0,  1,  dz]
+ *      [ 0,  0,  0,  1]
+ *
+ */
+function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
+  // Convert rotations from degrees to radians
+  const rx = (rx_deg * Math.PI) / 180;
+  const ry = (ry_deg * Math.PI) / 180;
+  const rz = (rz_deg * Math.PI) / 180;
+
+  // Create 4x4 transformation matrix using the rotations and offsets
+  let transform = [
+    [1, 0, 0, dx],
+    [0, 1, 0, dy],
+    [0, 0, 1, dz],
+    [0, 0, 0, 1],
+  ];
+
+  // Apply rotations to the matrix
+  transform = rotateAroundXAxis(transform, rx);
+  transform = rotateAroundYAxis(transform, ry);
+  transform = rotateAroundZAxis(transform, rz);
+
+  // Check if the a axis of the new frame is perpendicular to the b axis of the previous frame
+  return Math.abs(transform[a][b]) === 0;
+}
+
 function createVector(point1, point2) {
   const x = point2[0] - point1[0];
   const y = point2[1] - point1[1];

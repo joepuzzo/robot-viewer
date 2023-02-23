@@ -107,6 +107,8 @@ const Joint = ({
   // Get length to next frame
   let v = frames[0] ? frames[0].x || frames[0].y || frames[0].z : null;
 
+  // Determine link type () -- ()  vs [ ] - ( )
+
   let linkRotation = [0, 0, 0];
   let linkPosition = [0, 0, 0];
   if (v && frames[0].z) {
