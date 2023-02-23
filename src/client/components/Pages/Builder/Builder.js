@@ -11,6 +11,7 @@ import { useFieldState, useFormApi, useFormState } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 import { getEulers } from '../../../utils/getEulers';
+import { If } from '../../Shared/If';
 
 const ErrorBall = () => {
   return (
@@ -177,14 +178,15 @@ const Joint = ({
               showArrows={showArrows}
               hidePosatives={!showArrows}
               showCylinder={frameType == 'rotary' && showCylinder}
+              showJoint={showLinks}
             />
-            {v && showLinks ? (
+            <If condition={v && showLinks}>
               <mesh rotation={linkRotation} position={linkPosition}>
-                <cylinderGeometry args={[5, 5, v, 32]} opacity={1} />
+                <cylinderGeometry args={[5, 5, v, 32]} />
                 <meshStandardMaterial color="rgb(54, 54, 54)" />
               </mesh>
-            ) : null}
-            {frames.length ? (
+            </If>
+            <If condition={frames.length}>
               <Joint
                 index={index + 1}
                 value={frames[0]}
@@ -197,7 +199,7 @@ const Joint = ({
                 jointGrid={jointGrid}
                 showLinks={showLinks}
               />
-            ) : null}
+            </If>
             {error ? <ErrorBall /> : null}
           </animated.group>
         </animated.group>

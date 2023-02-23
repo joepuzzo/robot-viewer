@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line, Plane, Text } from '@react-three/drei';
 import { toRadians } from '../../../lib/toRadians';
+import { If } from '../Shared/If';
 
 const XZPlane = ({ size, shift }) => {
   const height = shift ? size / 2 : size;
@@ -50,6 +51,7 @@ export default function Grid({
   showCylinder,
   shift,
   axisLabel,
+  showJoint,
 }) {
   return (
     <group>
@@ -163,10 +165,26 @@ export default function Grid({
       {showPlanes ? <YZPlane size={size} shift={shift} /> : null}
       {showCylinder ? (
         <group rotation={[toRadians(90), 0, 0]}>
+          <If condition={showJoint}>
+            <mesh position={[0, 3.75, 0]}>
+              <cylinderGeometry args={[5, 5, 2.5, 32]} />
+              <meshStandardMaterial color="rgb(54, 54, 54)" />
+            </mesh>
+          </If>
           <mesh>
             <cylinderGeometry args={[5, 5, 5, 32]} />
-            <meshStandardMaterial color="yellow" opacity={0.5} transparent />
+            <meshStandardMaterial
+              color={showJoint ? 'rgb(229, 149, 38)' : 'yellow'}
+              opacity={!showJoint ? 0.5 : 1}
+              transparent={!showJoint}
+            />
           </mesh>
+          <If condition={showJoint}>
+            <mesh position={[0, -3.75, 0]}>
+              <cylinderGeometry args={[5, 5, 2.5, 32]} />
+              <meshStandardMaterial color="rgb(54, 54, 54)" />
+            </mesh>
+          </If>
         </group>
       ) : null}
     </group>

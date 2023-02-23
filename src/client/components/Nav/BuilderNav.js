@@ -14,9 +14,14 @@ import {
   Debug,
   Relevant,
   useScope,
+  useScopedState,
 } from 'informed';
 import { getEulers } from '../../utils/getEulers';
 import { matrixDot } from '../../../lib/matrixDot';
+
+function areAllValuesDefined(obj = {}, keys) {
+  return keys.every((key) => obj[key] != null);
+}
 
 function rotateAroundXAxis(matrix, angle) {
   const cos = Math.cos(angle);
@@ -61,7 +66,26 @@ function decrementFrameIndex(string) {
   return string.replace(/\[(\d+)\]/, (_, number) => `[${Number(number) - 1}]`);
 }
 
-function isXZPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
+/**
+ *
+ * @param {*} dx
+ * @param {*} dy
+ * @param {*} dz
+ * @param {*} rx_deg
+ * @param {*} ry_deg
+ * @param {*} rz_deg
+ * @param {*} a - the new frame
+ * @param {*} b - the previous frame
+ * @returns
+ *
+ *        X2  Y2  Z2
+ *   X1 [ 1,  0,  0,  dx]
+ *   Y1 [ 0,  1,  0,  dy]
+ *   Z1 [ 0,  0,  1,  dz]
+ *      [ 0,  0,  0,  1]
+ *
+ */
+function isPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
   // Convert rotations from degrees to radians
   const rx = (rx_deg * Math.PI) / 180;
   const ry = (ry_deg * Math.PI) / 180;
@@ -80,9 +104,7 @@ function isXZPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
   transform = rotateAroundYAxis(transform, ry);
   transform = rotateAroundZAxis(transform, rz);
 
-  // console.table(transform);
-
-  // Check if the x axis of the new frame is perpendicular to the z axis of the previous frame
+  // Check if the a axis of the new frame is perpendicular to the b axis of the previous frame
   return Math.abs(transform[2][0]) === 0;
 }
 
@@ -124,8 +146,9 @@ function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
   transform = rotateAroundYAxis(transform, ry);
   transform = rotateAroundZAxis(transform, rz);
 
-  // Check if the a axis of the new frame is perpendicular to the b axis of the previous frame
-  return Math.abs(transform[a][b]) === 0;
+  // Check if the a axis of the new frame is parallel to the b axis of the previous frame
+  console.log(JSON.stringify({ dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b }));
+  return Math.abs(transform[a][b]) === 1;
 }
 
 function createVector(point1, point2) {
@@ -223,23 +246,15 @@ const validate = (value, values, { formApi, scope }) => {
   const n = formApi.getValue(`${scope}`);
   const nMinus1 = formApi.getValue(decrementFrameIndex(`${scope}`));
 
-  // Special case no value yet
-  if (!n) return;
-
   // console.log('---------------------------------------');
   // console.log(`${scope}`, JSON.stringify(n));
   // console.log(`${scope} - 1`, JSON.stringify(nMinus1));
 
+  // Special case no value yet
+  if (!n) return;
+
   // Special case if we dont have values yet
-  if (
-    n.r1 === undefined ||
-    n.r2 === undefined ||
-    n.r3 === undefined ||
-    n.x === undefined ||
-    n.y === undefined ||
-    n.z === undefined
-  )
-    return;
+  if (!areAllValuesDefined(n, ['r1', 'r2', 'r3', 'x', 'y', 'z'])) return;
 
   // Special case if we are base frame
   if (!nMinus1) return;
@@ -263,7 +278,7 @@ const validate = (value, values, { formApi, scope }) => {
   // console.log('WTF', 'MoeBack', moveBack, 'MoeBackBy', moveBackBy, 'XYZ', x, y, z);
 
   // The X axis must be perpendicular to the Z axis of the frame before it
-  if (!isXZPerpendicular(x, y, z, n.r1, n.r2, n.r3))
+  if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 2, 0))
     return 'X axis must be perpendicular to the previous z axis';
 
   // Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
@@ -296,21 +311,21 @@ let MY_DEFAULT_VALUE = [
     r3: 0,
     x: 0,
     y: 0,
-    z: 30,
+    z: 15,
   },
   {
     r1: 0,
     r2: 0,
     r3: 90,
     x: 0,
-    y: 30,
+    y: 20,
     z: 0,
   },
   {
     r1: 0,
     r2: 90,
     r3: -90,
-    x: 30,
+    x: 15,
     y: 0,
     z: 0,
   },
@@ -477,10 +492,27 @@ const FrameInfo = () => {
   const scope = useScope();
 
   // Get this value and the value before
-  const n = formApi.getValue(`${scope}`);
-  const nMinus1 = formApi.getValue(decrementFrameIndex(`${scope}`));
+  const { value: n } = useScopedState();
+  const { value: nMinus1 } = useFieldState(decrementFrameIndex(`${scope}`), false);
 
-  return <div></div>;
+  // Special case no value yet
+  if (!n) return null;
+
+  // // Special case if we dont have values yet
+  if (!areAllValuesDefined(n, ['r1', 'r2', 'r3', 'x', 'y', 'z'])) return null;
+
+  // Special case if we are base frame
+  if (scope === 'frames[0]') return null;
+
+  // 2 2 = z z see function definition for more details
+  const zsParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 2, 2);
+
+  return (
+    <div>
+      <strong>Zs Parallel: </strong>
+      <span>{JSON.stringify(zsParallel)}</span>
+    </div>
+  );
 };
 
 const FrameControl = () => {
@@ -774,6 +806,8 @@ export const BuilderNav = () => {
                         <label>
                           <hr />
                           <h5>{name}</h5>
+                          <FrameInfo />
+                          <br />
                           <FrameControl />
                           <br />
                           <ArrayButtons index={index} add={addWithInitialValue} remove={remove} />
