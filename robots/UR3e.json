@@ -1,16 +1,16 @@
 {
-  "robotType": "Example",
-  "zeroPosition": [0, 0, 100],
+  "robotType": "UR3e",
+  "zeroPosition": [0, 0, 0],
   "units": "cm",
-  "base": 10,
   "x0": 0,
   "y0": 0,
-  "v0": 15,
-  "v1": 20,
-  "v2": 15,
-  "v3": 15,
-  "v4": 15,
-  "v5": 10,
+  "base": 12.6,
+  "v0": 15.185,
+  "v1": 24.355,
+  "v2": 21.32,
+  "v3": 13.105,
+  "v4": 8.535,
+  "v5": 9.21,
   "x": 45,
   "y": 10,
   "z": 55,
@@ -18,15 +18,14 @@
   "r2": 90,
   "r3": 90,
   "rangej0": [-180, 180],
-  "rangej1": [-140, 140],
-  "rangej2": [-115, 115],
+  "rangej1": [-180, 180],
+  "rangej2": [-180, 180],
   "rangej3": [-180, 180],
-  "rangej4": [-90, 90],
+  "rangej4": [-180, 180],
   "rangej5": [-180, 180],
   "flip": true,
   "frames": [
     {
-      "frameType": "rotary",
       "r1": 0,
       "r2": 0,
       "r3": 0,
@@ -36,68 +35,59 @@
       "moveFrame": false
     },
     {
-      "frameType": "rotary",
       "r1": 90,
       "r2": 0,
       "r3": 0,
       "x": 0,
       "y": 0,
-      "z": 15,
+      "z": 15.185,
       "moveFrame": false
     },
     {
-      "frameType": "rotary",
       "r1": 0,
       "r2": 0,
-      "r3": 90,
-      "x": 0,
-      "y": 20,
+      "r3": 0,
+      "x": -24.355,
+      "y": 0,
       "z": 0,
       "moveFrame": false
     },
     {
-      "frameType": "rotary",
       "r1": 0,
-      "r2": 90,
-      "r3": -90,
-      "x": 15,
+      "r2": 0,
+      "r3": 0,
+      "x": -21.32,
       "y": 0,
       "z": 0,
-      "moveFrame": true,
-      "moveBackBy": -15,
-      "moveBack": "x"
+      "moveFrame": false
     },
     {
-      "frameType": "rotary",
       "r1": 90,
       "r2": 0,
       "r3": 0,
       "x": 0,
       "y": 0,
-      "z": 15,
+      "z": 13.105,
       "moveFrame": false
     },
     {
-      "frameType": "rotary",
       "r1": -90,
       "r2": 0,
       "r3": 0,
       "x": 0,
-      "y": 15,
-      "z": 0,
-      "moveFrame": true,
-      "moveBackBy": -15,
-      "moveBack": "y"
+      "y": 0,
+      "z": 8.535,
+      "moveFrame": false
     },
     {
-      "frameType": "stationary",
       "r1": 0,
       "r2": 0,
       "r3": 0,
       "x": 0,
       "y": 0,
-      "z": 10,
-      "moveFrame": false
+      "z": 9.21,
+      "moveFrame": false,
+      "frameType": "stationary"
     }
   ]
 }

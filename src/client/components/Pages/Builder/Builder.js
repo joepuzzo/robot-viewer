@@ -108,8 +108,6 @@ const Joint = ({
   // Get length to next frame
   let v = frames[0] ? frames[0].x || frames[0].y || frames[0].z : null;
 
-  // Determine link type () -- ()  vs [ ] - ( )
-
   let linkRotation = [0, 0, 0];
   let linkPosition = [0, 0, 0];
   if (v && frames[0].z) {
@@ -270,7 +268,7 @@ export const Builder = () => {
         <OrbitControls
           enabled={orbitEnabled}
           ref={controlRef}
-          target={[0, frames.length * 10, 0]}
+          target={[5, frames.length * 10, 0]}
         />
         <ambientLight intensity={0.5} />
         <directionalLight position={[-2, 5, 2]} intensity={1} />

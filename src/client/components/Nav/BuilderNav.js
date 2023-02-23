@@ -16,8 +16,8 @@ import {
   useScope,
   useScopedState,
 } from 'informed';
-import { getEulers } from '../../utils/getEulers';
 import { matrixDot } from '../../../lib/matrixDot';
+import { RobotType } from '../Shared/RobotType';
 
 function areAllValuesDefined(obj = {}, keys) {
   return keys.every((key) => obj[key] != null);
@@ -147,7 +147,6 @@ function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
   transform = rotateAroundZAxis(transform, rz);
 
   // Check if the a axis of the new frame is parallel to the b axis of the previous frame
-  console.log(JSON.stringify({ dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b }));
   return Math.abs(transform[a][b]) === 1;
 }
 
@@ -182,73 +181,18 @@ function xIntersectsZ(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
 
   const xP1 = [dx, dy, dz];
   const xP2 = [transform[0][0] + dx, transform[1][0] + dy, transform[2][0] + dz];
-  const xDirectionVector = createVector(xP1, xP2);
 
   const zP1 = [0, 0, 0];
   const zP2 = [0, 0, 1];
-  const zDirectionVector = createVector(zP1, zP2);
-
-  // Vector equation
-  // r = startPoint + t * directionVector
 
   // TODO use ours instead of maths
-  // return linesIntersect(xP1, xDirectionVector, zP1, zDirectionVector);
-
-  // console.log('--------------------------');
-  // console.log('FOR', xP1, xP2, zP1, zP2);
-  // console.log('RES', intersect(xP1, xP2, zP1, zP2));
   return intersect(xP1, xP2, zP1, zP2);
-}
-
-function linesIntersect(line1Start, line1Direction, line2Start, line2Direction) {
-  const [start1X, start1Y, start1Z] = line1Start;
-  const [start2X, start2Y, start2Z] = line2Start;
-  const [dir1X, dir1Y, dir1Z] = line1Direction;
-  const [dir2X, dir2Y, dir2Z] = line2Direction;
-
-  // ------------------------------------------
-  // Step1: Convert lines into parametric form
-  // let x = start1X + t * dir1X;
-  // let y = start1Y + t * dir1Y;
-  // let z = start1Z + t * dir1Z;
-  //
-  // let x = start2X + s * dir2X;
-  // let y = start2Y + s * dir2Y;
-  // let z = start2Z + s * dir2Z;
-
-  // ------------------------------------------
-  // Step2: Define equations
-
-  // x = x
-  // start1X + t * dir1X = start2X + s * dir2X
-
-  // y = y
-  // start1Y + t * dir1Y = start2Y + s * dir2Y
-
-  // z = z
-  // start1Z + t * dir1Z = start2Z + s * dir2Z
-
-  // ------------------------------------------
-  // Step3: Re arrange the equations to get constants on one side
-
-  // Re arrange x = x to get constant on the right
-  // ( t * dir1X ) - ( s * dir2X ) = start2X - start1X
-
-  // Re arrange y = y to get constant on the right
-  // ( t * dir1Y ) - ( s * dir2Y ) = start2Y - start1Y
-
-  // Re arrange z = z to get constant on the right
-  // ( t * dir1Z ) - ( s * dir2Z ) = start2Z - start1Z
 }
 
 const validate = (value, values, { formApi, scope }) => {
   // Get this value and the value before
   const n = formApi.getValue(`${scope}`);
   const nMinus1 = formApi.getValue(decrementFrameIndex(`${scope}`));
-
-  // console.log('---------------------------------------');
-  // console.log(`${scope}`, JSON.stringify(n));
-  // console.log(`${scope} - 1`, JSON.stringify(nMinus1));
 
   // Special case no value yet
   if (!n) return;
@@ -258,8 +202,6 @@ const validate = (value, values, { formApi, scope }) => {
 
   // Special case if we are base frame
   if (!nMinus1) return;
-
-  // console.log('RES', isXZPerpendicular(n.x, n.y, n.z, n.r1, n.r2, n.r3));
 
   const { moveBack, moveBackBy } = n;
   let x = n.x;
@@ -278,11 +220,14 @@ const validate = (value, values, { formApi, scope }) => {
   // console.log('WTF', 'MoeBack', moveBack, 'MoeBackBy', moveBackBy, 'XYZ', x, y, z);
 
   // The X axis must be perpendicular to the Z axis of the frame before it
-  if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 2, 0))
+  if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 2, 0)) {
     return 'X axis must be perpendicular to the previous z axis';
+  }
 
   // Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
-  if (!xIntersectsZ(x, y, z, n.r1, n.r2, n.r3)) return 'X axis must intersect the previous z axis';
+  if (!xIntersectsZ(x, y, z, n.r1, n.r2, n.r3)) {
+    return 'X axis must intersect the previous z axis';
+  }
 };
 
 let DEFAULT_VALUE = [
@@ -295,198 +240,6 @@ let DEFAULT_VALUE = [
     z: 0,
   },
 ];
-
-let MY_DEFAULT_VALUE = [
-  {
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-  {
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 15,
-  },
-  {
-    r1: 0,
-    r2: 0,
-    r3: 90,
-    x: 0,
-    y: 20,
-    z: 0,
-  },
-  {
-    r1: 0,
-    r2: 90,
-    r3: -90,
-    x: 15,
-    y: 0,
-    z: 0,
-  },
-];
-
-let NORMAL_DEFAULT_VALUE = [
-  {
-    frameType: 'rotary',
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 0,
-    moveFrame: false,
-  },
-  {
-    frameType: 'rotary',
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 15,
-    moveFrame: false,
-  },
-  {
-    frameType: 'rotary',
-    r1: 0,
-    r2: 0,
-    r3: 90,
-    x: 0,
-    y: 20,
-    z: 0,
-    moveFrame: false,
-  },
-  {
-    frameType: 'rotary',
-    r1: 0,
-    r2: 90,
-    r3: -90,
-    x: 15,
-    y: 0,
-    z: 0,
-    moveFrame: true,
-    moveBackBy: -15,
-    moveBack: 'x',
-  },
-  {
-    frameType: 'rotary',
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 15,
-    moveFrame: false,
-  },
-  {
-    frameType: 'rotary',
-    r1: -90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 15,
-    z: 0,
-    moveFrame: true,
-    moveBackBy: -15,
-    moveBack: 'y',
-  },
-  {
-    frameType: 'stationary',
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 10,
-    moveFrame: false,
-  },
-];
-
-const PT = [
-  [0, 90, 0, 'a1'],
-  [90, 0, 'a2', 0],
-  [90, -90, 0, 0],
-  [0, 90, 0, 'a3' + 'a4'],
-  [0, -90, 0, 0],
-  [0, 0, 0, 'a5' + 'a6'],
-];
-
-// UR
-
-const UR_DEFAULT_VALUE = [
-  {
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 0,
-    moveFrame: false,
-  },
-  {
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 15.185,
-    moveFrame: false,
-  },
-  {
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: -24.355,
-    y: 0,
-    z: 0,
-    moveFrame: false,
-  },
-  {
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: -21.32,
-    y: 0,
-    z: 0,
-    moveFrame: false,
-  },
-  {
-    r1: 90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 13.105,
-    moveFrame: false,
-  },
-  {
-    r1: -90,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 8.535,
-    moveFrame: false,
-  },
-  {
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    x: 0,
-    y: 0,
-    z: 9.21,
-    moveFrame: false,
-    frameType: 'stationary',
-  },
-];
-
-const defaultValue = MY_DEFAULT_VALUE;
 
 const FrameInfo = () => {
   const scope = useScope();
@@ -743,6 +496,9 @@ export const BuilderNav = () => {
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
+            <br />
+            <RobotType filter={(robot) => robot.frames} />
+            <br />
             <Select
               label="Euler Type"
               name="eulerType"
@@ -785,7 +541,7 @@ export const BuilderNav = () => {
               type="number"
               minValue={0}
               maxValue={6}
-              defaultValue={6 / defaultValue.length}
+              defaultValue={6 / DEFAULT_VALUE.length}
               step={0.1}
             />
             <br />
@@ -797,7 +553,7 @@ export const BuilderNav = () => {
             <br />
             <Switch name="showLinks" label="Show Links" initialValue={false} />
             <br />
-            <ArrayField name="frames" defaultValue={defaultValue}>
+            <ArrayField name="frames" defaultValue={DEFAULT_VALUE}>
               {({ add, addWithInitialValue }) => {
                 return (
                   <>
