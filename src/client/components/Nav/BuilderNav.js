@@ -15,9 +15,11 @@ import {
   Relevant,
   useScope,
   useScopedState,
+  useFormState,
 } from 'informed';
 import { matrixDot } from '../../../lib/matrixDot';
 import { RobotType } from '../Shared/RobotType';
+import { If } from '../Shared/If';
 
 function areAllValuesDefined(obj = {}, keys) {
   return keys.every((key) => obj[key] != null);
@@ -353,21 +355,6 @@ const FrameControl = () => {
         validateOn="change"
         showErrorIfError
       />
-      {/* <RadioGroup
-        label="Orientation"
-        initialValue="z"
-        orientation="horizontal"
-        name="orientation"
-        aria-label="Select Oriantaion"
-        options={[
-          { label: 'X', value: 'x' },
-          { label: '-X', value: '-x' },
-          { label: 'Y', value: 'y' },
-          { label: '-Y', value: '-y' },
-          { label: 'Z', value: 'z' },
-          { label: '-Z', value: '-z' },
-        ]}
-      /> */}
       <InputSlider
         name="x"
         label="X"
@@ -488,6 +475,8 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
 };
 
 export const BuilderNav = () => {
+  const { values } = useFormState();
+
   return (
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
@@ -553,6 +542,23 @@ export const BuilderNav = () => {
             <br />
             <Switch name="showLinks" label="Show Links" initialValue={false} />
             <br />
+            <hr />
+            <If condition={values.frames}>
+              <>
+                {values.frames &&
+                  values.frames.map((frame, i) => (
+                    <InputSlider
+                      name={`j${i}`}
+                      label={`J${i}`}
+                      type="number"
+                      minValue={-180}
+                      maxValue={180}
+                      step={1}
+                      initialValue={0}
+                    />
+                  ))}
+              </>
+            </If>
             <ArrayField name="frames" defaultValue={DEFAULT_VALUE}>
               {({ add, addWithInitialValue }) => {
                 return (

@@ -34,20 +34,16 @@ const Joint = ({
   showPlanes,
   jointGrid,
   showLinks,
+  values,
 }) => {
-  const prefix = `frames[${index}]`;
-
-  // console.log('WTF', `${prefix}.r1`);
-
-  // const { value: rot1 } = useFieldState(`${prefix}.r1`);
-  // const { value: rot2 } = useFieldState(`${prefix}.r2`);
-  // const { value: rot3 } = useFieldState(`${prefix}.r3`);
   const rot1 = value.r1;
   const rot2 = value.r2;
   const rot3 = value.r3;
   const { x, y, z, moveBack, moveBackBy, frameType } = value;
 
   const { value: type } = useFieldState(`eulerType`);
+
+  const jRotation = values[`j${index}`] ? toRadians(values[`j${index}`]) : 0;
 
   const [r1, r2, r3] = useMemo(() => {
     const r1 = { x: 0, y: 0, z: 0 };
@@ -62,11 +58,11 @@ const Joint = ({
       // Example: r1['x']
       r1[rotations[0]] = toRadians(rot1);
       r2[rotations[1]] = toRadians(rot2);
-      r3[rotations[2]] = toRadians(rot3);
+      r3[rotations[2]] = toRadians(rot3) + jRotation;
     }
 
     return [Object.values(r1), Object.values(r2), Object.values(r3)];
-  }, [type, rot1, rot2, rot3]);
+  }, [type, rot1, rot2, rot3, jRotation]);
 
   const { rotation: rotation1 } = useSpring({
     rotation: r1,
@@ -90,9 +86,14 @@ const Joint = ({
       clamp: true,
       tension: 70,
     },
+    // immediate: !animate,
+    // onStart: () => {
+    //   if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'move');
+    // },
+    // onRest: () => {
+    //   if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'stop');
+    // },
   });
-
-  // const foo = `${rot1} ${rot1} ${rot1}`;
 
   const moveBackPos = [0, 0, 0];
 
@@ -196,6 +197,7 @@ const Joint = ({
                 showCylinder={showCylinder}
                 jointGrid={jointGrid}
                 showLinks={showLinks}
+                values={values}
               />
             </If>
             {error ? <ErrorBall /> : null}
@@ -288,6 +290,7 @@ export const Builder = () => {
                 showCylinder={showCylinder}
                 jointGrid={jointGrid}
                 showLinks={showLinks}
+                values={values}
               />
             ) : null}
           </group>
