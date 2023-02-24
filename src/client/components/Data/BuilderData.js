@@ -1,6 +1,7 @@
 import { Cell, Column, Row, TableBody, TableHeader, TableView } from '@adobe/react-spectrum';
 import { useFormState } from 'informed';
 import React from 'react';
+import { isParallel } from '../../utils/frame';
 
 export const BuilderData = () => {
   const { values } = useFormState();
@@ -63,7 +64,17 @@ export const BuilderData = () => {
             // TODO we cant assume what to offset the r by, we need to determine what the previous frames parallel line is ( might be y )
 
             // r  = look at distance between center of two frames along the `Xn` direction
-            let r = n.moveBack === 'x' ? n.x + n.moveBackBy : n.x;
+            let r = 0;
+
+            // If our x is parallel to the previous x
+            if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'x')) {
+              r = n.moveBack === 'x' ? n.x + n.moveBackBy : n.x;
+            }
+            // If our x is parallel to the previous y
+            if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y')) {
+              r = n.moveBack === 'y' ? n.y + n.moveBackBy : n.y;
+            }
+
             // d = look at the distance between center of two fames along `Zn-1` direction.
             let d = n.moveBack === 'z' ? n.z + n.moveBackBy : n.z;
 

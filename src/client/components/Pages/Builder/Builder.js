@@ -1,16 +1,12 @@
-import React, { Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import Grid from '../../3D/Grid';
 import { Canvas } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
-
-import RadioGroup from '../../Informed/RadioGroup';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useApp from '../../../hooks/useApp';
 import { useFieldState, useFormApi, useFormState } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
-import { getEulers } from '../../../utils/getEulers';
 import { If } from '../../Shared/If';
 
 const ErrorBall = () => {
@@ -182,7 +178,7 @@ const Joint = ({
             <If condition={v && showLinks}>
               <mesh rotation={linkRotation} position={linkPosition}>
                 <cylinderGeometry args={[5, 5, v, 32]} />
-                <meshStandardMaterial color="rgb(54, 54, 54)" />
+                <meshStandardMaterial color="rgb(54, 54, 54)" opacity={1} />
               </mesh>
             </If>
             <If condition={frames.length}>
