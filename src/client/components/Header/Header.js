@@ -41,7 +41,7 @@ export const Header = () => {
       <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
         {!isDesktopUp ? (
           <ActionButton aria-label="Open Menu" onClick={() => toggleNav()}>
-            <ShowMenu.default />
+            <ShowMenu />
           </ActionButton>
         ) : null}
         <NavLink href="/">Robot</NavLink>

@@ -18,13 +18,6 @@ module.exports = {
         test: /\.svg$/,
         use: ['@svgr/webpack'],
       },
-      // See here https://github.com/pmndrs/react-spring/issues/2097 for why I needed to add this bullshit
-      {
-        test: /react-spring/i,
-        resolve: {
-          fullySpecified: false,
-        },
-      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -33,6 +26,13 @@ module.exports = {
         },
         use: {
           loader: 'babel-loader',
+        },
+      },
+      // See here https://github.com/pmndrs/react-spring/issues/2097 for why I needed to add this bullshit
+      {
+        test: /react-spring/i,
+        resolve: {
+          fullySpecified: false,
         },
       },
       {

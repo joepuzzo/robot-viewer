@@ -254,7 +254,7 @@ export const Motor = () => {
         <h1>Motor Controller</h1>
         {!connected ? (
           <Flex justifyContent="center" alignItems="center">
-            <Alert.default aria-label="Not Connected" color="negative" />
+            <Alert aria-label="Not Connected" color="negative" />
             <ContextualHelp variant="info">
               <Heading>Robot Not Connected</Heading>
               <Content>

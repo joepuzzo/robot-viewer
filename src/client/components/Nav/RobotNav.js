@@ -318,21 +318,21 @@ export const RobotNav = () => {
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Robot Control</h1>
         <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
-          <Refresh.default />
+          <Refresh />
         </ActionButton>
         <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
-          <Stopwatch.default />
+          <Stopwatch />
         </ActionButton>
         <TooltipTrigger>
           <ActionButton aria-label="Enable Robot" onPress={() => enable()} isDisabled={disabled}>
-            <LockOpen.default />
+            <LockOpen />
           </ActionButton>
           <Tooltip>Enable Robot - This will enable all motors on the robot.</Tooltip>
         </TooltipTrigger>
         <TooltipTrigger>
           <div className="icon-red">
             <ActionButton title="Stop" onPress={() => stop()} isDisabled={disabled}>
-              <StopCircle.default />
+              <StopCircle />
             </ActionButton>
           </div>
           <Tooltip>Stop Robot - This will stop all motors on the robot.</Tooltip>
@@ -342,13 +342,13 @@ export const RobotNav = () => {
           aria-label="Open Waypoints"
           onClick={() => toggleExtra()}
         >
-          <ChevronRight.default />
+          <ChevronRight />
         </ActionButton>
       </Flex>
       <Flex direction="row" alignItems="center" gap="size-100">
         <TooltipTrigger>
           <ActionButton aria-label="Home Robot" onPress={() => home()} isDisabled={disabled}>
-            <Home.default />
+            <Home />
           </ActionButton>
           <Tooltip>Home Robot - This will send all the motors in the robot to home.</Tooltip>
         </TooltipTrigger>
@@ -359,7 +359,7 @@ export const RobotNav = () => {
             onPress={() => centerRobot()}
             isDisabled={disabled}
           >
-            <MoreVertical.default />
+            <MoreVertical />
           </ActionButton>
           <Tooltip>
             Center Robot - This will send all the motors in the robot to their center position.
@@ -377,7 +377,7 @@ export const RobotNav = () => {
             onPress={() => referenceRobot()}
             isDisabled={disabled}
           >
-            <AlignCenter.default />
+            <AlignCenter />
           </ActionButton>
           <Tooltip>Reference Robot - This will reference all motors in the robot.</Tooltip>
         </TooltipTrigger>
@@ -387,15 +387,15 @@ export const RobotNav = () => {
             onPress={() => resetErrors()}
             isDisabled={disabled}
           >
-            <RemoveCircle.default />
+            <RemoveCircle />
           </ActionButton>
           <Tooltip>Reset Errors - This will reset errors on all motors in the robot.</Tooltip>
         </TooltipTrigger>
         {/* <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
-          <Compass.default />
+          <Compass />
         </ActionButton> */}
         {/* <ActionButton title="Split Home" onPress={() => splitHome()} isDisabled={disabled}>
-          <MoveUpDown.default />
+          <MoveUpDown />
         </ActionButton> */}
         <br />
         <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
@@ -405,7 +405,7 @@ export const RobotNav = () => {
           aria-label="Switch Theme"
           onClick={() => toggleColorScheme()}
         >
-          <Contrast.default />
+          <Contrast />
         </ActionButton> */}
       </Flex>
       <Flex direction="row" gap="size-500">
@@ -523,16 +523,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j0')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j0')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j0')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j0')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -548,16 +548,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j1')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j1')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j1')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j1')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -573,16 +573,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j2')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j2')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j2')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j2')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -598,16 +598,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j3')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j3')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j3')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j3')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -623,16 +623,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j4')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j4')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j4')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j4')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <Flex direction="row" alignItems="end" gap="size-100">
@@ -648,16 +648,16 @@ export const RobotNav = () => {
                 step={1}
               />
               <ActionButton onPress={() => homeJoint('j5')}>
-                <Home.default />
+                <Home />
               </ActionButton>
               <ActionButton onPress={() => motorReference('j5')}>
-                <AlignCenter.default />
+                <AlignCenter />
               </ActionButton>
               <ActionButton onPress={() => motorResetErrors('j5')}>
-                <RemoveCircle.default />
+                <RemoveCircle />
               </ActionButton>
               <ActionButton onPress={() => motorEnable('j5')}>
-                <LockOpen.default />
+                <LockOpen />
               </ActionButton>
             </Flex>
             <hr />

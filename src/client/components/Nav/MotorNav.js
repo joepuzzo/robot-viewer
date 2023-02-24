@@ -71,7 +71,7 @@ export const MotorNav = () => {
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Motor Control</h1>
         <ActionButton onClick={() => toggleExtra()}>
-          <ChevronRight.default />
+          <ChevronRight />
         </ActionButton>
       </Flex>
       <Flex direction="row" gap="size-500">

@@ -103,7 +103,7 @@ const Control = ({ controlRef, virtualCam }) => {
           Reset
         </ActionButton>
         <ActionButton title="Skeleton" onPress={() => skeleton()}>
-          <Graphic.default />
+          <Graphic />
         </ActionButton>
         <NumberInput
           name="goToX"
