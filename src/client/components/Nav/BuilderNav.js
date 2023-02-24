@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
-import { intersect } from 'mathjs';
 
 import Select from '../Informed/Select';
 import InputSlider from '../Informed/InputSlider';
@@ -17,48 +16,12 @@ import {
   useScopedState,
   useFormState,
 } from 'informed';
-import { matrixDot } from '../../../lib/matrixDot';
 import { RobotType } from '../Shared/RobotType';
 import { If } from '../Shared/If';
+import { isParallel, isPerpendicular, xIntersectsZ } from '../../utils/frame';
 
 function areAllValuesDefined(obj = {}, keys) {
   return keys.every((key) => obj[key] != null);
-}
-
-function rotateAroundXAxis(matrix, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const rotation = [
-    [1, 0, 0, 0],
-    [0, cos, -sin, 0],
-    [0, sin, cos, 0],
-    [0, 0, 0, 1],
-  ];
-  return matrixDot(matrix, rotation);
-}
-
-function rotateAroundYAxis(matrix, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const rotation = [
-    [cos, 0, sin, 0],
-    [0, 1, 0, 0],
-    [-sin, 0, cos, 0],
-    [0, 0, 0, 1],
-  ];
-  return matrixDot(matrix, rotation);
-}
-
-function rotateAroundZAxis(matrix, angle) {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  const rotation = [
-    [cos, -sin, 0, 0],
-    [sin, cos, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-  ];
-  return matrixDot(matrix, rotation);
 }
 
 // decrementFrameIndex("frames[2]");  // Returns "frames[1]"
@@ -66,129 +29,6 @@ function rotateAroundZAxis(matrix, angle) {
 // decrementFrameIndex("frames[0]");  // Returns "frames[-1]"
 function decrementFrameIndex(string) {
   return string.replace(/\[(\d+)\]/, (_, number) => `[${Number(number) - 1}]`);
-}
-
-/**
- *
- * @param {*} dx
- * @param {*} dy
- * @param {*} dz
- * @param {*} rx_deg
- * @param {*} ry_deg
- * @param {*} rz_deg
- * @param {*} a - the new frame
- * @param {*} b - the previous frame
- * @returns
- *
- *        X2  Y2  Z2
- *   X1 [ 1,  0,  0,  dx]
- *   Y1 [ 0,  1,  0,  dy]
- *   Z1 [ 0,  0,  1,  dz]
- *      [ 0,  0,  0,  1]
- *
- */
-function isPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
-  // Convert rotations from degrees to radians
-  const rx = (rx_deg * Math.PI) / 180;
-  const ry = (ry_deg * Math.PI) / 180;
-  const rz = (rz_deg * Math.PI) / 180;
-
-  // Create 4x4 transformation matrix using the rotations and offsets
-  let transform = [
-    [1, 0, 0, dx],
-    [0, 1, 0, dy],
-    [0, 0, 1, dz],
-    [0, 0, 0, 1],
-  ];
-
-  // Apply rotations to the matrix
-  transform = rotateAroundXAxis(transform, rx);
-  transform = rotateAroundYAxis(transform, ry);
-  transform = rotateAroundZAxis(transform, rz);
-
-  // Check if the a axis of the new frame is perpendicular to the b axis of the previous frame
-  return Math.abs(transform[2][0]) === 0;
-}
-
-/**
- *
- * @param {*} dx
- * @param {*} dy
- * @param {*} dz
- * @param {*} rx_deg
- * @param {*} ry_deg
- * @param {*} rz_deg
- * @param {*} a - the new frame
- * @param {*} b - the previous frame
- * @returns
- *
- *        X2  Y2  Z2
- *   X1 [ 1,  0,  0,  dx]
- *   Y1 [ 0,  1,  0,  dy]
- *   Z1 [ 0,  0,  1,  dz]
- *      [ 0,  0,  0,  1]
- *
- */
-function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, a, b) {
-  // Convert rotations from degrees to radians
-  const rx = (rx_deg * Math.PI) / 180;
-  const ry = (ry_deg * Math.PI) / 180;
-  const rz = (rz_deg * Math.PI) / 180;
-
-  // Create 4x4 transformation matrix using the rotations and offsets
-  let transform = [
-    [1, 0, 0, dx],
-    [0, 1, 0, dy],
-    [0, 0, 1, dz],
-    [0, 0, 0, 1],
-  ];
-
-  // Apply rotations to the matrix
-  transform = rotateAroundXAxis(transform, rx);
-  transform = rotateAroundYAxis(transform, ry);
-  transform = rotateAroundZAxis(transform, rz);
-
-  // Check if the a axis of the new frame is parallel to the b axis of the previous frame
-  return Math.abs(transform[a][b]) === 1;
-}
-
-function createVector(point1, point2) {
-  const x = point2[0] - point1[0];
-  const y = point2[1] - point1[1];
-  const z = point2[2] - point1[2];
-
-  return [x, y, z];
-}
-
-// For Learning Direction Vector https://www.youtube.com/watch?v=R5r1IH2hII8
-// For Learing intersections https://www.youtube.com/watch?v=N-qUfr-rz_Y
-function xIntersectsZ(dx, dy, dz, rx_deg, ry_deg, rz_deg) {
-  // Convert rotations from degrees to radians
-  const rx = (rx_deg * Math.PI) / 180;
-  const ry = (ry_deg * Math.PI) / 180;
-  const rz = (rz_deg * Math.PI) / 180;
-
-  // Create 4x4 transformation matrix using the rotations and offsets
-  let transform = [
-    [1, 0, 0, dx],
-    [0, 1, 0, dy],
-    [0, 0, 1, dz],
-    [0, 0, 0, 1],
-  ];
-
-  // Apply rotations to the matrix
-  transform = rotateAroundXAxis(transform, rx);
-  transform = rotateAroundYAxis(transform, ry);
-  transform = rotateAroundZAxis(transform, rz);
-
-  const xP1 = [dx, dy, dz];
-  const xP2 = [transform[0][0] + dx, transform[1][0] + dy, transform[2][0] + dz];
-
-  const zP1 = [0, 0, 0];
-  const zP2 = [0, 0, 1];
-
-  // TODO use ours instead of maths
-  return intersect(xP1, xP2, zP1, zP2);
 }
 
 const validate = (value, values, { formApi, scope }) => {
@@ -222,7 +62,7 @@ const validate = (value, values, { formApi, scope }) => {
   // console.log('WTF', 'MoeBack', moveBack, 'MoeBackBy', moveBackBy, 'XYZ', x, y, z);
 
   // The X axis must be perpendicular to the Z axis of the frame before it
-  if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 2, 0)) {
+  if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 'x', 'z')) {
     return 'X axis must be perpendicular to the previous z axis';
   }
 
@@ -260,7 +100,7 @@ const FrameInfo = () => {
   if (scope === 'frames[0]') return null;
 
   // 2 2 = z z see function definition for more details
-  const zsParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 2, 2);
+  const zsParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'z', 'z');
 
   return (
     <div>
