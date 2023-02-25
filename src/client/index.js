@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import App from './components/App/App.js';
 import AppProvider from './providers/AppProvider.js';
 import SimulateProvider from './providers/SimulateProvider.js';
@@ -27,7 +27,8 @@ import '@spectrum-css/sidenav/dist/index-vars.css';
 
 import './index.css';
 
-render(
+const rootElement = document.getElementById('root');
+ReactDOM.render(
   <AppProvider>
     <Informed>
       <ControlProvider>
@@ -39,5 +40,5 @@ render(
       </ControlProvider>
     </Informed>
   </AppProvider>,
-  document.getElementById('root')
+  rootElement
 );

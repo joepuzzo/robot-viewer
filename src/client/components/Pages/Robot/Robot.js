@@ -227,6 +227,7 @@ export const Robot = () => {
       </h3>
       <Control controlRef={controlRef} virtualCam={virtualCam} />
       <br />
+      {/* WIDTH {window.innerWidth} / HEIGHT {window.innerHeight} */}
       <Info />
       <Canvas
       // camera={{
@@ -246,7 +247,7 @@ export const Robot = () => {
           far={10000}
           near={0.1}
           position={[70, 80, 70]}
-          zoom={1.2}
+          zoom={window.innerWidth < 780 ? 0.9 : 1.2}
         />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />

@@ -130,19 +130,10 @@ const Joint = ({
 
   return (
     <group position={[x, y, z]}>
-      {/* <Text
-        color="white" // default
-        anchorX="center" // default
-        anchorY="middle" // default
-        position={[0, -10, 0]}
-        scale={[40, 40, 40]}
-      >
-        {prefix} {JSON.stringify(moveBackPos)}
-      </Text> */}
-      {base ? (
+      <If condition={base}>
         <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
-      ) : null}
-      {moveBack ? (
+      </If>
+      <If condition={moveBack}>
         <group position={moveBackPos}>
           <animated.group rotation={rotation1}>
             <animated.group rotation={rotation2}>
@@ -160,7 +151,7 @@ const Joint = ({
             </animated.group>
           </animated.group>
         </group>
-      ) : null}
+      </If>
       <animated.group rotation={rotation1}>
         <animated.group rotation={rotation2}>
           <animated.group rotation={rotation3}>
@@ -196,7 +187,9 @@ const Joint = ({
                 values={values}
               />
             </If>
-            {error ? <ErrorBall /> : null}
+            <If condition={error}>
+              <ErrorBall />
+            </If>
           </animated.group>
         </animated.group>
       </animated.group>
@@ -251,7 +244,6 @@ export const Builder = () => {
   return (
     <>
       {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
-
       <Canvas>
         <PerspectiveCamera
           ref={virtualCam}
