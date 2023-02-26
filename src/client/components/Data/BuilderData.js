@@ -61,8 +61,6 @@ export const BuilderData = () => {
             // alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
             const alpha = n.r1;
 
-            // TODO we cant assume what to offset the r by, we need to determine what the previous frames parallel line is ( might be y )
-
             // r  = look at distance between center of two frames along the `Xn` direction
             let r = 0;
 
