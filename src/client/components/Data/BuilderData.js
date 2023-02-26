@@ -6,7 +6,7 @@ import { isParallel } from '../../utils/frame';
 export const BuilderData = () => {
   const { values } = useFormState();
 
-  const { frames } = values;
+  const { frames, base } = values;
 
   // ---------- Time for Denavit Hartenberg!!!!! ----------
   // https://youtu.be/4WRhVqQaZTE
@@ -77,6 +77,9 @@ export const BuilderData = () => {
 
             // d = look at the distance between center of two fames along `Zn-1` direction.
             let d = n.moveBack === 'z' ? n.z + n.moveBackBy : n.z;
+
+            // If there is a base distance add that too d of the second itteration
+            if (base && i === 1) d += base;
 
             // If the previous frame was moved add that on
             if (nMinus1.moveBack === 'x') {
