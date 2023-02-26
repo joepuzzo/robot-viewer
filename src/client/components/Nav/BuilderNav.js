@@ -373,6 +373,18 @@ export const BuilderNav = () => {
               defaultValue={6 / DEFAULT_VALUE.length}
               step={0.1}
             />
+            <InputSlider
+              name="gridSize"
+              initialValue={100}
+              label="Grid Size"
+              type="number"
+              minValue={0}
+              maxValue={300}
+              step={10}
+            />
+
+            <br />
+            <Switch name="mainGrid" label="Main Grid" initialValue={false} />
             <br />
             <Switch name="showPlanes" label="Show Planes" initialValue={false} />
             <br />
@@ -383,6 +395,16 @@ export const BuilderNav = () => {
             <Switch name="showLinks" label="Show Links" initialValue={false} />
             <br />
             <hr />
+            <InputSlider
+              name="base"
+              label="Base"
+              type="number"
+              minValue={0}
+              maxValue={100}
+              step={0.1}
+              trackGradient="black"
+              initialValue={0}
+            />
             <If condition={values.frames}>
               <>
                 {values.frames &&

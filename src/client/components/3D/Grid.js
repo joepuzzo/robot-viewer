@@ -52,6 +52,7 @@ export default function Grid({
   shift,
   axisLabel,
   showJoint,
+  base,
 }) {
   return (
     <group>
@@ -179,9 +180,9 @@ export default function Grid({
               transparent={!showJoint}
             />
           </mesh>
-          <If condition={showJoint}>
-            <mesh position={[0, -3.75, 0]}>
-              <cylinderGeometry args={[5, 5, 2.5, 32]} />
+          <If condition={showJoint && (base == null || base > 2.5)}>
+            <mesh position={[0, base ? -base / 2 - 1.25 : -3.75, 0]}>
+              <cylinderGeometry args={[5, base ? 10 : 5, base ? base - 2.5 : 2.5, 32]} />
               <meshStandardMaterial color="rgb(54, 54, 54)" />
             </mesh>
           </If>

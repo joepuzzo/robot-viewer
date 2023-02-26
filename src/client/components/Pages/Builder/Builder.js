@@ -129,7 +129,7 @@ const Joint = ({
   }
 
   return (
-    <group position={[x, y, z]}>
+    <group position={[x, y, z + (base ?? 0)]}>
       <If condition={base}>
         <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
       </If>
@@ -165,6 +165,7 @@ const Joint = ({
               hidePosatives={!showArrows}
               showCylinder={frameType == 'rotary' && showCylinder}
               showJoint={showLinks}
+              base={base}
             />
             <If condition={v && showLinks}>
               <mesh rotation={linkRotation} position={linkPosition}>
@@ -229,7 +230,8 @@ export const Builder = () => {
   const position = [values?.cameraX, values?.cameraY, values?.cameraZ];
   const cameraZoom = values?.cameraZoom;
 
-  const { showPlanes, showArrows, showCylinder, jointGrid, showLinks } = values;
+  const { showPlanes, showArrows, showCylinder, jointGrid, showLinks, mainGrid, gridSize, base } =
+    values;
 
   // This will zoom out and re pos the camera view when we add frames
   useEffect(() => {
@@ -264,6 +266,7 @@ export const Builder = () => {
         <directionalLight position={[-2, 5, 2]} intensity={1} />
         <Suspense fallback={null}>
           <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, 0, 0]}>
+            {mainGrid ? <Grid size={gridSize} showArrows shift /> : null}
             {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
             {frames ? (
               <Joint
@@ -272,7 +275,7 @@ export const Builder = () => {
                 error={frameErrors[0]}
                 frames={frames.slice(1, frames.length)}
                 frameErrors={frameErrors.slice(1, frameErrors.length)}
-                base
+                base={base}
                 showPlanes={showPlanes}
                 showArrows={showArrows}
                 showCylinder={showCylinder}
