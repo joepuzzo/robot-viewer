@@ -7,8 +7,6 @@ import Grid from './Grid';
 import { toRadians } from '../../../lib/toRadians';
 import { toDeg } from '../../../lib/toDeg';
 import ArmContext from '../../context/ArmContext';
-import { If } from '../Shared/If';
-import { Joint } from './Joint';
 
 function useDrag(onDrag, onStart, onEnd, toggle) {
   const active = React.useRef(false);
@@ -457,8 +455,6 @@ export function Arm({
   values,
   formApi,
   toggleOrbital,
-  errors,
-  initialValues,
 }) {
   const {
     jointGrid,
@@ -474,11 +470,26 @@ export function Arm({
     showCylinder,
   } = values;
 
-  const frames = initialValues?.frames || [];
-  const frameErrors = errors?.frames || [];
-
   const { updateMotion } = simulateController;
   const { simulating } = simulateState;
+
+  const j0 = toRadians(values.j0);
+  const j1 = toRadians(values.j1);
+  const j2 = toRadians(values.j2);
+  const j3 = toRadians(values.j3);
+  const j4 = toRadians(values.j4);
+  const j5 = toRadians(values.j5);
+
+  // Take off extras
+  const base = values.base - 2.5;
+  const x0 = values.x0;
+  const y0 = values.y0;
+  const v0 = values.v0 - 7.5;
+  const v1 = values.v1 - 10;
+  const v2 = values.v2 - 7.5;
+  const v3 = values.v3 - 7.5;
+  const v4 = values.v4 - 7.5;
+  const v5 = values.v5 - 2.5;
 
   // const jointGrid = false;
   const vertexGrid = false;
@@ -505,17 +516,155 @@ export function Arm({
         {/* <group position={[gridSize / 2 - 10, -gridSize / 2, 0]}>
           <Grid size={10} showArrows hideNegatives showPlanes={false} />
         </group> */}
-        <If condition={frames && frames[0]}>
-          <Joint
-            index={0}
-            value={frames[0]}
-            error={frameErrors[0]}
-            frames={frames.slice(1, frames.length)}
-            frameErrors={frameErrors.slice(1, frameErrors.length)}
-            values={values}
-            base={values.base}
-          />
-        </If>
+        <Component
+          name="base"
+          position={[0, 0, base / 2]}
+          args={[5, 10, base, 32]}
+          rotation={[Math.PI * 0.5, 0, 0]}
+          actual={values.base}
+        >
+          <Component
+            name="j0"
+            args={[5, 5, 5, 32]}
+            error={outside(j0, config.rangej0)}
+            rotation={[Math.PI * 0.5, 0, 0]}
+            jointRotation={[0, 0, j0]}
+            position={[0, 0, base / 2 + 2.5]}
+            grid={jointGrid}
+            updateMotion={updateMotion}
+          >
+            <Component
+              name="v0"
+              radius={0.1}
+              actual={values.v0}
+              args={[5, 5, v0, 32]}
+              position={[0, 0, v0 / 2 + 2.5]}
+              rotation={[Math.PI * 0.5, 0, 0]}
+              grid={vertexGrid}
+              lineColor="red"
+              lineOffset1={0}
+              linkColor={linkColor}
+              xOffset={x0}
+              yOffset={y0}
+            >
+              <Component
+                name="j1"
+                jointRotation={[Math.PI * 0.5, 0, j1]}
+                rotation={[Math.PI * -0.5, 0, 0]}
+                args={[5, 5, 5, 32]}
+                position={[x0, y0, v0 / 2 + 5]}
+                grid={jointGrid}
+                error={outside(j1, config.rangej1)}
+                updateMotion={updateMotion}
+              >
+                <Component
+                  name="v1"
+                  rotation={[0, 0, 0]}
+                  args={[5, 5, v1, 32]}
+                  position={[0, v1 / 2 + 5, 0]}
+                  doubleV
+                  grid={vertexGrid}
+                  actual={values.v1}
+                  lineColor="green"
+                  lineOffset1={0}
+                  lineOffset2={0}
+                  linkColor={linkColor}
+                  yOffset={y0}
+                >
+                  <Component
+                    name="j2"
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    jointRotation={[0, 0, j2 + Math.PI * 0.5]}
+                    args={[5, 5, 5, 32]}
+                    position={[0, v1 / 2 + 5, 0]}
+                    grid={jointGrid}
+                    error={outside(j2, config.rangej2)}
+                    updateMotion={updateMotion}
+                  >
+                    <Component
+                      name="v2"
+                      rotation={[0, 0, Math.PI * 0.5]}
+                      args={[5, 5, v2, 32]}
+                      position={[v2 / 2 + 5, 0, 0]}
+                      grid={vertexGrid}
+                      actual={values.v2}
+                      lineColor="blue"
+                      linkColor={linkColor}
+                      lineOffset1={1.25}
+                      lineOffset2={1.25}
+                    >
+                      <Component
+                        name="j3"
+                        jointRotation={[-Math.PI * 0.5, Math.PI * 0.5, j3]}
+                        rotation={[Math.PI * 0.5, 0, 0]}
+                        args={[5, 5, 5, 32]}
+                        position={[v2 / 2 + 2.5, 0, 0]}
+                        grid={jointGrid}
+                        error={outside(j3, config.rangej3)}
+                        updateMotion={updateMotion}
+                      >
+                        <Component
+                          name="v3"
+                          rotation={[Math.PI * 0.5, 0, 0]}
+                          args={[5, 5, v3, 32]}
+                          position={[0, 0, v3 / 2 + 2.5]}
+                          grid={vertexGrid}
+                          actual={values.v3}
+                          lineColor="orange"
+                          linkColor={linkColor}
+                        >
+                          <Component
+                            name="j4"
+                            rotation={[Math.PI * 0.5, 0, 0]}
+                            jointRotation={[Math.PI * 0.5, 0, j4]}
+                            args={[5, 5, 5, 32]}
+                            position={[0, 0, v3 / 2 + 5]}
+                            grid={jointGrid}
+                            error={outside(j4, config.rangej4)}
+                            updateMotion={updateMotion}
+                          >
+                            <Component
+                              name="v4"
+                              rotation={[Math.PI, 0, 0]}
+                              args={[5, 5, v4, 32]}
+                              position={[0, v4 / 2 + 5, 0]}
+                              grid={vertexGrid}
+                              actual={values.v4}
+                              lineColor="purple"
+                              linkColor={linkColor}
+                            >
+                              <Component
+                                name="j5"
+                                rotation={[Math.PI * 0.5, 0, 0]}
+                                jointRotation={[-Math.PI * 0.5, 0, j5]}
+                                args={[5, 5, 5, 32]}
+                                position={[0, v4 / 2 + 2.5, 0]}
+                                error={outside(j5, config.rangej5)}
+                                grid={jointGrid}
+                                updateMotion={updateMotion}
+                              >
+                                <Tool
+                                  name="tool"
+                                  rotation={[Math.PI * 0.5, 0, 0]}
+                                  args={[0.5, 0.5, v5, 32]}
+                                  position={[0, 0, v5 / 2 + 2.5]}
+                                  grid
+                                  actual={values.v5}
+                                  lineOffset1={-1.25}
+                                  lineOffset2={-1.25}
+                                />
+                              </Component>
+                            </Component>
+                          </Component>
+                        </Component>
+                      </Component>
+                    </Component>
+                  </Component>
+                </Component>
+              </Component>
+            </Component>
+          </Component>
+        </Component>
         <Pos
           name="pos"
           args={[3, 30, 30]}

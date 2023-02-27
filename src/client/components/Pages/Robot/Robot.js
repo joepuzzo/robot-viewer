@@ -4,7 +4,7 @@ import Graphic from '@spectrum-icons/workflow/Graphic';
 import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
-import { Arm } from '../../3D/Arm';
+import { Arm } from '../../3D/ArmOld';
 import { Canvas, useThree } from '@react-three/fiber';
 import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
@@ -190,7 +190,7 @@ function Info() {
 export const Robot = () => {
   const { config, orbitEnabled, toggleOrbital, orbitControl, cameraControl } = useApp();
 
-  const { values } = useFormState();
+  const { values, errors, initialValues } = useFormState();
   const formApi = useFormApi();
   const simulateController = useSimulateController();
   const robotController = useRobotController();
@@ -259,6 +259,8 @@ export const Robot = () => {
             robotController={robotController}
             config={config}
             values={values}
+            errors={errors}
+            initialValues={initialValues}
             formApi={formApi}
             toggleOrbital={toggleOrbital}
           />

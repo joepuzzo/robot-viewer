@@ -748,6 +748,14 @@ export const RobotNav = () => {
             <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={true} />
             <br />
+            <Switch name="showLinks" label="Show Links" initialValue={true} />
+            <br />
+            <Switch name="showCylinder" label="Show Joints" initialValue={true} />
+            <br />
+            <Switch name="showLines" label="Show Lines" initialValue={true} />
+            <br />
+            <Switch name="showArrows" label="Show Arrows" initialValue={true} />
+            <br />
             <Switch name="jointGrid" label="Joint Grids" />
             <br />
             <Switch name="hide" label="Hide Robot" initialValue={false} />
@@ -757,10 +765,6 @@ export const RobotNav = () => {
             <Switch name="hideNegatives" label="Hide Nagatives" />
             <br />
             <Switch name="showPlanes" label="Show Planes" initialValue={false} />
-            <br />
-            <Switch name="showArrows" label="Show Arrows" initialValue={true} />
-            <br />
-            <Switch name="showCylinder" label="Show Joints" initialValue={false} />
             <br />
             <hr />
             <h2>Robot Config</h2>
