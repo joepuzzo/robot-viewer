@@ -170,25 +170,6 @@ const Joint = ({
         }
       }
 
-      // if (v && frames[0].z) {
-      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 7.5 : v - 7.5;
-      //   linkRotation = [Math.PI / 2, 0, 0];
-      //   linkPosition = [0, 0, v / 2 + 2.5];
-      // } else if (v && frames[0].x) {
-      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 7.5;
-      //   linkRotation = [Math.PI / 2, 0, Math.PI / 2];
-      //   linkPosition = [v / 2 + 5, 0, 0];
-      //   v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
-      // } else if (v && frames[0].y) {
-      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 10;
-      //   linkRotation = [0, 0, 0];
-      //   linkPosition = [0, v / 2 + 5, 0];
-      //   v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
-      // }
-
       // We are the second to last frame
       // if (!frames[1]) {
       //   v = v - 5;
