@@ -8,6 +8,7 @@ import { useFieldState, useFormApi, useFormState } from 'informed';
 import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 import { If } from '../../Shared/If';
+import { isParallel, isPerpendicular } from '../../../utils/frame';
 
 const ErrorBall = () => {
   return (
@@ -91,7 +92,7 @@ const Joint = ({
     // },
   });
 
-  const { linkPosition, linkRotation, moveBackPos, v } = useMemo(() => {
+  const { linkPosition, linkRotation, moveBackPos, v, along } = useMemo(() => {
     const moveBackPos = [0, 0, 0];
 
     if (moveBack === 'x') moveBackPos[0] = moveBackPos[0] + moveBackBy;
@@ -103,37 +104,108 @@ const Joint = ({
     if (moveBack === 'z') moveBackPos[2] = moveBackPos[2] + moveBackBy;
     if (moveBack === '-z') moveBackPos[2] = moveBackPos[2] - moveBackBy;
 
-    // Get length to next frame
-    let v = frames[0] ? frames[0].z || frames[0].y || frames[0].x : null;
-
     let linkRotation = [0, 0, 0];
     let linkPosition = [0, 0, 0];
-    if (v && frames[0].z) {
-      // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      if (frames[0].frameType != 'stationary') v = v < 0 ? v + 7.5 : v - 7.5;
-      linkRotation = [Math.PI / 2, 0, 0];
-      linkPosition = [0, 0, v / 2 + 2.5];
-    } else if (v && frames[0].x) {
-      // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 7.5;
-      linkRotation = [Math.PI / 2, 0, Math.PI / 2];
-      linkPosition = [v / 2 + 5, 0, 0];
-      v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
-    } else if (v && frames[0].y) {
-      // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
-      if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 10;
-      linkRotation = [0, 0, 0];
-      linkPosition = [0, v / 2 + 5, 0];
-      v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
+
+    let v = null;
+    let along = null;
+    const n = frames[0];
+
+    // If we have a next frame
+    if (n) {
+      // Get length to next frame and along what axis
+      v = n.x;
+      along = 'x';
+      if (Math.abs(n.y) > Math.abs(v)) {
+        v = n.y;
+        along = 'y';
+      }
+      if (Math.abs(n.z) > Math.abs(v)) {
+        v = n.z;
+        along = 'z';
+      }
+
+      // link type () -- () OR [ ] -- [ ]
+      if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'z', 'z')) {
+        if (along === 'y') {
+          v = v < 0 ? v + 10 : v - 10;
+          const offset = v < 0 ? -5 : 5;
+          linkRotation = [0, 0, 0];
+          linkPosition = [0, v / 2 + offset, 0];
+        }
+        if (along === 'x') {
+          v = v < 0 ? v + 10 : v - 10;
+          const offset = v < 0 ? -5 : 5;
+          linkRotation = [0, 0, Math.PI / 2];
+          linkPosition = [v / 2 + offset, 0, 0];
+        }
+        // link type [ ] -- [ ]
+        if (along === 'z') {
+          v = v < 0 ? v + 5 : v - 5;
+          const offset = v < 0 ? -2.5 : 2.5;
+          linkRotation = [Math.PI / 2, 0, 0];
+          linkPosition = [0, 0, v / 2 + offset];
+        }
+      }
+      // link type [ ] -- ( ) OR ( ) -- [ ]
+      else {
+        v = v < 0 ? v + 7.5 : v - 7.5;
+        if (along === 'x') {
+          const offset = v < 0 ? -5 : 5;
+          linkRotation = [0, 0, Math.PI / 2];
+          linkPosition = [v / 2 + offset, 0, 0];
+        }
+        if (along === 'y') {
+          const offset = v < 0 ? -5 : 5;
+          linkRotation = [0, 0, 0];
+          linkPosition = [0, v / 2 + offset, 0];
+        }
+        if (along === 'z') {
+          const offset = v < 0 ? -2.5 : 2.5;
+          linkRotation = [Math.PI / 2, 0, 0];
+          linkPosition = [0, 0, v / 2 + offset];
+        }
+      }
+
+      // if (v && frames[0].z) {
+      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 7.5 : v - 7.5;
+      //   linkRotation = [Math.PI / 2, 0, 0];
+      //   linkPosition = [0, 0, v / 2 + 2.5];
+      // } else if (v && frames[0].x) {
+      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 7.5;
+      //   linkRotation = [Math.PI / 2, 0, Math.PI / 2];
+      //   linkPosition = [v / 2 + 5, 0, 0];
+      //   v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
+      // } else if (v && frames[0].y) {
+      //   // TODO subtract or add to v based on link type () -- ()  vs [ ] - ( )
+      //   if (frames[0].frameType != 'stationary') v = v < 0 ? v + 10 : v - 10;
+      //   linkRotation = [0, 0, 0];
+      //   linkPosition = [0, v / 2 + 5, 0];
+      //   v < 0 ? (linkPosition[0] += -10) : (linkPosition[0] += 0);
+      // }
+
+      // We are the second to last frame
+      // if (!frames[1]) {
+      //   v = v - 5;
+      // }
     }
 
-    // We are the second to last frame
-    if (!frames[1]) {
-      v = v - 5;
-    }
+    return { moveBackPos, linkRotation, linkPosition, v, along };
+  }, [
+    frames[0]?.z,
+    frames[0]?.y,
+    frames[0]?.x,
+    frames[0]?.frameType,
+    moveBack,
+    moveBackBy,
+    frames[0]?.r1,
+    frames[0]?.r2,
+    frames[0]?.r3,
+  ]);
 
-    return { moveBackPos, linkRotation, linkPosition, v };
-  }, [frames[0]?.z, frames[0]?.y, frames[0]?.x, frames[0]?.frameType, moveBack, moveBackBy]);
+  console.log('HERE', index, v, along, linkPosition);
 
   return (
     <group position={[x, y, z + (base ?? 0)]}>

@@ -83,6 +83,52 @@ let DEFAULT_VALUE = [
   },
 ];
 
+let PARALLEL_X = [
+  {
+    frameType: 'rotary',
+    r1: 90,
+    r2: 0,
+    r3: 90,
+    x: 0,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: 0,
+    r2: 0,
+    r3: 0,
+    x: 20,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+];
+
+let Parallel_Y = [
+  {
+    frameType: 'rotary',
+    r1: 90,
+    r2: 0,
+    r3: 0,
+    x: 0,
+    y: 0,
+    z: 0,
+    moveFrame: false,
+  },
+  {
+    frameType: 'rotary',
+    r1: 0,
+    r2: 0,
+    r3: 90,
+    x: 0,
+    y: 20,
+    z: 0,
+    moveFrame: false,
+  },
+];
+
 const FrameInfo = () => {
   const scope = useScope();
 
