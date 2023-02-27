@@ -54,6 +54,8 @@ export default function Grid({
   showJoint,
   base,
   transparentJoint,
+  endFrame,
+  hidePadding,
 }) {
   let opacity = !showJoint ? 0.5 : 1;
   if (transparentJoint) opacity = 0.02;
@@ -170,7 +172,7 @@ export default function Grid({
       {showPlanes ? <YZPlane size={size} shift={shift} /> : null}
       {showCylinder ? (
         <group rotation={[toRadians(90), 0, 0]}>
-          <If condition={showJoint}>
+          <If condition={showJoint && !endFrame && !hidePadding}>
             <mesh position={[0, 3.75, 0]}>
               <cylinderGeometry args={[5, 5, 2.5, 32]} />
               <meshStandardMaterial color="rgb(54, 54, 54)" transparent={true} opacity={opacity} />
@@ -184,7 +186,7 @@ export default function Grid({
               transparent={true}
             />
           </mesh>
-          <If condition={showJoint && (base == null || base > 2.5)}>
+          <If condition={showJoint && (base == null || base > 2.5) && !endFrame && !hidePadding}>
             <mesh position={[0, base ? -base / 2 - 1.25 : -3.75, 0]}>
               <cylinderGeometry args={[5, base ? 10 : 5, base ? base - 2.5 : 2.5, 32]} />
               <meshStandardMaterial color="rgb(54, 54, 54)" transparent={true} opacity={opacity} />

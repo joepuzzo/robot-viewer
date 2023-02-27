@@ -1,10 +1,10 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { OrbitControls, OrthographicCamera, PerspectiveCamera } from '@react-three/drei';
 import Graphic from '@spectrum-icons/workflow/Graphic';
 import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
-import { Arm } from '../../3D/ArmOld';
+import { Arm } from '../../3D/Arm';
 import { Canvas, useThree } from '@react-three/fiber';
 import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
@@ -74,10 +74,12 @@ const Control = ({ controlRef, virtualCam }) => {
       r3: 0,
       mainGrid: false,
       jointGrid: true,
-      hide: true,
+      hide: false,
       showCylinder: true,
       showArrows: true,
+      showLinks: false,
       hideNegatives: true,
+      showLines: true,
     });
 
     // Get pos
@@ -197,7 +199,7 @@ export const Robot = () => {
   const { endPosition } = useRobotKinematics();
   const simulateState = useSimulateState();
 
-  const { j0, j1, j2, j3, j4, j5 } = values;
+  const { j0, j1, j2, j3, j4, j5, v0, v1, v2, v3, v4, v5 } = values;
 
   const angles = [j0, j1, j2, j3, j4, j5];
 
@@ -210,6 +212,31 @@ export const Robot = () => {
   cameraControl.current = virtualCam;
 
   useOverFlowHidden();
+
+  // When a vertex length changes update the appropriate frame
+  const frames = useMemo(() => {
+    const frms = initialValues.frames;
+    for (let i = 1; i < frms.length; i++) {
+      const frame = frms[i];
+      // Get length to next frame and along what axis
+      let v = frame.x;
+      let along = 'x';
+      if (Math.abs(frame.y) > Math.abs(v)) {
+        v = frame.y;
+        along = 'y';
+      }
+      if (Math.abs(frame.z) > Math.abs(v)) {
+        v = frame.z;
+        along = 'z';
+      }
+      // Update that value to equal the vertex value
+      if (values[`v${i - 1}`]) {
+        frame[along] = v < 0 ? -values[`v${i - 1}`] : values[`v${i - 1}`];
+      }
+    }
+
+    return frms;
+  }, [v0, v1, v2, v3, v4, v5]);
 
   return (
     <>
@@ -260,9 +287,9 @@ export const Robot = () => {
             config={config}
             values={values}
             errors={errors}
-            initialValues={initialValues}
             formApi={formApi}
             toggleOrbital={toggleOrbital}
+            frames={frames}
           />
         </Suspense>
       </Canvas>

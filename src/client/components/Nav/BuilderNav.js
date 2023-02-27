@@ -361,7 +361,9 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
 };
 
 export const BuilderNav = () => {
-  const { values } = useFormState();
+  const { values, initialValues } = useFormState();
+
+  const defaultZoom = 6 / initialValues.frames.length;
 
   return (
     <>
@@ -416,7 +418,7 @@ export const BuilderNav = () => {
               type="number"
               minValue={0}
               maxValue={6}
-              defaultValue={6 / DEFAULT_VALUE.length}
+              defaultValue={defaultZoom}
               step={0.1}
             />
             <InputSlider
@@ -445,6 +447,16 @@ export const BuilderNav = () => {
             <Switch name="hide" label="Hide Robot" initialValue={false} />
             <br />
             <hr />
+            <InputSlider
+              name="endEffector"
+              label="End Effector"
+              type="number"
+              minValue={-100}
+              maxValue={100}
+              defaultValue={0}
+              step={1}
+              trackGradient="rgb(204, 44, 117)"
+            />
             <InputSlider
               name="base"
               label="Base"

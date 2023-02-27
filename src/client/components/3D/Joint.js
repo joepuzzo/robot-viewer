@@ -6,6 +6,7 @@ import { useSpring, animated } from '@react-spring/three';
 import { If } from '../Shared/If';
 import { isParallel } from '../../utils/frame';
 import { Line } from '@react-three/drei';
+import { toDeg } from '../../../lib/toDeg';
 
 const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
@@ -18,13 +19,47 @@ const ErrorBall = () => {
   );
 };
 
+/**
+ *
+ * @param {*} a angle in radians
+ * @param {*} [l, h] low and high
+ * @returns if its outside the bounds
+ */
+const outside = (a, [l, h]) => {
+  const deg = toDeg(a);
+  return deg < l || deg > h;
+};
+
 /* ------------------------------ Joint ------------------------------ */
-export const Joint = ({ index, value, error, frames, frameErrors, values, base }) => {
+export const Joint = ({
+  index,
+  value,
+  error,
+  frames,
+  frameErrors,
+  values,
+  base,
+  hidePadding,
+  config = {},
+  updateMotion,
+  simulating,
+}) => {
   const rot1 = value.r1;
   const rot2 = value.r2;
   const rot3 = value.r3;
   const { x, y, z, moveBack, moveBackBy, frameType } = value;
-  const { hide, showLines, showPlanes, showArrows, showCylinder, jointGrid, showLinks } = values;
+  const {
+    hide,
+    showLines,
+    showPlanes,
+    showArrows,
+    showCylinder,
+    jointGrid,
+    showLinks,
+    endEffector,
+    animate,
+    runOnRobot,
+  } = values;
 
   let { value: type } = useFieldState(`eulerType`);
   type = type ?? 'xyz';
@@ -72,13 +107,15 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
       clamp: true,
       tension: 70,
     },
-    // immediate: !animate,
-    // onStart: () => {
-    //   if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'move');
-    // },
-    // onRest: () => {
-    //   if (animate && !runOnRobot && simulating?.play) updateMotion(name, 'stop');
-    // },
+    immediate: !animate,
+    onStart: () => {
+      if (animate && !runOnRobot && simulating?.play && updateMotion)
+        updateMotion(`j${index}`, 'move');
+    },
+    onRest: () => {
+      if (animate && !runOnRobot && simulating?.play && updateMotion)
+        updateMotion(`j${index}`, 'stop');
+    },
   });
 
   const { linkPosition, linkRotation, moveBackPos, v, along } = useMemo(() => {
@@ -175,7 +212,9 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
 
   // console.log('HERE', index, v, along, linkPosition);
 
-  // const linkWidth = hide ? 1 : 5;
+  const lastFrame = !frames[0];
+
+  const rangeError = config[`rangej${index}`] && outside(jRotation, config[`rangej${index}`]);
 
   return (
     <group position={[x, y, z + (base ?? 0)]}>
@@ -216,8 +255,9 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
               showJoint={showLinks}
               base={base}
               transparentJoint={hide}
+              hidePadding={hidePadding}
             />
-            <If condition={frames[0] && v && showLinks}>
+            <If condition={frames[0] && v && showLinks && Math.abs(v) > 5}>
               <mesh rotation={linkRotation} position={linkPosition}>
                 <cylinderGeometry args={[5, 5, v, 32]} />
                 <meshStandardMaterial
@@ -229,7 +269,6 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
             </If>
             <If condition={frames[0] && v && showLines}>
               <Line
-                // rotation={linkRotation}
                 points={[
                   [0, 0, 0],
                   [frames[0]?.x, frames[0]?.y, frames[0]?.z],
@@ -237,6 +276,19 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
                 color={COLORS[index % COLORS.length]}
                 lineWidth={2}
               />
+            </If>
+            <If condition={endEffector && lastFrame}>
+              <Line
+                points={[
+                  [0, 0, 0],
+                  [0, 0, endEffector],
+                ]}
+                color="rgb(204, 44, 117)"
+                lineWidth={3}
+              />
+              <group position={[0, 0, endEffector]}>
+                <Grid size={10} hideNegatives showArrows showPlanes={false} lineWidth={4} />
+              </group>
             </If>
             <If condition={frames.length}>
               <Joint
@@ -251,9 +303,16 @@ export const Joint = ({ index, value, error, frames, frameErrors, values, base }
                 jointGrid={jointGrid}
                 showLinks={showLinks}
                 values={values}
+                config={config}
+                updateMotion={updateMotion}
+                simulating={simulating}
+                hidePadding={
+                  frames[0] &&
+                  Math.max(Math.abs(frames[0].x), Math.abs(frames[0].y), Math.abs(frames[0].z)) < 5
+                }
               />
             </If>
-            <If condition={error}>
+            <If condition={error || rangeError}>
               <ErrorBall />
             </If>
           </animated.group>

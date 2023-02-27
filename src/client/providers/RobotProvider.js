@@ -175,7 +175,7 @@ const RobotProvider = ({ children }) => {
 
   // Update forward
   const updateForward = () => {
-    const { j0, j1, j2, j3, j4, j5, base, v0, v1, v2, v3, v4, v5, x0 } =
+    const { j0, j1, j2, j3, j4, j5, base, v0, v1, v2, v3, v4, v5, x0, endEffector } =
       formApi.getFormState().values;
 
     const robotConfig = {
@@ -185,7 +185,7 @@ const RobotProvider = ({ children }) => {
       v3: v2,
       v4: v3,
       v5: v4,
-      v6: v5,
+      v6: v5 + endEffector,
       x0,
     };
 
@@ -216,7 +216,8 @@ const RobotProvider = ({ children }) => {
   // Update robot function
   const updateRobot = useCallback((x, y, z, r1, r2, r3, speed) => {
     // Get fixed values off of form state
-    const { base, v0, v1, v2, v3, v4, v5, x0, y0, runOnRobot } = formApi.getFormState().values;
+    const { base, v0, v1, v2, v3, v4, v5, x0, y0, runOnRobot, endEffector } =
+      formApi.getFormState().values;
 
     // We give in degrees so turn into rads
     const ro1 = toRadians(r1);
@@ -232,7 +233,7 @@ const RobotProvider = ({ children }) => {
       v3: v2,
       v4: v3,
       v5: v4,
-      v6: v5,
+      v6: v5 + endEffector,
       x0,
       y0,
       flip: configRef.current.flip,

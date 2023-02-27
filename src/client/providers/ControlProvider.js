@@ -29,7 +29,7 @@ const ControlProvider = ({ children }) => {
       v3: config.v2,
       v4: config.v3,
       v5: config.v4,
-      v6: config.v5,
+      v6: config.v5 + config.endEffector,
       flip: config.flip,
       x0: config.x0,
       y0: config.y0,

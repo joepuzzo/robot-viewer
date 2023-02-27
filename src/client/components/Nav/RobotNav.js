@@ -425,7 +425,7 @@ export const RobotNav = () => {
               options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
             />
             <br />
-            <RobotType />
+            <RobotType filter={(robot) => robot.frames && robot.frames.length > 6} />
             <br />
             <Switch
               name="robotAccel"
@@ -717,6 +717,16 @@ export const RobotNav = () => {
             />
             <InputSlider name="v5" label="V6" type="number" minValue={0} maxValue={100} step={1} />
             <InputSlider
+              name="endEffector"
+              label="End Effector"
+              type="number"
+              minValue={-100}
+              maxValue={100}
+              defaultValue={0}
+              step={1}
+              trackGradient="rgb(204, 44, 117)"
+            />
+            <InputSlider
               name="x0"
               label="X1"
               type="number"
@@ -754,7 +764,7 @@ export const RobotNav = () => {
             <br />
             <Switch name="showLines" label="Show Lines" initialValue={true} />
             <br />
-            <Switch name="showArrows" label="Show Arrows" initialValue={true} />
+            <Switch name="showArrows" label="Show Arrows" initialValue={false} />
             <br />
             <Switch name="jointGrid" label="Joint Grids" />
             <br />

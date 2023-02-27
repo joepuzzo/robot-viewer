@@ -6,7 +6,7 @@ import { isParallel } from '../../utils/frame';
 export const BuilderData = () => {
   const { values } = useFormState();
 
-  const { frames, base } = values;
+  const { frames, base, endEffector } = values;
 
   // ---------- Time for Denavit Hartenberg!!!!! ----------
   // https://youtu.be/4WRhVqQaZTE
@@ -78,6 +78,9 @@ export const BuilderData = () => {
 
             // If there is a base distance add that too d of the second itteration
             if (base && i === 1) d += base;
+
+            // If there is an end effector distance add that to the d of the last itteration
+            if (endEffector && i === frames.length - 1) d += endEffector;
 
             // If the previous frame was moved add that on
             if (nMinus1.moveBack === 'x') {

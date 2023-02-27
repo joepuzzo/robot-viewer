@@ -458,7 +458,7 @@ export function Arm({
   formApi,
   toggleOrbital,
   errors,
-  initialValues,
+  frames = [],
 }) {
   const {
     jointGrid,
@@ -474,7 +474,6 @@ export function Arm({
     showCylinder,
   } = values;
 
-  const frames = initialValues?.frames || [];
   const frameErrors = errors?.frames || [];
 
   const { updateMotion } = simulateController;
@@ -514,6 +513,9 @@ export function Arm({
             frameErrors={frameErrors.slice(1, frameErrors.length)}
             values={values}
             base={values.base}
+            config={config}
+            updateMotion={updateMotion}
+            simulating={simulating}
           />
         </If>
         <Pos
