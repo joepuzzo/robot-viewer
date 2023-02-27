@@ -440,6 +440,10 @@ export const BuilderNav = () => {
             <br />
             <Switch name="showLinks" label="Show Links" initialValue={false} />
             <br />
+            <Switch name="showLines" label="Show Lines" initialValue={false} />
+            <br />
+            <Switch name="hide" label="Hide Robot" initialValue={false} />
+            <br />
             <hr />
             <InputSlider
               name="base"

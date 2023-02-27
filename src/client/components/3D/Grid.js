@@ -53,7 +53,11 @@ export default function Grid({
   axisLabel,
   showJoint,
   base,
+  transparentJoint,
 }) {
+  let opacity = !showJoint ? 0.5 : 1;
+  if (transparentJoint) opacity = 0.02;
+
   return (
     <group>
       {!hidePosatives ? (
@@ -169,21 +173,21 @@ export default function Grid({
           <If condition={showJoint}>
             <mesh position={[0, 3.75, 0]}>
               <cylinderGeometry args={[5, 5, 2.5, 32]} />
-              <meshStandardMaterial color="rgb(54, 54, 54)" />
+              <meshStandardMaterial color="rgb(54, 54, 54)" transparent={true} opacity={opacity} />
             </mesh>
           </If>
           <mesh>
             <cylinderGeometry args={[5, 5, 5, 32]} />
             <meshStandardMaterial
               color={showJoint ? 'rgb(229, 149, 38)' : 'yellow'}
-              opacity={!showJoint ? 0.5 : 1}
-              transparent={!showJoint}
+              opacity={opacity}
+              transparent={true}
             />
           </mesh>
           <If condition={showJoint && (base == null || base > 2.5)}>
             <mesh position={[0, base ? -base / 2 - 1.25 : -3.75, 0]}>
               <cylinderGeometry args={[5, base ? 10 : 5, base ? base - 2.5 : 2.5, 32]} />
-              <meshStandardMaterial color="rgb(54, 54, 54)" />
+              <meshStandardMaterial color="rgb(54, 54, 54)" transparent={true} opacity={opacity} />
             </mesh>
           </If>
         </group>

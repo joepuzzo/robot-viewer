@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
+import { Line, OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import Grid from '../../3D/Grid';
 import { Canvas } from '@react-three/fiber';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
@@ -9,6 +9,8 @@ import { toRadians } from '../../../../lib/toRadians';
 import { useSpring, animated } from '@react-spring/three';
 import { If } from '../../Shared/If';
 import { isParallel, isPerpendicular } from '../../../utils/frame';
+
+const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
 const ErrorBall = () => {
   return (
@@ -37,6 +39,7 @@ const Joint = ({
   const rot2 = value.r2;
   const rot3 = value.r3;
   const { x, y, z, moveBack, moveBackBy, frameType } = value;
+  const { hide, showLines } = values;
 
   const { value: type } = useFieldState(`eulerType`);
 
@@ -205,14 +208,16 @@ const Joint = ({
     frames[0]?.r3,
   ]);
 
-  console.log('HERE', index, v, along, linkPosition);
+  // console.log('HERE', index, v, along, linkPosition);
+
+  // const linkWidth = hide ? 1 : 5;
 
   return (
     <group position={[x, y, z + (base ?? 0)]}>
       <If condition={base}>
         <Grid size={40} hideNegatives hidePosatives showArrows showPlanes={false} transparent />
       </If>
-      <If condition={moveBack}>
+      <If condition={moveBack && showArrows}>
         <group position={moveBackPos}>
           <animated.group rotation={rotation1}>
             <animated.group rotation={rotation2}>
@@ -245,12 +250,28 @@ const Joint = ({
               showCylinder={frameType == 'rotary' && showCylinder}
               showJoint={showLinks}
               base={base}
+              transparentJoint={hide}
             />
             <If condition={frames[0] && v && showLinks}>
               <mesh rotation={linkRotation} position={linkPosition}>
                 <cylinderGeometry args={[5, 5, v, 32]} />
-                <meshStandardMaterial color="rgb(54, 54, 54)" opacity={1} />
+                <meshStandardMaterial
+                  color="rgb(54, 54, 54)"
+                  opacity={hide ? 0.02 : 1}
+                  transparent
+                />
               </mesh>
+            </If>
+            <If condition={frames[0] && v && showLines}>
+              <Line
+                // rotation={linkRotation}
+                points={[
+                  [0, 0, 0],
+                  [frames[0]?.x, frames[0]?.y, frames[0]?.z],
+                ]}
+                color={COLORS[index % COLORS.length]}
+                lineWidth={2}
+              />
             </If>
             <If condition={frames.length}>
               <Joint
