@@ -1,4 +1,13 @@
-import { Cell, Column, Row, TableBody, TableHeader, TableView } from '@adobe/react-spectrum';
+import {
+  Cell,
+  Column,
+  Heading,
+  Row,
+  TableBody,
+  TableHeader,
+  TableView,
+  Text,
+} from '@adobe/react-spectrum';
 import { useFormState } from 'informed';
 import React from 'react';
 import { isParallel } from '../../utils/frame';
@@ -41,12 +50,12 @@ export const BuilderData = () => {
   return (
     <div>
       <h3>Denavit Hartenberg Table</h3>
-      <TableView aria-label="Motor Statuses" flex width="380px">
+      <TableView aria-label="Motor Statuses" flex>
         <TableHeader>
-          <Column>Theta</Column>
-          <Column>Alpha</Column>
-          <Column>R</Column>
-          <Column>D</Column>
+          <Column>θ</Column>
+          <Column>α</Column>
+          <Column>r</Column>
+          <Column>d</Column>
         </TableHeader>
         <TableBody>
           {frames.map((frame, i) => {
@@ -102,6 +111,77 @@ export const BuilderData = () => {
           })}
         </TableBody>
       </TableView>
+      {/* <img src="static/DenavitHartenberg.png" alt="Denavit Hartenberg" width="100%" /> */}
+      <div>
+        <Heading>Denavit Hartenberg Parameters</Heading>
+        <Text>
+          <strong>θ</strong> = rotation around <code>Zn-1</code> that is required to get axis{' '}
+          <code>Xn-1</code> to match <code>Xn</code> ( rotate frame n-1 )
+        </Text>
+        <br />
+        <br />
+        <Text>
+          <strong>α</strong> = rotation around <code>Xn</code> that is required to get axis{' '}
+          <code>Zn-1</code> to match axis <code>Zn</code> ( rotate frame n-1 )
+        </Text>
+        <br />
+        <br />
+        <Text>
+          <strong>r</strong> = look at distance between center of two frames along the{' '}
+          <code>Xn</code> direction
+        </Text>
+        <br />
+        <br />
+        <Text>
+          <strong>d</strong> = look at the distance between center of two fames along{' '}
+          <code>Zn-1</code> direction.
+        </Text>
+      </div>
+      <br />
+      <div>
+        <Heading>Denavit Hartenberg Transformation Matrix</Heading>
+        <TableView aria-label="Motor Statuses" flex>
+          <TableHeader>
+            <Column>Xn</Column>
+            <Column>Yn</Column>
+            <Column>Zn</Column>
+            <Column>D</Column>
+          </TableHeader>
+          <TableBody>
+            <Row>
+              <Cell>cos(θ)</Cell>
+              <Cell>-sin(θ) * cos(α)</Cell>
+              <Cell>sin(θ) * sin(α)</Cell>
+              <Cell>r * cos(θ)</Cell>
+            </Row>
+            <Row>
+              <Cell>sin(θ)</Cell>
+              <Cell>cos(θ) * cos(α)</Cell>
+              <Cell>-cos(θ) * sin(α)</Cell>
+              <Cell>r * sin(θ)</Cell>
+            </Row>
+            <Row>
+              <Cell>0</Cell>
+              <Cell>sin(α)</Cell>
+              <Cell>cos(α)</Cell>
+              <Cell>d</Cell>
+            </Row>
+            <Row>
+              <Cell>0</Cell>
+              <Cell>0</Cell>
+              <Cell>0</Cell>
+              <Cell>1</Cell>
+            </Row>
+          </TableBody>
+        </TableView>
+      </div>
     </div>
   );
 };
+
+const table = [
+  ['cos(theta)', '-sin(theta) * cos(alpha)', 'sin(theta) * sin(alpha)', 'r * cos(theta)'],
+  ['sin(theta)', 'cos(theta) * cos(alpha)', '-cos(theta) * sin(alpha)', 'r * sin(theta)'],
+  ['0', 'sin(alpha)', 'cos(alpha)', 'd'],
+  ['0', '0', '0', '1'],
+];

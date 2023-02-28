@@ -105,12 +105,13 @@ export const buildHomogeneousDenavitForTable = (pt) => {
  * sin(d90) = 1
  * sin(0) = 0
  */
-const generateSin = (a) => {
-  let sinA = `Math.sin(${a})`;
-  if (a === 'd90') {
+const generateSin = (a, type) => {
+  let sinA = type == 'js' ? `Math.sin(${a})` : `sin(${a})`;
+
+  if (a === 'd90' || a == '90') {
     sinA = '1';
   }
-  if (a === '-d90') {
+  if (a === '-d90' || a == '-90') {
     sinA = '-1';
   }
   if (a === '0') {
@@ -123,9 +124,9 @@ const generateSin = (a) => {
  * cos(d90) = 0
  * cos(0) = 1
  */
-const generateCos = (a) => {
-  let cosA = `Math.cos(${a})`;
-  if (a === 'd90' || a == '-d90') {
+const generateCos = (a, type) => {
+  let cosA = type == 'js' ? `Math.cos(${a})` : `cos(${a})`;
+  if (a === 'd90' || a == '-d90' || a == '90' || a == '-90') {
     cosA = '0';
   }
   if (a === '0') {
@@ -176,7 +177,7 @@ const checkParameters = (a, b) => {
  * @param {*} row
  * @returns
  */
-export const buildHomogeneousDenavitStringForRow = (row) => {
+export const buildHomogeneousDenavitStringForRow = (row, type = 'js') => {
   // Get variables for this row
   const theta = row[0];
   const alpha = row[1];
@@ -186,12 +187,12 @@ export const buildHomogeneousDenavitStringForRow = (row) => {
   // sin(d90)  = 1
   // sin(-d90) = -1
   // sin(0)    = 0
-  let sinAlpha = generateSin(alpha);
-  let sinTheta = generateSin(theta);
+  let sinAlpha = generateSin(alpha, type);
+  let sinTheta = generateSin(theta, type);
 
   // cost(d90) = 0;
-  let cosAlpha = generateCos(alpha);
-  let cosTheta = generateCos(theta);
+  let cosAlpha = generateCos(alpha, type);
+  let cosTheta = generateCos(theta, type);
 
   // checkParameters(sinTheta, cosAlpha)
   // equals
@@ -220,9 +221,9 @@ export const buildHomogeneousDenavitStringForRow = (row) => {
  * @param {*} pt
  * @returns
  */
-export const buildHomogeneousDenavitStringForTable = (pt) => {
+export const buildHomogeneousDenavitStringForTable = (pt, type = 'js') => {
   // Build individual matricies
-  const homogeneousMatriceis = pt.map((row) => buildHomogeneousDenavitStringForRow(row));
+  const homogeneousMatriceis = pt.map((row) => buildHomogeneousDenavitStringForRow(row, type));
 
   // Matrix multiply them all
   // [h0_1,h1_2,h2_3,h3_4 ...]

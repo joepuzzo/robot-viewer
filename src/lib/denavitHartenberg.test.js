@@ -76,6 +76,33 @@ describe('denavitHartenberg', () => {
       expect(endRotation).toEqual(expectedEndRotation);
     });
 
+    it('should build rotation transformation matrix from given P Table when default type is passed', () => {
+      // Note: this is the H3_6 P table for my kinematics
+      const PT = [
+        ['t4', 'd90', '0', 'v2 + v3'],
+        ['t5', '-d90', '0', '0'],
+        ['t6', '0', '0', 'v4 + v5'],
+      ];
+
+      const { endRotation } = buildHomogeneousDenavitStringForTable(PT, 'default');
+
+      const expectedEndRotation = [
+        [
+          'cos(t4) * cos(t5) * cos(t6) + -sin(t4) * sin(t6)',
+          'cos(t4) * cos(t5) * -sin(t6) + -sin(t4) * cos(t6)',
+          'cos(t4) * -sin(t5)',
+        ],
+        [
+          'sin(t4) * cos(t5) * cos(t6) + cos(t4) * sin(t6)',
+          'sin(t4) * cos(t5) * -sin(t6) + cos(t4) * cos(t6)',
+          'sin(t4) * -sin(t5)',
+        ],
+        ['sin(t5) * cos(t6)', 'sin(t5) * -sin(t6)', 'cos(t5)'],
+      ];
+
+      expect(endRotation).toEqual(expectedEndRotation);
+    });
+
     it('should build rotation transformation matrix from given P Table', () => {
       // prettier-ignore
       // Note: this is the H3_6 P table for the UR robot

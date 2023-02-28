@@ -7,6 +7,7 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import useApp from '../../../hooks/useApp';
 import { Joint } from '../../3D/Joint';
 import { If } from '../../Shared/If';
+import { Info } from './Info';
 
 const Control = ({ controlRef, virtualCam }) => {
   const reset = () => {
@@ -53,8 +54,16 @@ export const Builder = () => {
   }, [frames, frames?.length]);
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        marginRight: '200px',
+      }}
+    >
       {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
+      <Info />
       <Canvas>
         <PerspectiveCamera
           ref={virtualCam}
@@ -91,6 +100,6 @@ export const Builder = () => {
           </group>
         </Suspense>
       </Canvas>
-    </>
+    </div>
   );
 };

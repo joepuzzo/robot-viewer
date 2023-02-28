@@ -16,8 +16,14 @@ export const Data = () => {
 
   useOutsideAlerter(() => closeNav(), navRef);
 
+  let location = useLocation();
+  const wide = location.pathname.includes('builder');
+
   return (
-    <nav className={`databar ${navOpen ? 'databar-visible' : ''}`} ref={navRef}>
+    <nav
+      className={`databar ${wide ? 'databar-wide' : ''} ${navOpen ? 'databar-visible' : ''}`}
+      ref={navRef}
+    >
       <Routes>
         <Route path="/" element={<RobotData />} />
         <Route path="/motor" element={<MotorData />} />

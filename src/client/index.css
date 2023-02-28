@@ -133,6 +133,10 @@ main.extra {
   transition: width 0.2s;
 }
 
+.databar-wide {
+  width: 600px;
+}
+
 @media (max-width: 1200px) {
   .databar {
     z-index: 100;
