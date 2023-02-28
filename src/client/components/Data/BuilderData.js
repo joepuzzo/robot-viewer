@@ -9,8 +9,115 @@ import {
   Text,
 } from '@adobe/react-spectrum';
 import { useFormState } from 'informed';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { buildHomogeneousDenavitStringForTable } from '../../../lib/denavitHartenberg';
 import { isParallel } from '../../utils/frame';
+
+const TransformationMatricies = ({ pTable }) => {
+  if (pTable.length === 0) return null;
+
+  const { homogeneousMatriceis, rotationalMatricies, endHomogeneous, endRotation } =
+    buildHomogeneousDenavitStringForTable(pTable, 'default');
+
+  return (
+    <>
+      {homogeneousMatriceis.map((matrix, i) => {
+        return (
+          <>
+            <h4>{`H${i}_${i + 1}`}</h4>
+            <TableView flex>
+              <TableHeader>
+                <Column>X</Column>
+                <Column>Y</Column>
+                <Column>Z</Column>
+                <Column>D</Column>
+              </TableHeader>
+              <TableBody>
+                {matrix.map((row) => (
+                  <Row>
+                    <Cell>{row[0]}</Cell>
+                    <Cell>{row[1]}</Cell>
+                    <Cell>{row[2]}</Cell>
+                    <Cell>{row[3]}</Cell>
+                  </Row>
+                ))}
+              </TableBody>
+            </TableView>
+            <br />
+          </>
+        );
+      })}
+      <Heading>Final Transformation Matix</Heading>
+      <h4>H0_6</h4>
+      <TableView flex>
+        <TableHeader>
+          <Column>X</Column>
+          <Column>Y</Column>
+          <Column>Z</Column>
+          <Column>D</Column>
+        </TableHeader>
+        <TableBody>
+          {endHomogeneous.map((row) => (
+            <Row>
+              <Cell>{row[0]}</Cell>
+              <Cell>{row[1]}</Cell>
+              <Cell>{row[2]}</Cell>
+              <Cell>{row[3]}</Cell>
+            </Row>
+          ))}
+        </TableBody>
+      </TableView>
+    </>
+  );
+};
+
+const buildParameterTable = ({ frames, base, endEffector }) => {
+  const rows = [];
+  frames.forEach((frame, i) => {
+    // Dont do anything for first frame
+    if (i != 0) {
+      const n = frame;
+      const nMinus1 = frames[i - 1];
+
+      // theta = rotation around `Zn-1` that is required to get axis `Xn-1` to match `Xn` ( rotate frame n-1)
+      const theta = n.r3;
+      // alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
+      const alpha = n.r1;
+
+      // r  = look at distance between center of two frames along the `Xn` direction
+      let r = 0;
+
+      // If our x is parallel to the previous x
+      if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'x')) {
+        r = n.moveBack === 'x' ? n.x + n.moveBackBy : n.x;
+      }
+      // If our x is parallel to the previous y
+      if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y')) {
+        r = n.moveBack === 'y' ? n.y + n.moveBackBy : n.y;
+      }
+
+      // d = look at the distance between center of two fames along `Zn-1` direction.
+      let d = n.moveBack === 'z' ? n.z + n.moveBackBy : n.z;
+
+      // If there is a base distance add that too d of the second itteration
+      if (base && i === 1) d += base;
+
+      // If there is an end effector distance add that to the d of the last itteration
+      if (endEffector && i === frames.length - 1) d += endEffector;
+
+      // If the previous frame was moved add that on
+      if (nMinus1.moveBack === 'x') {
+        d = d + -nMinus1.moveBackBy;
+      }
+
+      if (nMinus1.moveBack === 'z') {
+        r = r + -nMinus1.moveBackBy;
+      }
+      rows.push([theta, alpha, r, d]);
+    }
+  });
+  return rows;
+};
 
 export const BuilderData = () => {
   const { values } = useFormState();
@@ -47,6 +154,8 @@ export const BuilderData = () => {
 
   if (!frames) return null;
 
+  const pTable = buildParameterTable({ frames, base, endEffector });
+
   return (
     <div>
       <h3>Denavit Hartenberg Table</h3>
@@ -58,47 +167,12 @@ export const BuilderData = () => {
           <Column>d</Column>
         </TableHeader>
         <TableBody>
-          {frames.map((frame, i) => {
-            // Dont do anything for first frame
-            if (i === 0) return null;
-
-            const n = frame;
-            const nMinus1 = frames[i - 1];
-
-            // theta = rotation around `Zn-1` that is required to get axis `Xn-1` to match `Xn` ( rotate frame n-1)
-            const theta = n.r3;
-            // alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
-            const alpha = n.r1;
-
-            // r  = look at distance between center of two frames along the `Xn` direction
-            let r = 0;
-
-            // If our x is parallel to the previous x
-            if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'x')) {
-              r = n.moveBack === 'x' ? n.x + n.moveBackBy : n.x;
-            }
-            // If our x is parallel to the previous y
-            if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y')) {
-              r = n.moveBack === 'y' ? n.y + n.moveBackBy : n.y;
-            }
-
-            // d = look at the distance between center of two fames along `Zn-1` direction.
-            let d = n.moveBack === 'z' ? n.z + n.moveBackBy : n.z;
-
-            // If there is a base distance add that too d of the second itteration
-            if (base && i === 1) d += base;
-
-            // If there is an end effector distance add that to the d of the last itteration
-            if (endEffector && i === frames.length - 1) d += endEffector;
-
-            // If the previous frame was moved add that on
-            if (nMinus1.moveBack === 'x') {
-              d = d + -nMinus1.moveBackBy;
-            }
-
-            if (nMinus1.moveBack === 'z') {
-              r = r + -nMinus1.moveBackBy;
-            }
+          {pTable.map((row, i) => {
+            // Get variables for this row
+            const theta = row[0];
+            const alpha = row[1];
+            const r = row[2];
+            const d = row[3];
 
             return (
               <Row key={`frame-${i}`}>
@@ -142,31 +216,38 @@ export const BuilderData = () => {
         <Heading>Denavit Hartenberg Transformation Matrix</Heading>
         <TableView aria-label="Motor Statuses" flex>
           <TableHeader>
-            <Column>Xn</Column>
-            <Column>Yn</Column>
-            <Column>Zn</Column>
+            {/* <Column showDivider width={10}>
+              {' '}
+            </Column> */}
+            <Column>X</Column>
+            <Column>Y</Column>
+            <Column>Z</Column>
             <Column>D</Column>
           </TableHeader>
           <TableBody>
             <Row>
+              {/* <Cell>Xn-1</Cell> */}
               <Cell>cos(θ)</Cell>
               <Cell>-sin(θ) * cos(α)</Cell>
               <Cell>sin(θ) * sin(α)</Cell>
               <Cell>r * cos(θ)</Cell>
             </Row>
             <Row>
+              {/* <Cell>Yn-1</Cell> */}
               <Cell>sin(θ)</Cell>
               <Cell>cos(θ) * cos(α)</Cell>
               <Cell>-cos(θ) * sin(α)</Cell>
               <Cell>r * sin(θ)</Cell>
             </Row>
             <Row>
+              {/* <Cell>Zn-1</Cell> */}
               <Cell>0</Cell>
               <Cell>sin(α)</Cell>
               <Cell>cos(α)</Cell>
               <Cell>d</Cell>
             </Row>
             <Row>
+              {/* <Cell> </Cell> */}
               <Cell>0</Cell>
               <Cell>0</Cell>
               <Cell>0</Cell>
@@ -175,13 +256,10 @@ export const BuilderData = () => {
           </TableBody>
         </TableView>
       </div>
+      <div>
+        <Heading>Homogeneous Transformation matriceis</Heading>
+        <TransformationMatricies pTable={pTable} />
+      </div>
     </div>
   );
 };
-
-const table = [
-  ['cos(theta)', '-sin(theta) * cos(alpha)', 'sin(theta) * sin(alpha)', 'r * cos(theta)'],
-  ['sin(theta)', 'cos(theta) * cos(alpha)', '-cos(theta) * sin(alpha)', 'r * sin(theta)'],
-  ['0', 'sin(alpha)', 'cos(alpha)', 'd'],
-  ['0', '0', '0', '1'],
-];
