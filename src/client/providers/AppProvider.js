@@ -60,7 +60,7 @@ const AppProvider = ({ children }) => {
     v4: 12.6,
     v5: 5,
     endEffector: 5,
-    x: 45,
+    x: 42,
     y: 10,
     z: 55,
     r1: 90,
