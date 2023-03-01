@@ -10,28 +10,50 @@ import {
 } from '@adobe/react-spectrum';
 import { useFormState } from 'informed';
 import React, { useMemo } from 'react';
-import { buildHomogeneousDenavitStringForTable } from '../../../lib/denavitHartenberg';
+import {
+  buildHomogeneousDenavitForTable,
+  buildHomogeneousDenavitStringForTable,
+} from '../../../lib/denavitHartenberg';
+import { cleanAndRoundMatrix } from '../../../lib/roundMatrix';
+import { round } from '../../../lib/round';
 import { isParallel } from '../../utils/frame';
+import { toRadians } from '../../../lib/toRadians';
 
 const TransformationMatricies = ({ pTable }) => {
   if (pTable.length === 0) return null;
 
+  const { values } = useFormState();
+
   // Add joint angle to p table
-  const newTable = JSON.parse(JSON.stringify(pTable));
-  newTable.forEach((row) => {
-    row[0] = `${row[0]} + θ`;
+  const table1 = JSON.parse(JSON.stringify(pTable));
+  table1.forEach((row, i) => {
+    const value = values[`j${i}`];
+    row[0] = `${row[0]} + ${value}`;
   });
 
-  const { homogeneousMatriceis, rotationalMatricies, endHomogeneous, endRotation } =
-    buildHomogeneousDenavitStringForTable(newTable, 'default');
+  const table2 = JSON.parse(JSON.stringify(pTable));
+  table2.forEach((row, i) => {
+    row[0] = toRadians(row[0] + values[`j${i}`]);
+    row[1] = toRadians(row[1]);
+  });
+
+  console.table(table2);
+
+  const result1 = buildHomogeneousDenavitStringForTable(table1, 'default');
+  const result2 = buildHomogeneousDenavitForTable(table2);
+
+  const roundedEndMatrix = cleanAndRoundMatrix(result2.endMatrix, (v) => round(v, 10));
 
   return (
     <>
-      {homogeneousMatriceis.map((matrix, i) => {
+      {result1.homogeneousMatriceis.map((matrix, i) => {
+        const value = values[`j${i}`];
         return (
           <>
-            <h4>{`H${i}_${i + 1}`}</h4>
-            <TableView flex>
+            <h4>
+              {`H${i}_${i + 1}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`θ = ${value}`}
+            </h4>
+            <TableView aria-label="Denavit Hartenberg Table" flex>
               <TableHeader>
                 <Column>X</Column>
                 <Column>Y</Column>
@@ -50,12 +72,31 @@ const TransformationMatricies = ({ pTable }) => {
               </TableBody>
             </TableView>
             <br />
+            {/* <TableView flex>
+              <TableHeader>
+                <Column>X</Column>
+                <Column>Y</Column>
+                <Column>Z</Column>
+                <Column>D</Column>
+              </TableHeader>
+              <TableBody>
+                {result2.matriceis[i].map((row) => (
+                  <Row>
+                    <Cell>{row[0]}</Cell>
+                    <Cell>{row[1]}</Cell>
+                    <Cell>{row[2]}</Cell>
+                    <Cell>{row[3]}</Cell>
+                  </Row>
+                ))}
+              </TableBody>
+            </TableView>
+            <br /> */}
           </>
         );
       })}
       <Heading>Final Transformation Matix</Heading>
       <h4>H0_6</h4>
-      <TableView flex>
+      <TableView flex aria-label="Denavit Hartenberg Table">
         <TableHeader>
           <Column>X</Column>
           <Column>Y</Column>
@@ -63,12 +104,14 @@ const TransformationMatricies = ({ pTable }) => {
           <Column>D</Column>
         </TableHeader>
         <TableBody>
-          {endHomogeneous.map((row) => (
+          {roundedEndMatrix.map((row, i) => (
             <Row>
               <Cell>{row[0]}</Cell>
               <Cell>{row[1]}</Cell>
               <Cell>{row[2]}</Cell>
-              <Cell>{row[3]}</Cell>
+              <Cell>
+                <strong style={i < 3 ? { color: 'orange' } : {}}>{row[3]}</strong>
+              </Cell>
             </Row>
           ))}
         </TableBody>
@@ -168,7 +211,7 @@ export const BuilderData = () => {
   return (
     <div>
       <h3>Denavit Hartenberg Table</h3>
-      <TableView aria-label="Motor Statuses" flex>
+      <TableView aria-label="Denavit Hartenberg Table" flex>
         <TableHeader>
           <Column>θ</Column>
           <Column>α</Column>
@@ -223,7 +266,7 @@ export const BuilderData = () => {
       <br />
       <div>
         <Heading>Denavit Hartenberg Transformation Matrix</Heading>
-        <TableView aria-label="Motor Statuses" flex>
+        <TableView aria-label="Denavit Hartenberg Transform Matrix" flex>
           <TableHeader>
             {/* <Column showDivider width={10}>
               {' '}

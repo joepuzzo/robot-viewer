@@ -59,7 +59,7 @@ export const Builder = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginRight: '200px',
+        marginRight: '300px',
       }}
     >
       {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
