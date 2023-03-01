@@ -16,8 +16,14 @@ import { isParallel } from '../../utils/frame';
 const TransformationMatricies = ({ pTable }) => {
   if (pTable.length === 0) return null;
 
+  // Add joint angle to p table
+  const newTable = JSON.parse(JSON.stringify(pTable));
+  newTable.forEach((row) => {
+    row[0] = `${row[0]} + θ`;
+  });
+
   const { homogeneousMatriceis, rotationalMatricies, endHomogeneous, endRotation } =
-    buildHomogeneousDenavitStringForTable(pTable, 'default');
+    buildHomogeneousDenavitStringForTable(newTable, 'default');
 
   return (
     <>
