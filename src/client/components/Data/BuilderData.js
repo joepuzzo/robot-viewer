@@ -79,10 +79,13 @@ const buildParameterTable = ({ frames, base, endEffector }) => {
       const n = frame;
       const nMinus1 = frames[i - 1];
 
+      const xyParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y');
+
       // theta = rotation around `Zn-1` that is required to get axis `Xn-1` to match `Xn` ( rotate frame n-1)
       const theta = n.r3;
       // alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
-      const alpha = n.r1;
+      let alpha = n.r1;
+      if (xyParallel) alpha = -n.r2;
 
       // r  = look at distance between center of two frames along the `Xn` direction
       let r = 0;

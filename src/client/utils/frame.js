@@ -112,8 +112,8 @@ export function isPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg, b, a) {
  * @param {*} rx_deg - rotation around previous frames x in degrees
  * @param {*} ry_deg - rotation around previous frames y in degrees
  * @param {*} rz_deg - rotation around previous frames z in degrees
- * @param {*} a - the new frame
- * @param {*} b - the previous frame
+ * @param {*} b - the new frame
+ * @param {*} a - the previous frame
  * @returns
  *
  *        X2  Y2  Z2

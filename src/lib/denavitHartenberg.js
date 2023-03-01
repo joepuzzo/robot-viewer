@@ -114,7 +114,7 @@ const generateSin = (a, type) => {
   if (a === '-d90' || a == '-90') {
     sinA = '-1';
   }
-  if (a === '0') {
+  if (a == '0') {
     sinA = '0';
   }
   return sinA;
@@ -129,7 +129,7 @@ const generateCos = (a, type) => {
   if (a === 'd90' || a == '-d90' || a == '90' || a == '-90') {
     cosA = '0';
   }
-  if (a === '0') {
+  if (a == '0') {
     cosA = '1';
   }
   return cosA;
@@ -145,28 +145,28 @@ const generateCos = (a, type) => {
  */
 const checkParameters = (a, b) => {
   // If the result will be zero then return zero
-  if (a === '0' || b === '0') {
+  if (a == '0' || b == '0') {
     return '0';
   }
 
   // If both are 1 then return 1
-  if (a === '1' && b === '1') {
+  if (a == '1' && b == '1') {
     return '1';
   }
 
   // If both are -1 then return 1
-  if (a === '-1' && b === '-1') {
+  if (a == '-1' && b == '-1') {
     return '1';
   }
 
   // If one of the operands is 1 then just return the other operand
-  if (a === '1' || b === '1') {
+  if (a == '1' || b == '1') {
     return a === '1' ? b : a;
   }
 
   // If one of the operands is -1 then just return the other operand negated
-  if (a === '-1' || b === '-1') {
-    return a === '-1' ? `-${b}` : `-${a}`;
+  if (a == '-1' || b == '-1') {
+    return a == '-1' ? `-${b}` : `-${a}`;
   }
 
   return `${a} * ${b}`;

@@ -147,12 +147,19 @@ const FrameInfo = () => {
 
   // 2 2 = z z see function definition for more details
   const zsParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'z', 'z');
+  const xyParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y');
 
   return (
-    <div>
-      <strong>Zs Parallel: </strong>
-      <span>{JSON.stringify(zsParallel)}</span>
-    </div>
+    <>
+      <div>
+        <strong>Zs Parallel: </strong>
+        <span>{JSON.stringify(zsParallel)}</span>
+      </div>
+      <div>
+        <strong>XYs Parallel: </strong>
+        <span>{JSON.stringify(xyParallel)}</span>
+      </div>
+    </>
   );
 };
 
