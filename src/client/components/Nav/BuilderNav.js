@@ -339,7 +339,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
         </ActionButton>
         <ActionButton
           onClick={() => {
-            add({ z: 30 });
+            add({ z: 20 });
           }}
           type="button"
           minWidth={40}
@@ -437,7 +437,8 @@ export const BuilderNav = () => {
               maxValue={300}
               step={10}
             />
-
+            <br />
+            <Switch name="animate" label="Animate" initialValue />
             <br />
             <Switch name="mainGrid" label="Main Grid" initialValue={false} />
             <br />
@@ -511,7 +512,7 @@ export const BuilderNav = () => {
                 );
               }}
             </ArrayField>
-            <Debug values errors />
+            {/* <Debug values errors /> */}
           </ul>
         </div>
       </Flex>

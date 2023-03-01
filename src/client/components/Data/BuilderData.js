@@ -44,6 +44,8 @@ const TransformationMatricies = ({ pTable }) => {
 
   const roundedEndMatrix = cleanAndRoundMatrix(result2.endMatrix, (v) => round(v, 10));
 
+  const labels = ['X0', 'Y0', 'Z0', ''];
+
   return (
     <>
       {result1.homogeneousMatriceis.map((matrix, i) => {
@@ -98,14 +100,18 @@ const TransformationMatricies = ({ pTable }) => {
       <h4>H0_6</h4>
       <TableView flex aria-label="Denavit Hartenberg Table">
         <TableHeader>
-          <Column>X</Column>
-          <Column>Y</Column>
-          <Column>Z</Column>
+          <Column showDivider width={10}>
+            {' '}
+          </Column>
+          <Column>X1</Column>
+          <Column>Y1</Column>
+          <Column>Z1</Column>
           <Column>D</Column>
         </TableHeader>
         <TableBody>
           {roundedEndMatrix.map((row, i) => (
             <Row>
+              <Cell>{labels[i]}</Cell>
               <Cell>{row[0]}</Cell>
               <Cell>{row[1]}</Cell>
               <Cell>{row[2]}</Cell>
