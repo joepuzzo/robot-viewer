@@ -1,12 +1,16 @@
 import {
+  ActionButton,
   Cell,
   Column,
+  Flex,
   Heading,
   Row,
   TableBody,
   TableHeader,
   TableView,
   Text,
+  Tooltip,
+  TooltipTrigger,
 } from '@adobe/react-spectrum';
 import { useFormState } from 'informed';
 import React, { useMemo } from 'react';
@@ -18,6 +22,7 @@ import { cleanAndRoundMatrix } from '../../../lib/roundMatrix';
 import { round } from '../../../lib/round';
 import { isParallel } from '../../utils/frame';
 import { toRadians } from '../../../lib/toRadians';
+import Copy from '@spectrum-icons/workflow/Copy';
 
 const TransformationMatricies = ({ pTable }) => {
   if (pTable.length === 0) return null;
@@ -52,9 +57,26 @@ const TransformationMatricies = ({ pTable }) => {
         const value = values[`j${i}`];
         return (
           <>
-            <h4>
-              {`H${i}_${i + 1}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`θ = ${value}`}
-            </h4>
+            <Flex alignItems="center" gap="20px">
+              <h4>
+                {`H${i}_${i + 1}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`θ = ${value}`}
+              </h4>
+              <TooltipTrigger>
+                <ActionButton
+                  title="copy"
+                  onPress={() => {
+                    // Tab seperated ( can paste into spreadsheed editor)
+                    const tsv = matrix.map((row) => row.join('\t')).join('\n');
+                    navigator.clipboard.writeText(tsv);
+                  }}
+                >
+                  <Copy />
+                </ActionButton>
+                <Tooltip>
+                  Copy Table - Will copy table so you can paste into spreadsheet editor
+                </Tooltip>
+              </TooltipTrigger>
+            </Flex>
             <TableView aria-label="Denavit Hartenberg Table" flex>
               <TableHeader>
                 <Column>X</Column>
@@ -216,7 +238,23 @@ export const BuilderData = () => {
 
   return (
     <div>
-      <h3>Denavit Hartenberg Table</h3>
+      <Flex alignItems="center" gap="20px">
+        <h3>Denavit Hartenberg Table</h3>
+        <TooltipTrigger>
+          <ActionButton
+            title="copy"
+            onPress={() => {
+              // Tab seperated ( can paste into spreadsheed editor)
+              const tsv = pTable.map((row) => row.join('\t')).join('\n');
+              navigator.clipboard.writeText(tsv);
+            }}
+          >
+            <Copy />
+          </ActionButton>
+          <Tooltip>Copy Table - Will copy table so you can paste into spreadsheet editor</Tooltip>
+        </TooltipTrigger>
+      </Flex>
+
       <TableView aria-label="Denavit Hartenberg Table" flex>
         <TableHeader>
           <Column>θ</Column>
