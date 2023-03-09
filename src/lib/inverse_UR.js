@@ -72,8 +72,12 @@ export const inverse = (x, y, z, r1, r2, r3, config) => {
    * vector0_3 = vector0_6 - wrist_offset_vector * R0_6
    */
 
+  // const offset = Math.sqrt((-a5) ** 2 + a6 ** 2);
+  // const offsetY = (a4 * Math.sqrt(2)) / 2;
+  // const offsetX = (a4 * Math.sqrt(2)) / 2;
+
   // const rotatedVector = matrixDot(r0_6, [[0], [a4], [a6 + a5]]);
-  const rotatedVector = matrixDot(r0_6, [[0], [0], [a6]]);
+  const rotatedVector = matrixDot(r0_6, [[0], [a4], [a5 + a6]]);
 
   logger('rotatedVector', JSON.stringify(rotatedVector));
 
