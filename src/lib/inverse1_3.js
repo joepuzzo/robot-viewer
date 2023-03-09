@@ -1,5 +1,5 @@
 import { Debug } from './debug';
-import { round } from './round';
+import { toRadians } from './toRadians';
 const logger = Debug('ik:inverse1_3' + '\t');
 
 /**
@@ -55,21 +55,22 @@ const logger = Debug('ik:inverse1_3' + '\t');
  *   ---- Useful Triangles ----
  *
  * Below depicts J1 -- J2
- *                            _
- *                          _ _ |
- *                        _  _  |
- *                      _   _   |
- *                    _    _    |
- *                  _     _ a3  |
- *           r3   _      _      |
- *              _       _       |
- *            _          \->t3  | r2
- *          _     p3 ( )        |
- *        _       _             |
- *      _   \  _  a2            |
- *    _\ p1 _\                  |
- *  _   \_    \ -> p2           |
- *   ( ) \->t2 \                |
+ * Below depicts J1 -- J2
+ *                            ●
+ *                          ● ● |
+ *                        ●  ●  |
+ *                      ●   ●   |
+ *                    ●    ●    |
+ *                  ●     ● a3  |
+ *           r3   ●      ●      |
+ *              ●       ●       |
+ *            ●        ●  \->t3 | r2
+ *          ●     p3 (●)        |
+ *        ●       ●             |
+ *      ●   \  ●  a2            |
+ *    ●\ p1 ●\                  |
+ *  ●   \●    \ -> p2           |
+ *   (●) \->t2 \                |
  * -----------------------------
  *              r1
  *
@@ -194,7 +195,7 @@ const computeT3 = (p3) => {
  * @returns
  */
 export const inverse1_3 = (x, y, z, robotConfig) => {
-  const { a1, a2, a3, x0 = 0, y0 = 0 } = robotConfig;
+  const { a1, a2, a3, x0 = 0, y0 = 0, adjustments } = robotConfig;
 
   const r1 = computeR1(x, y) - x0;
   logger('r1', r1);
@@ -209,9 +210,15 @@ export const inverse1_3 = (x, y, z, robotConfig) => {
   const p3 = computeP3(a2, a3, r3);
   logger('p3', p3);
 
-  const t1 = computeT1(x, y - y0);
-  const t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
-  const t3 = -computeT3(p3); // Needed to negate to match main x, y frame
+  let t1 = computeT1(x, y - y0);
+  let t2 = -computeT2(p1, p2); // Needed to negate to match main x, y frame
+  let t3 = -computeT3(p3); // Needed to negate to match main x, y frame
+
+  // Optional adjustments for angles
+  if (adjustments) {
+    const t1Adjustment = toRadians(adjustments.t1);
+    t2 = t2 < 0 ? t2 - t1Adjustment : t2 + t1Adjustment;
+  }
 
   // Return angles removing negative zeros
   return [t1, t2, t3].map((a) => (Object.is(a, -0) ? 0 : a));

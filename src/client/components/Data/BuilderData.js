@@ -42,10 +42,24 @@ const TransformationMatricies = ({ pTable }) => {
     row[1] = toRadians(row[1]);
   });
 
-  console.table(table2);
+  // 3_6 table
+  const table3 = JSON.parse(JSON.stringify(pTable)).slice(3, 6);
+  table3.forEach((row, i) => {
+    const value = values[`j${i}`];
+    const ang = `t${i + 4}`;
+
+    if (row[0] == 0) {
+      row[0] = ang;
+    } else {
+      row[0] = `${row[0]} + ${ang}`;
+    }
+  });
+
+  // console.table(table3);
 
   const result1 = buildHomogeneousDenavitStringForTable(table1, 'default');
   const result2 = buildHomogeneousDenavitForTable(table2);
+  const result3 = buildHomogeneousDenavitStringForTable(table3, 'default');
 
   const roundedEndMatrix = cleanAndRoundMatrix(result2.endMatrix, (v) => round(v, 10));
 
@@ -56,7 +70,7 @@ const TransformationMatricies = ({ pTable }) => {
       {result1.homogeneousMatriceis.map((matrix, i) => {
         const value = values[`j${i}`];
         return (
-          <>
+          <div key={`result-${i}`}>
             <Flex alignItems="center" gap="20px">
               <h4>
                 {`H${i}_${i + 1}`}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{`θ = ${value}`}
@@ -85,8 +99,8 @@ const TransformationMatricies = ({ pTable }) => {
                 <Column>D</Column>
               </TableHeader>
               <TableBody>
-                {matrix.map((row) => (
-                  <Row>
+                {matrix.map((row, j) => (
+                  <Row key={`info-${i}-${j}`}>
                     <Cell>{row[0]}</Cell>
                     <Cell>{row[1]}</Cell>
                     <Cell>{row[2]}</Cell>
@@ -115,9 +129,48 @@ const TransformationMatricies = ({ pTable }) => {
               </TableBody>
             </TableView>
             <br /> */}
-          </>
+          </div>
         );
       })}
+      <Heading>H3_6 Matix</Heading>
+      <Flex alignItems="center" gap="20px">
+        <h4>H3_6</h4>
+        <TooltipTrigger>
+          <ActionButton
+            title="copy"
+            onPress={() => {
+              // Tab seperated ( can paste into spreadsheed editor)
+              const tsv = result3.endHomogeneous.map((row) => row.join('\t')).join('\n');
+              navigator.clipboard.writeText(tsv);
+            }}
+          >
+            <Copy />
+          </ActionButton>
+          <Tooltip>Copy Table - Will copy table so you can paste into spreadsheet editor</Tooltip>
+        </TooltipTrigger>
+      </Flex>
+      <TableView flex aria-label="Denavit Hartenberg Table">
+        <TableHeader>
+          <Column showDivider width={10}>
+            {' '}
+          </Column>
+          <Column>X1</Column>
+          <Column>Y1</Column>
+          <Column>Z1</Column>
+          <Column>D</Column>
+        </TableHeader>
+        <TableBody>
+          {result3.endHomogeneous.map((row, i) => (
+            <Row key={`3_6-${i}`}>
+              <Cell>{labels[i]}</Cell>
+              <Cell>{row[0]}</Cell>
+              <Cell>{row[1]}</Cell>
+              <Cell>{row[2]}</Cell>
+              <Cell>{row[3]}</Cell>
+            </Row>
+          ))}
+        </TableBody>
+      </TableView>
       <Heading>Final Transformation Matix</Heading>
       <h4>H0_6</h4>
       <TableView flex aria-label="Denavit Hartenberg Table">
@@ -132,7 +185,7 @@ const TransformationMatricies = ({ pTable }) => {
         </TableHeader>
         <TableBody>
           {roundedEndMatrix.map((row, i) => (
-            <Row>
+            <Row key={`final-${i}`}>
               <Cell>{labels[i]}</Cell>
               <Cell>{row[0]}</Cell>
               <Cell>{row[1]}</Cell>

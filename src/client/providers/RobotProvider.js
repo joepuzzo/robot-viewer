@@ -9,7 +9,8 @@ import io from 'socket.io-client';
 import useApp from '../hooks/useApp';
 import { useFieldState, useFormApi } from 'informed';
 import { toRadians } from '../../lib/toRadians';
-import { inverse } from 'kinematics-js';
+import { inverse as inverseBasic } from 'kinematics-js';
+import { inverse as inverseUR } from '../../lib/inverse_UR';
 // import { inverse } from '../../lib/inverse';
 import { toDeg } from '../../lib/toDeg';
 import { forward } from 'kinematics-js';
@@ -225,6 +226,7 @@ const RobotProvider = ({ children }) => {
     const ro3 = toRadians(r3);
 
     // console.log('Getting angles for', [x, y, z]);
+    const inverse = configRef.current.inverseType === 'UR' ? inverseUR : inverseBasic;
 
     const angles = inverse(x, y, z, ro1, ro2, ro3, {
       base: base,
@@ -237,6 +239,7 @@ const RobotProvider = ({ children }) => {
       x0,
       y0,
       flip: configRef.current.flip,
+      adjustments: configRef.current.adjustments,
     });
 
     // console.log('Setting angles to', angles);

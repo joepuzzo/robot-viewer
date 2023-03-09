@@ -1,5 +1,5 @@
 {
-  "robotType": "UR3e",
+  "robotType": "UR3eHalf",
   "inverseType": "UR",
   "zeroPosition": [0, 0, 0],
   "units": "cm",
@@ -69,36 +69,6 @@
       "z": 0,
       "moveFrame": false,
       "frameType": "rotary"
-    },
-    {
-      "r1": 90,
-      "r2": 0,
-      "r3": 0,
-      "x": 0,
-      "y": 0,
-      "z": 13.105,
-      "moveFrame": false,
-      "frameType": "rotary"
-    },
-    {
-      "r1": -90,
-      "r2": 0,
-      "r3": 0,
-      "x": 0,
-      "y": 0,
-      "z": 8.535,
-      "moveFrame": false,
-      "frameType": "rotary"
-    },
-    {
-      "r1": 0,
-      "r2": 0,
-      "r3": 0,
-      "x": 0,
-      "y": 0,
-      "z": 9.21,
-      "moveFrame": false,
-      "frameType": "stationary"
     }
   ]
 }
