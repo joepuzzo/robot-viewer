@@ -77,7 +77,9 @@ export const inverse = (x, y, z, r1, r2, r3, config) => {
   // const offsetX = (a4 * Math.sqrt(2)) / 2;
 
   // const rotatedVector = matrixDot(r0_6, [[0], [a4], [a6 + a5]]);
-  const rotatedVector = matrixDot(r0_6, [[0], [a4], [a5 + a6]]);
+  // const rotatedVector = matrixDot(r0_6, [[0], [a4], [a5 + a6]]);
+  // const rotatedVector = matrixDot(r0_6, [[0], [-a5 + a4], [a6]]);
+  const rotatedVector = matrixDot(r0_6, [[-a5], [a4], [a6]]);
 
   logger('rotatedVector', JSON.stringify(rotatedVector));
 
