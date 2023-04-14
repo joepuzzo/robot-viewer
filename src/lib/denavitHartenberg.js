@@ -222,6 +222,15 @@ export const buildHomogeneousDenavitStringForRow = (row, type = 'js') => {
  * @returns
  */
 export const buildHomogeneousDenavitStringForTable = (pt, type = 'js') => {
+  if (!pt || !pt.length) {
+    return {
+      homogeneousMatriceis: [],
+      rotationalMatricies: [],
+      endHomogeneous: [],
+      endRotation: [],
+    };
+  }
+
   // Build individual matricies
   const homogeneousMatriceis = pt.map((row) => buildHomogeneousDenavitStringForRow(row, type));
 
