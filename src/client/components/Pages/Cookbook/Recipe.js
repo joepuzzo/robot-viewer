@@ -97,11 +97,7 @@ export const Recipe = ({ recipe, allActions }) => {
             <Flex direction="column" alignItems="center" gap="size-100">
               <ArrayField.Items>
                 {({ remove, name, index }) => (
-                  <div
-                    className={`recipe ${
-                      simulating.step - 1 === index && simulating.play ? 'highlight' : ''
-                    }`}
-                  >
+                  <div className={`recipe}`}>
                     <Flex direction="row" alignItems="end" gap="size-100" width={600}>
                       <Select
                         isDisabled={loading}

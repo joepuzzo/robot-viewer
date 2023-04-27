@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Recipe } from './Recipe';
 import Input from '../../Informed/Input';
 import Select from '../../Informed/Select';
-import { useFieldState, useFormApi } from 'informed';
+import { Debug, useFieldState, useFormApi } from 'informed';
 import { usetPost } from '../../../hooks/usePost';
 
 import { Flex, ActionButton, Item, TabList, TabPanels, Tabs } from '@adobe/react-spectrum';
@@ -109,10 +109,38 @@ const Recipies = ({ allWaypoints }) => {
     return [];
   }, [allRecipes]);
 
+  const allRecipesRef = useRef();
+  const allWaypointsRef = useRef();
+  allRecipesRef.current = allRecipes;
+  allWaypointsRef.current = allWaypoints;
+
+  const onRecipieSelect = useCallback(
+    ({ value }) => {
+      // console.log('VAL', value, allRecipesRef.current);
+      // console.log('WAYPOINTS', allWaypointsRef.current);
+
+      const actions = allRecipesRef.current[value];
+      if (actions) {
+        console.log('ACTIONS', actions);
+        // Now compone all those waypoints
+        const waypoints = actions.reduce((acc, cur, i) => {
+          // Get actions out of all waypoints
+          const action = allWaypointsRef.current[cur.action];
+          // console.log('ACTION', action);
+          return [...acc, ...action];
+        }, []);
+
+        formApi.setValue('waypoints', waypoints);
+      }
+    },
+    [allRecipes]
+  );
+
   return (
     <Flex direction="row" gap="size-600">
       <Flex direction="column" gap="size-100">
         <h3>Create Recipe</h3>
+        {/* <Debug values /> */}
         <Flex direction="row" alignItems="end" gap="size-100">
           <Input name="recipeName" label="Recipe Name" autocomplete="off" />
           <ActionButton
@@ -136,6 +164,7 @@ const Recipies = ({ allWaypoints }) => {
             name="selectedRecipe"
             defaultValue={recipeOptions[0]?.value}
             options={[...recipeOptions]}
+            onValueChange={onRecipieSelect}
           />
         </If>
       </Flex>

@@ -81,10 +81,10 @@ const SimulateProvider = ({ children }) => {
   const robotUpdate = (i) => {
     const formApi = informed.getController('robot')?.getFormApi();
 
-    const { waypoints } = formApi.getFormState().values;
+    const { waypoints, runOnRobot } = formApi.getFormState().values;
 
     // We only want to go if we have more waypoints
-    if (waypoints && waypoints.length - 1 !== i) {
+    if (waypoints && waypoints.length !== i) {
       // Get the waypoint
       // const { x, y, z, r1, r2, r3 } = waypoints[i];
       const { x, y, z, orientation, speed, grip } = waypoints[i];
@@ -105,9 +105,16 @@ const SimulateProvider = ({ children }) => {
           updateGripper(grip ? 20 : 60);
         }
 
-        // Increase the step
+        // We are going to move to next step now
         const current = getSimulating();
-        setSimulating({ ...current, step: current.step + 1 });
+        let nextStep = current.step + 1;
+
+        setSimulating({ ...current, step: nextStep });
+
+        // If we are a grip action and are not running on robot just go to next step
+        if (orientation == 'g' && !runOnRobot) {
+          robotUpdate(nextStep);
+        }
       }, wait * 1000);
     } else {
       // Stop simulation

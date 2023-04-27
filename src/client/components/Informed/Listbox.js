@@ -29,7 +29,7 @@ const ListBoxInput = (props) => {
       // items={items}
       selectedKeys={[fieldState.value]}
       onSelectionChange={(v) => {
-        fieldApi.setValue(v.currentKey);
+        fieldApi.setValue(v.currentKey, {});
       }}
     >
       {/* {(item) => <Item key={item.name}>{item.name}</Item>} */}
