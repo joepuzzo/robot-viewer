@@ -54,52 +54,54 @@ export const Builder = () => {
   }, [frames, frames?.length]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginRight: '300px',
-      }}
-    >
-      {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
-      <Info />
-      <Canvas>
-        <PerspectiveCamera
-          ref={virtualCam}
-          makeDefault={true}
-          fov={75}
-          aspect={window.innerWidth / window.innerHeight}
-          far={10000}
-          near={0.5}
-          position={position}
-          zoom={cameraZoom}
-        />
-        <OrbitControls
-          enabled={orbitEnabled}
-          ref={controlRef}
-          target={[5, frames.length * 10, 0]}
-        />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[-2, 5, 2]} intensity={1} />
-        <Suspense fallback={null}>
-          <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, 0, 0]}>
-            {mainGrid ? <Grid size={gridSize} showArrows shift /> : null}
-            {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
-            <If condition={frames}>
-              <Joint
-                index={0}
-                value={frames[0]}
-                error={frameErrors[0]}
-                frames={frames.slice(1, frames.length)}
-                frameErrors={frameErrors.slice(1, frameErrors.length)}
-                values={values}
-                base={base}
-              />
-            </If>
-          </group>
-        </Suspense>
-      </Canvas>
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginTop: '20px',
+        }}
+      >
+        {/* <Control controlRef={controlRef} virtualCam={virtualCam} /> */}
+        <Info />
+        <Canvas>
+          <PerspectiveCamera
+            ref={virtualCam}
+            makeDefault={true}
+            fov={75}
+            aspect={window.innerWidth / window.innerHeight}
+            far={10000}
+            near={0.5}
+            position={position}
+            zoom={cameraZoom}
+          />
+          <OrbitControls
+            enabled={orbitEnabled}
+            ref={controlRef}
+            target={[5, frames.length * 10, 0]}
+          />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[-2, 5, 2]} intensity={1} />
+          <Suspense fallback={null}>
+            <group rotation={[Math.PI * -0.5, 0, 0]} position={[0, 0, 0]}>
+              {mainGrid ? <Grid size={gridSize} showArrows shift /> : null}
+              {/* {frames ? frames.map((v, i) => <Joint index={i} value={v} key={`joint-${i}`} />) : null} */}
+              <If condition={frames}>
+                <Joint
+                  index={0}
+                  value={frames[0]}
+                  error={frameErrors[0]}
+                  frames={frames.slice(1, frames.length)}
+                  frameErrors={frameErrors.slice(1, frameErrors.length)}
+                  values={values}
+                  base={base}
+                />
+              </If>
+            </group>
+          </Suspense>
+        </Canvas>
+      </div>
     </div>
   );
 };

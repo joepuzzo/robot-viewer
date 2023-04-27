@@ -10,25 +10,11 @@ import { MotorData } from './MotorData';
 import { RobotData } from './RobotData';
 
 export const Data = () => {
-  const { navOpen, closeNav } = useApp();
-
-  const navRef = useRef();
-
-  useOutsideAlerter(() => closeNav(), navRef);
-
-  let location = useLocation();
-  const wide = location.pathname.includes('builder');
-
   return (
-    <nav
-      className={`databar ${wide ? 'databar-wide' : ''} ${navOpen ? 'databar-visible' : ''}`}
-      ref={navRef}
-    >
-      <Routes>
-        <Route path="/" element={<RobotData />} />
-        <Route path="/motor" element={<MotorData />} />
-        <Route path="/builder" element={<BuilderData />} />
-      </Routes>
-    </nav>
+    <Routes>
+      <Route path="/" element={<RobotData />} />
+      <Route path="/motor" element={<MotorData />} />
+      <Route path="/builder" element={<BuilderData />} />
+    </Routes>
   );
 };

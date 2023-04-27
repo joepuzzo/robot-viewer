@@ -61,8 +61,7 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { extraOpen, toggleExtra, config, socket, toggleColorScheme, orbitControl, cameraControl } =
-    useApp();
+  const { toggleExtra, config, socket, orbitControl, cameraControl } = useApp();
 
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
@@ -340,7 +339,11 @@ export const RobotNav = () => {
         <ActionButton
           title="Open Waypoints"
           aria-label="Open Waypoints"
-          onClick={() => toggleExtra()}
+          onClick={() => {
+            toggleExtra();
+            orbitControl.current.current.target.set(0, -40, 0);
+            cameraControl.current.current.position.set(90, 110, 90);
+          }}
         >
           <ChevronRight />
         </ActionButton>
@@ -829,9 +832,6 @@ export const RobotNav = () => {
             <br />
             <br />
           </ul>
-        </div>
-        <div className={extraOpen ? 'sidenav-extra sidenav-extra-visible' : 'sidenav-extra'}>
-          <Waypoints />
         </div>
       </Flex>
     </>

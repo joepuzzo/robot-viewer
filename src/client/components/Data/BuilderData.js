@@ -23,6 +23,7 @@ import { round } from '../../../lib/round';
 import { isParallel } from '../../utils/frame';
 import { toRadians } from '../../../lib/toRadians';
 import Copy from '@spectrum-icons/workflow/Copy';
+import useApp from '../../hooks/useApp';
 
 const TransformationMatricies = ({ pTable }) => {
   if (pTable.length === 0) return null;
@@ -289,8 +290,10 @@ export const BuilderData = () => {
 
   const pTable = buildParameterTable({ frames, base, endEffector });
 
+  const { navOpen } = useApp();
+
   return (
-    <div>
+    <nav className={`databar databar-wide ${navOpen ? 'databar-visible' : ''}`}>
       <Flex alignItems="center" gap="20px">
         <h3>Denavit Hartenberg Table</h3>
         <TooltipTrigger>
@@ -409,6 +412,6 @@ export const BuilderData = () => {
         <Heading>Homogeneous Transformation matriceis</Heading>
         <TransformationMatricies pTable={pTable} />
       </div>
-    </div>
+    </nav>
   );
 };

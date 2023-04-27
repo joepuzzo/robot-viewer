@@ -1,65 +1,73 @@
 /* ---------- Main ---------- */
 
 body {
-  /* height: 100%;
-  overflow-y: hidden; */
+  margin: 0px;
+  overflow: scroll;
 }
 
 main {
   box-sizing: border-box;
-  /* min-height: 100vh; */
   flex-direction: column;
-  margin-left: 450px;
-  margin-right: 400px;
-  padding: 40px 52px 0;
+  padding: 10px 52px 0;
   display: flex;
   align-items: center;
   transition: margin-left 0.2s;
-  height: 100%;
-  overflow-y: hidden;
-}
-
-main.extra {
-  margin-left: 690px;
+  height: 100vh;
+  overflow: scroll;
+  width: 100%;
 }
 
 @media (max-width: 1200px) {
   main {
     margin-top: 0px;
-    margin-left: 0;
-    margin-right: 0;
-    padding: 40px 80px;
+    padding: 10px 80px;
     text-align: center;
   }
-  main.extra {
-    margin-left: 0px;
-  }
+}
+
+.app {
+  display: flex;
+  /* height: 100vh; */
+}
+
+.app-extra {
+  padding-bottom: 35vh;
 }
 
 /* ---------- Nav ---------- */
 
 .sidenav {
-  width: 450px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  overflow-y: scroll;
-  display: block;
   z-index: 100;
   transition: width 0.2s;
-}
-
-.sidenav.extra {
-  width: 870px;
+  flex-grow: 0;
+  height: 100%;
+  overflow-y: auto;
+  flex-shrink: 0;
+  height: 100vh;
 }
 
 .sidenav .input-slider {
   width: 230px;
   margin-right: 20px;
+}
+
+@media (max-width: 1200px) {
+  .sidenav {
+    z-index: 100;
+    visibility: hidden;
+    outline: 0;
+    transition: transform 0.2s, visibility 0s 0.2s;
+    position: fixed;
+    inset: 0 100% 0 auto;
+  }
+  .sidenav-visible {
+    visibility: unset;
+    transition-delay: 0s;
+    transform: translate(100%);
+  }
 }
 
 .input-slider div {
@@ -82,34 +90,27 @@ main.extra {
   color: var(--spectrum-sidenav-item-text-color-hover, var(--spectrum-alias-text-color-hover));
 }
 
-@media (max-width: 1200px) {
-  .sidenav {
-    z-index: 100;
-    visibility: hidden;
-    outline: 0;
-    transition: transform 0.2s, visibility 0s 0.2s;
-    position: fixed;
-    inset: 0 100% 0 auto;
-  }
-  .sidenav-visible {
-    visibility: unset;
-    transition-delay: 0s;
-    transform: translate(100%);
-  }
+.extra {
+  display: none;
+  background: var(--spectrum-global-color-gray-200);
+  transition: transform 0.2s, visibility 0s 0.2s;
+  position: fixed;
+  top: 62vh;
+  height: 35vh;
+  width: 100vw;
+  left: 0;
+  z-index: 999;
+  padding: 20px;
+  overflow-y: scroll;
+  overflow-x: auto;
+  width: 100%;
+  border-top: 2px solid grey;
+  /* overflow-y: hidden; */
 }
 
-.sidenav-extra {
-  display: none;
-  transition: transform 0.2s, visibility 0s 0.2s;
-  /* width: 0px; */
-  /* z-index: 100; */
-  /* inset: 0 100% 0 auto; */
-}
-.sidenav-extra-visible {
-  /* visibility: unset; */
-  display: block;
+.extra-visible {
   transition-delay: 0s;
-  /* width: 100%; */
+  display: flex;
 }
 
 .sidenav-controls {
@@ -119,11 +120,11 @@ main.extra {
 /* ---------- Data ---------- */
 
 .databar {
-  width: 400px;
+  min-width: 400px;
   background: var(--spectrum-global-color-gray-200);
   box-sizing: border-box;
   padding: 0 24px;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   bottom: 0;
   right: 0;
@@ -131,15 +132,17 @@ main.extra {
   display: block;
   z-index: 100;
   transition: width 0.2s;
+  height: 100vh;
+  overflow: scroll;
 }
 
 .databar-wide {
-  width: 700px;
+  min-width: 700px;
 }
 
 @media (max-width: 1200px) {
   .databar {
-    z-index: 100;
+    /* z-index: 100; */
     visibility: hidden;
     outline: 0;
     transition: transform 0.2s, visibility 0s 0.2s;
@@ -176,11 +179,12 @@ main.extra {
   width: 100%;
   display: flex;
   padding-bottom: 5px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 1200px) {
   .pageHeader {
-    margin-left: 450px;
+    /* margin-left: 450px; */
   }
 }
 
@@ -191,7 +195,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 200;
+  /* z-index: 200; */
 }
 
 footer span {
@@ -220,10 +224,18 @@ canvas {
   height: 80vh;
 }
 
-/* .waypoints {
-  position: absolute;
-  right: 0px;
-} */
+.waypoints {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+}
+
+.waypoints-array {
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+}
 
 .highlight {
   /* border-bottom: 2px solid #880808; */

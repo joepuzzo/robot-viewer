@@ -1,10 +1,13 @@
 import React from 'react';
+import useApp from '../../hooks/useApp';
 import { JointsData } from './JointsData/JointsData';
 
 export const RobotData = () => {
+  const { navOpen } = useApp();
+
   return (
-    <div>
+    <nav className={`databar ${navOpen ? 'databar-visible' : ''}`}>
       <JointsData />
-    </div>
+    </nav>
   );
 };

@@ -211,8 +211,6 @@ export const Robot = () => {
   orbitControl.current = controlRef;
   cameraControl.current = virtualCam;
 
-  useOverFlowHidden();
-
   // When a vertex length changes update the appropriate frame
   const frames = useMemo(() => {
     const frms = initialValues.frames;
@@ -274,7 +272,7 @@ export const Robot = () => {
           far={10000}
           near={0.1}
           position={[70, 80, 70]}
-          zoom={window.innerWidth < 780 ? 0.9 : 1.2}
+          zoom={window.innerWidth < 780 ? 1 : 1.4}
         />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />

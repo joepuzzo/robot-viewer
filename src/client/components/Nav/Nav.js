@@ -20,10 +20,7 @@ export const Nav = () => {
   useOutsideAlerter(() => closeNav(), navRef);
 
   return (
-    <nav
-      className={`sidenav ${navOpen ? 'sidenav-visible' : ''}  ${extraOpen ? 'extra' : ''}`}
-      ref={navRef}
-    >
+    <nav className={`sidenav ${navOpen ? 'sidenav-visible' : ''}`} ref={navRef}>
       <Routes>
         <Route path="/" element={<RobotNav />} />
         <Route path="/motor" element={<MotorNav />} />

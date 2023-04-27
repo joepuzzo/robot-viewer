@@ -187,6 +187,7 @@ const AppProvider = ({ children }) => {
 
   const toggleExtra = () => {
     setExtraOpen((prev) => !prev);
+    document.getElementById('app').classList.toggle('app-extra');
   };
 
   const orbitControl = useRef();

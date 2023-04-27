@@ -80,8 +80,8 @@ export const Cookbook = () => {
   const { value: selectedRecipe } = useFieldState('selectedRecipe');
 
   return (
-    <>
-      <Flex direction="row" justifyContent="space-between" UNSAFE_style={{ width: '100%' }}>
+    <div style={{ width: '100%' }}>
+      <Flex direction="row" gap="size-600">
         {listToShow === 'actions' && (
           <Flex direction="column">
             <h3>Add New Action</h3>
@@ -152,6 +152,6 @@ export const Cookbook = () => {
           )}
         </Flex>
       </Flex>
-    </>
+    </div>
   );
 };

@@ -13,6 +13,7 @@ import { Nav } from '../Nav/Nav';
 import { Data } from '../Data/Data';
 
 import { Routes } from '../Routes/Routes';
+import { Extra } from '../Extra/Extra';
 
 const App = () => {
   const { colorScheme, extraOpen } = useApp();
@@ -31,17 +32,16 @@ const App = () => {
 
   return (
     <Router>
-      <Provider
-        theme={defaultTheme}
-        colorScheme={colorScheme}
-        UNSAFE_style={{ overflow: 'hidden' }}
-      >
-        <Header />
-        <Nav />
-        <main className={extraOpen ? 'extra' : ''}>
-          <Routes />
-        </main>
-        <Data />
+      <Provider theme={defaultTheme} colorScheme={colorScheme}>
+        <div className="app" id="app">
+          <Nav />
+          <main>
+            <Header />
+            <Routes />
+          </main>
+          <Data />
+        </div>
+        <Extra />
       </Provider>
     </Router>
   );
