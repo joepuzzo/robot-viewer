@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Waypoints } from './Waypoints';
 import { Recipe } from './Recipe';
 import Input from '../../Informed/Input';
 import Select from '../../Informed/Select';
@@ -9,6 +8,7 @@ import { usetPost } from '../../../hooks/usePost';
 import { Flex, Button, ActionButton } from '@adobe/react-spectrum';
 import { useGet } from '../../../hooks/useGet';
 import ListBoxInput from '../../Informed/Listbox';
+import { Waypoints } from '../../Nav/Waypoints';
 
 export const Cookbook = () => {
   const formApi = useFormApi();
@@ -60,7 +60,7 @@ export const Cookbook = () => {
   }, [allRecipes]);
 
   const addAction = useCallback(() => {
-    const newActionName = formApi.getFormState().values.actionName;
+    const newActionName = formApi.getFormState().values.filename;
     const defaultNewAction = [
       {
         x: 30,
@@ -73,7 +73,7 @@ export const Cookbook = () => {
       allWaypoints[newActionName] = defaultNewAction;
       postWaypoints({ payload: defaultNewAction, url: `/waypoints/save/${newActionName}` });
     }
-  }, []);
+  }, [allWaypoints]);
 
   const { value: selectedAction } = useFieldState('selectedAction');
   const { value: listToShow } = useFieldState('listToShow');
@@ -87,7 +87,7 @@ export const Cookbook = () => {
             <h3>Add New Action</h3>
             <Flex direction="row" alignItems="end" gap="size-100">
               <Input
-                name="actionName"
+                name="filename"
                 label="Action Name"
                 placeholder="New Action Name"
                 autocomplete="off"
@@ -140,9 +140,9 @@ export const Cookbook = () => {
             )}
           </Flex>
         )}
-        <Flex direction="column">
+        <Flex direction="column" UNSAFE_style={{ width: '100%' }}>
           {listToShow === 'actions' && selectedAction && (
-            <Waypoints data={allWaypoints?.[selectedAction]} actionName={selectedAction} />
+            <Waypoints currentWaypoints={allWaypoints?.[selectedAction]} column />
           )}
           {listToShow === 'recipes' && selectedRecipe && (
             <Recipe

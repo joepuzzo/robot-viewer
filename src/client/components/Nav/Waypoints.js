@@ -10,6 +10,7 @@ import useSimulateState from '../../hooks/useSimulateState';
 import { usetPost } from '../../hooks/usePost';
 import { useGet } from '../../hooks/useGet';
 import { Draggable, DraggableProvider } from '../Shared/Draggable';
+import { If } from '../Shared/If';
 
 const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   const { fields } = useArrayFieldState();
@@ -45,7 +46,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   );
 };
 
-export const Waypoints = () => {
+export const Waypoints = ({ currentWaypoints, column }) => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
@@ -148,11 +149,16 @@ export const Waypoints = () => {
     headers: { ContentType: 'application/json' },
   });
 
-  const [{ data, loading: getLoading, error: getError }, getWaypoints] = useGet();
+  const [{ data: waypointsData, loading: getLoading, error: getError }, getWaypoints] = useGet();
 
+  // Use user waypoints or loaded waypoints
+  const data = currentWaypoints || waypointsData;
+
+  // For loading and error shit
   const loading = postLoading || getLoading;
   const error = postError || getError;
 
+  // Will save a waypoint by the given name
   const save = useCallback(() => {
     const { values } = formApi.getFormState();
 
@@ -161,6 +167,7 @@ export const Waypoints = () => {
     postWaypoints({ payload: waypoints, url: `/waypoints/save/${filename}` });
   }, []);
 
+  // Will load a waypoint by the given name
   const load = useCallback(() => {
     const { values } = formApi.getFormState();
 
@@ -180,7 +187,7 @@ export const Waypoints = () => {
   }, [initialValue]);
 
   return (
-    <div className="waypoints">
+    <div className={`waypoints ${column ? 'waypoints-column' : ''}`}>
       <div
         style={{
           flexGrow: '0',
@@ -202,10 +209,15 @@ export const Waypoints = () => {
         <br />
         <br />
         <Flex direction="row" alignItems="end" gap="size-100">
-          <Input name="filename" label="Filename" autocomplete="off" />
-          <ActionButton type="button" onPress={load} minWidth="120px" isDisabled={loading}>
-            Load Waypoints
-          </ActionButton>
+          <If condition={!column}>
+            <Input name="filename" label="Filename" autocomplete="off" />
+          </If>
+          <If condition={!column}>
+            <ActionButton type="button" onPress={load} minWidth="120px" isDisabled={loading}>
+              Load Waypoints
+            </ActionButton>
+          </If>
+
           <ActionButton type="button" onPress={save} minWidth="120px" isDisabled={loading}>
             Save Waypoints
           </ActionButton>

@@ -231,6 +231,10 @@ canvas {
   width: 100%;
 }
 
+.waypoints-column {
+  flex-direction: column;
+}
+
 .waypoints-array {
   overflow-y: auto;
   height: 100%;
@@ -261,8 +265,10 @@ div[aria-selected='true'] {
 .draggable {
   cursor: move;
   user-select: none;
-  background-color: rgba(99, 24, 24, 0.2);
   margin: 5px;
+  width: 100%;
+  border: 1px solid rgb(71, 71, 71);
+  padding: 5px;
 }
 
 .placeholder {
