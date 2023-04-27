@@ -46,8 +46,6 @@ export const Recipe = ({ recipe, allActions }) => {
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
 
-  console.log('WTF', recipe);
-
   const arrayFieldApiRef = useRef();
 
   useEffect(() => {

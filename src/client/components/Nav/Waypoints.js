@@ -162,9 +162,11 @@ export const Waypoints = ({ currentWaypoints, column }) => {
   const save = useCallback(() => {
     const { values } = formApi.getFormState();
 
-    const { waypoints, filename } = values;
+    const { waypoints, filename, selectedAction } = values;
 
-    postWaypoints({ payload: waypoints, url: `/waypoints/save/${filename}` });
+    const name = selectedAction || filename;
+
+    postWaypoints({ payload: waypoints, url: `/waypoints/save/${name}` });
   }, []);
 
   // Will load a waypoint by the given name

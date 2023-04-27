@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { ActionButton, Flex } from '@adobe/react-spectrum';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import useApp from '../../hooks/useApp';
@@ -7,7 +7,6 @@ import { Debug, useFieldState, useFormApi } from 'informed';
 import useRobotMeta from '../../hooks/useRobotMeta';
 import Switch from '../Informed/Switch';
 import useRobotController from '../../hooks/useRobotController';
-import ListBoxInput from '../Informed/Listbox';
 
 export const CookbookNav = () => {
   console.log('RENDER CookBook NAV');
@@ -64,18 +63,6 @@ export const CookbookNav = () => {
               label="Motor Acceleration"
               initialValue={false}
               onNativeChange={onAccelChange}
-            />
-            <br />
-            <br />
-            <h3>Working On</h3>
-            <ListBoxInput
-              label="Work On"
-              name="listToShow"
-              defaultValue="actions"
-              options={[
-                { value: 'actions', label: 'Actions' },
-                { value: 'recipes', label: 'Recipes' },
-              ]}
             />
           </ul>
         </div>

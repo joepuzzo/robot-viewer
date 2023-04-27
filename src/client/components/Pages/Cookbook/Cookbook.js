@@ -5,33 +5,22 @@ import Select from '../../Informed/Select';
 import { useFieldState, useFormApi } from 'informed';
 import { usetPost } from '../../../hooks/usePost';
 
-import { Flex, Button, ActionButton } from '@adobe/react-spectrum';
+import { Flex, ActionButton, Item, TabList, TabPanels, Tabs } from '@adobe/react-spectrum';
 import { useGet } from '../../../hooks/useGet';
 import ListBoxInput from '../../Informed/Listbox';
 import { Waypoints } from '../../Nav/Waypoints';
+import { If } from '../../Shared/If';
 
-export const Cookbook = () => {
+/* -------------------------- Actions -------------------------- */
+const Actions = ({ allWaypoints, getWaypoints }) => {
   const formApi = useFormApi();
 
-  const [{ data: allWaypoints, loading: getLoading, error: getError }, getWaypoints] = useGet();
-
-  useEffect(() => {
-    getWaypoints({ url: `/waypoints/all` });
-  }, []);
+  const { value: selectedAction } = useFieldState('selectedAction');
 
   const [{ error: postError, loading: postLoading }, postWaypoints] = usetPost({
     headers: { ContentType: 'application/json' },
-  });
-
-  const [{ data: allRecipes, loading: loadingRecipes }, getRecipes] = useGet();
-  useEffect(() => {
-    getRecipes({ url: `/recipes/all` });
-  }, []);
-
-  const [{}, postRecipes] = usetPost({
-    headers: { ContentType: 'application/json' },
     onComplete: () => {
-      getRecipes({ url: `/recipes/all` });
+      getWaypoints({ url: `/waypoints/all` });
     },
   });
 
@@ -46,18 +35,6 @@ export const Cookbook = () => {
     }
     return [];
   }, [allWaypoints]);
-
-  const recipeOptions = useMemo(() => {
-    if (allRecipes) {
-      return Object.keys(allRecipes).map((name) => {
-        return {
-          value: name,
-          label: name,
-        };
-      });
-    }
-    return [];
-  }, [allRecipes]);
 
   const addAction = useCallback(() => {
     const newActionName = formApi.getFormState().values.filename;
@@ -75,83 +52,130 @@ export const Cookbook = () => {
     }
   }, [allWaypoints]);
 
-  const { value: selectedAction } = useFieldState('selectedAction');
-  const { value: listToShow } = useFieldState('listToShow');
+  return (
+    <Flex direction="row" gap="size-600">
+      <Flex direction="column">
+        <h3>Add New Action</h3>
+        <Flex direction="row" alignItems="end" gap="size-100">
+          <Input name="filename" label="Action Name" autocomplete="off" />
+          <ActionButton type="button" minWidth="100px" onPress={addAction}>
+            Add Action
+          </ActionButton>
+        </Flex>
+        <h3>Select Existing Action</h3>
+        <ListBoxInput
+          label="Action"
+          name="selectedAction"
+          defaultValue="na"
+          options={[{ value: 'na', label: 'Example' }, ...actionOptions]}
+        />
+      </Flex>
+      <Flex direction="column" UNSAFE_style={{ width: '100%' }}>
+        <If condition={selectedAction}>
+          <Waypoints currentWaypoints={allWaypoints?.[selectedAction]} column />
+        </If>
+      </Flex>
+    </Flex>
+  );
+};
+
+/* -------------------------- Recipies -------------------------- */
+const Recipies = ({ allWaypoints }) => {
+  const formApi = useFormApi();
+
   const { value: selectedRecipe } = useFieldState('selectedRecipe');
+
+  const [{ data: allRecipes, loading, error }, getRecipes] = useGet();
+  useEffect(() => {
+    getRecipes({ url: `/recipes/all` });
+  }, []);
+
+  const [{}, postRecipes] = usetPost({
+    headers: { ContentType: 'application/json' },
+    onComplete: () => {
+      getRecipes({ url: `/recipes/all` });
+    },
+  });
+
+  const recipeOptions = useMemo(() => {
+    if (allRecipes) {
+      return Object.keys(allRecipes).map((name) => {
+        return {
+          value: name,
+          label: name,
+        };
+      });
+    }
+    return [];
+  }, [allRecipes]);
+
+  return (
+    <Flex direction="row" gap="size-600">
+      <Flex direction="column" gap="size-100">
+        <h3>Create Recipe</h3>
+        <Flex direction="row" alignItems="end" gap="size-100">
+          <Input name="recipeName" label="Recipe Name" autocomplete="off" />
+          <ActionButton
+            type="button"
+            minWidth="100px"
+            onPress={() => {
+              const newRecipeName = formApi.getFormState().values.recipeName;
+              if (!allRecipes?.[newRecipeName]) {
+                allRecipes[newRecipeName] = [];
+                postRecipes({ payload: [], url: `/recipes/save/${newRecipeName}` });
+              }
+            }}
+          >
+            Add Recipe
+          </ActionButton>
+        </Flex>
+        <h3>Select Existing Recipe</h3>
+        <If condition={recipeOptions}>
+          <ListBoxInput
+            label="Recipe"
+            name="selectedRecipe"
+            defaultValue={recipeOptions[0]?.value}
+            options={[...recipeOptions]}
+          />
+        </If>
+      </Flex>
+      <Flex direction="column" UNSAFE_style={{ width: '100%' }}>
+        <If condition={allRecipes?.[selectedRecipe]}>
+          <Recipe
+            recipe={allRecipes?.[selectedRecipe]}
+            allActions={Object.keys(allWaypoints || {})}
+          />
+        </If>
+      </Flex>
+    </Flex>
+  );
+};
+
+/* -------------------------- Cookbook -------------------------- */
+
+export const Cookbook = () => {
+  const [{ data: allWaypoints, loading, error }, getWaypoints] = useGet();
+
+  useEffect(() => {
+    getWaypoints({ url: `/waypoints/all` });
+  }, []);
 
   return (
     <div style={{ width: '100%' }}>
-      <Flex direction="row" gap="size-600">
-        {listToShow === 'actions' && (
-          <Flex direction="column">
-            <h3>Add New Action</h3>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <Input
-                name="filename"
-                label="Action Name"
-                placeholder="New Action Name"
-                autocomplete="off"
-              />
-              <ActionButton type="button" minWidth="100px" onPress={addAction}>
-                Add Action
-              </ActionButton>
-            </Flex>
-            <h3>Select Existing Action</h3>
-            <ListBoxInput
-              label="Action"
-              name="selectedAction"
-              defaultValue="na"
-              options={[{ value: 'na', label: 'Example' }, ...actionOptions]}
-            />
-          </Flex>
-        )}
-        {listToShow === 'recipes' && (
-          <Flex direction="column" gap="size-100">
-            <h3>Create Recipe</h3>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <Input
-                name="recipeName"
-                label="Recipe Name"
-                placeholder="New Recipe Name"
-                autocomplete="off"
-              />
-              <ActionButton
-                type="button"
-                minWidth="100px"
-                onPress={() => {
-                  const newRecipeName = formApi.getFormState().values.recipeName;
-                  if (!allRecipes?.[newRecipeName]) {
-                    allRecipes[newRecipeName] = [];
-                    postRecipes({ payload: [], url: `/recipes/save/${newRecipeName}` });
-                  }
-                }}
-              >
-                Add Recipe
-              </ActionButton>
-            </Flex>
-            <h3>Select Existing Recipe</h3>
-            {loadingRecipes ? null : (
-              <ListBoxInput
-                label="Recipe"
-                name="selectedRecipe"
-                defaultValue={recipeOptions[0]?.value}
-                options={[...recipeOptions]}
-              />
-            )}
-          </Flex>
-        )}
-        <Flex direction="column" UNSAFE_style={{ width: '100%' }}>
-          {listToShow === 'actions' && selectedAction && (
-            <Waypoints currentWaypoints={allWaypoints?.[selectedAction]} column />
-          )}
-          {listToShow === 'recipes' && selectedRecipe && (
-            <Recipe
-              recipe={allRecipes?.[selectedRecipe]}
-              allActions={Object.keys(allWaypoints || {})}
-            />
-          )}
-        </Flex>
-      </Flex>
+      <Tabs aria-label="Waypoints And Recipies">
+        <TabList>
+          <Item key="actions">Actions</Item>
+          <Item key="recipies">Recipies</Item>
+        </TabList>
+        <TabPanels>
+          <Item key="actions">
+            <Actions allWaypoints={allWaypoints} getWaypoints={getWaypoints} />
+          </Item>
+          <Item key="recipies">
+            <Recipies allWaypoints={allWaypoints} />
+          </Item>
+        </TabPanels>
+      </Tabs>
     </div>
   );
 };

@@ -229,6 +229,7 @@ canvas {
   align-items: flex-start;
   gap: 30px;
   width: 100%;
+  margin-top: 1rem;
 }
 
 .waypoints-column {
@@ -290,4 +291,9 @@ button {
 
 button[aria-label='Information'] {
   border: none !important;
+}
+
+span[class^='spectrum-Tabs-itemLabel'] {
+  background-color: inherit;
+  padding: 0px 10px;
 }
