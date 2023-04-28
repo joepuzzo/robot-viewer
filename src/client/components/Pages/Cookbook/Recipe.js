@@ -64,9 +64,11 @@ export const Recipe = ({ recipe, allActions }) => {
   const save = useCallback(() => {
     const { values } = formApi.getFormState();
 
-    const { recipes, recipeName } = values;
+    const { recipes, recipeName, selectedRecipe } = values;
 
-    postRecipe({ payload: recipes, url: `/recipes/save/${recipeName}` });
+    const name = selectedRecipe || recipeName;
+
+    postRecipe({ payload: recipes, url: `/recipes/save/${name}` });
   }, []);
 
   const load = useCallback(() => {

@@ -401,7 +401,7 @@ export const RobotNav = () => {
           <MoveUpDown />
         </ActionButton> */}
         <br />
-        <Switch name="runOnRobot" label="Run On Robot" initialValue={true} />
+        <Switch name="runOnRobot" label="Run On Robot" initialValue={false} />
         <br />
         {/* <ActionButton
           title="Switch Theme"

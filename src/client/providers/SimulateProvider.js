@@ -87,19 +87,25 @@ const SimulateProvider = ({ children }) => {
     if (waypoints && waypoints.length !== i) {
       // Get the waypoint
       // const { x, y, z, r1, r2, r3 } = waypoints[i];
-      const { x, y, z, orientation, speed, grip } = waypoints[i];
+      const { x, y, z, r1, r2, r3, orientation, speed, grip, gripper } = waypoints[i];
 
       const { wait } = waypoints[i - 1] ? waypoints[i - 1] : 0;
 
       console.log('WAIT', wait);
 
       setTimeout(() => {
-        if (orientation != 'g') {
+        // If we are not a gripper command
+        if (!gripper) {
           console.log('Going to waypoint', i, 'pos', waypoints[i]);
           // Get rotations
-          const [r1, r2, r3] = getZXZ(orientation);
+          let rotations = [r1, r2, r3];
+          // Rotations might be "x", "y", "z"
+          if (orientation != 'c') {
+            rotations = getZXZ(orientation);
+          }
+          const [rot1, rot2, rot3] = rotations;
           // Update the robot
-          updateRobot(x, y, z, r1, r2, r3, speed);
+          updateRobot(x, y, z, rot1, rot2, rot3, speed);
         } else {
           // Update the gripper
           updateGripper(grip ? 20 : 60);
@@ -112,7 +118,8 @@ const SimulateProvider = ({ children }) => {
         setSimulating({ ...current, step: nextStep });
 
         // If we are a grip action and are not running on robot just go to next step
-        if (orientation == 'g' && !runOnRobot) {
+        console.log('HMM', gripper);
+        if (gripper && !runOnRobot) {
           robotUpdate(nextStep);
         }
       }, wait * 1000);

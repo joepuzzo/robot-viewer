@@ -249,6 +249,7 @@ canvas {
 
 .waypoint {
   padding: 5px;
+  overflow: scroll;
 }
 
 .icon-red svg {

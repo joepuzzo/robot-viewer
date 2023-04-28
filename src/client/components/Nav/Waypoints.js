@@ -249,12 +249,19 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                           }`}
                         >
                           <Flex direction="row" alignItems="end" gap="size-100" width={460}>
+                            <Switch
+                              name="gripper"
+                              defaultValue={false}
+                              isDisabled={loading}
+                              label="Gripper"
+                            />
                             <Select
                               isDisabled={loading}
                               width={100}
                               defaultValue="z"
                               name="orientation"
-                              minWidth="70px"
+                              label="Orientation"
+                              minWidth="110px"
                               aria-label="Select Oriantaion"
                               options={[
                                 { label: 'X', value: 'x' },
@@ -263,7 +270,7 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                                 { label: '-Y', value: '-y' },
                                 { label: 'Z', value: 'z' },
                                 { label: '-Z', value: '-z' },
-                                { label: 'G', value: 'g' },
+                                { label: 'Custom', value: 'c' },
                               ]}
                             />
                             <NumberInput
@@ -276,7 +283,7 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                             />
                             <Relevant
                               when={({ scope, formApi }) =>
-                                formApi.getValue(`${scope}.orientation`) != 'g'
+                                formApi.getValue(`${scope}.grip`) == null
                               }
                             >
                               <NumberInput
@@ -303,6 +310,36 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                                 width={90}
                                 isDisabled={loading}
                               />
+                              <Relevant
+                                when={({ scope, formApi }) =>
+                                  formApi.getValue(`${scope}.orientation`) == 'c'
+                                }
+                              >
+                                <NumberInput
+                                  name="r1"
+                                  label="R1"
+                                  hideStepper
+                                  defaultValue={0}
+                                  width={90}
+                                  isDisabled={loading}
+                                />
+                                <NumberInput
+                                  name="r2"
+                                  label="R2"
+                                  hideStepper
+                                  defaultValue={0}
+                                  width={90}
+                                  isDisabled={loading}
+                                />
+                                <NumberInput
+                                  name="r3"
+                                  label="R3"
+                                  hideStepper
+                                  defaultValue={0}
+                                  width={90}
+                                  isDisabled={loading}
+                                />
+                              </Relevant>
                               {/* <NumberInput name="r1" label="R1" hideStepper defaultValue={0} />
                     <NumberInput name="r2" label="R2" hideStepper defaultValue={0} />
                     <NumberInput name="r3" label="R3" hideStepper defaultValue={0} /> */}
@@ -316,11 +353,14 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                               />
                             </Relevant>
                             <Relevant
-                              when={({ scope, formApi }) =>
-                                formApi.getValue(`${scope}.orientation`) === 'g'
-                              }
+                              when={({ scope, formApi }) => formApi.getValue(`${scope}.gripper`)}
                             >
-                              <Switch name="grip" defaultValue={false} isDisabled={loading} />
+                              <Switch
+                                name="grip"
+                                defaultValue={false}
+                                isDisabled={loading}
+                                label="Grip"
+                              />
                             </Relevant>
                             <ArrayButtons
                               index={index}
