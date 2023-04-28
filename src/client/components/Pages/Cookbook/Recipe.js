@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ActionButton, Flex, ProgressCircle } from '@adobe/react-spectrum';
 import Select from '../../Informed/Select';
+import Switch from '../../Informed/Switch';
 import { ArrayField, Debug, Relevant, useArrayFieldState, useFormApi } from 'informed';
 import useSimulateController from '../../../hooks/useSimulateController';
 import useSimulateState from '../../../hooks/useSimulateState';
@@ -91,6 +92,7 @@ export const Recipe = ({ recipe, allActions, getRecipes }) => {
         <ActionButton type="button" onPress={save} minWidth="100px" isDisabled={loading}>
           Save Recipe
         </ActionButton>
+        <Switch name="repeat" label="Repeat" initialValue={false} />
       </Flex>
       <ArrayField
         name="recipes"
