@@ -41,7 +41,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   );
 };
 
-export const Recipe = ({ recipe, allActions }) => {
+export const Recipe = ({ recipe, allActions, getRecipes }) => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
@@ -54,6 +54,9 @@ export const Recipe = ({ recipe, allActions }) => {
 
   const [{ error: postError, loading: postLoading }, postRecipe] = usetPost({
     headers: { ContentType: 'application/json' },
+    onComplete: () => {
+      getRecipes({ url: `/recipes/all` });
+    },
   });
 
   const [{ data, loading: getLoading, error: getError }, getWaypoints] = useGet();

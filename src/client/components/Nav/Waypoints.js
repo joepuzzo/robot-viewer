@@ -2,10 +2,19 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ActionButton, Flex, ProgressCircle } from '@adobe/react-spectrum';
 import useSimulateController from '../../hooks/useSimulateController';
 import NumberInput from '../Informed/NumberInput';
+import Input from '../Informed/Input';
 import Select from '../Informed/Select';
 import Switch from '../Informed/Switch';
-import Input from '../Informed/Input';
-import { ArrayField, Debug, DebugField, Relevant, useArrayFieldState, useFormApi } from 'informed';
+import {
+  ArrayField,
+  Debug,
+  DebugField,
+  Relevant,
+  useArrayFieldState,
+  useField,
+  useFieldState,
+  useFormApi,
+} from 'informed';
 import useSimulateState from '../../hooks/useSimulateState';
 import { usetPost } from '../../hooks/usePost';
 import { useGet } from '../../hooks/useGet';
@@ -46,10 +55,11 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
   );
 };
 
-export const Waypoints = ({ currentWaypoints, column }) => {
+export const Waypoints = ({ currentWaypoints, column, getAllWaypoints }) => {
   const { play } = useSimulateController();
   const { simulating } = useSimulateState();
   const formApi = useFormApi();
+  const { value: waypointLabels } = useFieldState('waypointLabels');
 
   // const defaultValue = [
   //   {
@@ -140,16 +150,18 @@ export const Waypoints = ({ currentWaypoints, column }) => {
       z: 10,
       orientation: '-z',
     },
-    {},
   ];
 
   const arrayFieldApiRef = useRef();
 
+  const [{ data: waypointsData, loading: getLoading, error: getError }, getWaypoints] = useGet();
+
   const [{ error: postError, loading: postLoading }, postWaypoints] = usetPost({
     headers: { ContentType: 'application/json' },
+    onComplete: () => {
+      getAllWaypoints({ url: `/waypoints/all` });
+    },
   });
-
-  const [{ data: waypointsData, loading: getLoading, error: getError }, getWaypoints] = useGet();
 
   // Use user waypoints or loaded waypoints
   const data = currentWaypoints || waypointsData;
@@ -223,6 +235,7 @@ export const Waypoints = ({ currentWaypoints, column }) => {
           <ActionButton type="button" onPress={save} minWidth="120px" isDisabled={loading}>
             Save Waypoints
           </ActionButton>
+          <Switch name="waypointLabels" label="Show Labels" initialValue={false} />
         </Flex>
         <br />
         <br />
@@ -249,6 +262,12 @@ export const Waypoints = ({ currentWaypoints, column }) => {
                           }`}
                         >
                           <Flex direction="row" alignItems="end" gap="size-100" width={460}>
+                            <Input
+                              name="label"
+                              label="Label"
+                              minWidth="110px"
+                              hidden={!waypointLabels}
+                            />
                             <Switch
                               name="gripper"
                               defaultValue={false}

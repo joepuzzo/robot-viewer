@@ -72,7 +72,11 @@ const Actions = ({ allWaypoints, getWaypoints }) => {
       </Flex>
       <Flex direction="column" UNSAFE_style={{ width: '100%' }}>
         <If condition={selectedAction}>
-          <Waypoints currentWaypoints={allWaypoints?.[selectedAction]} column />
+          <Waypoints
+            currentWaypoints={allWaypoints?.[selectedAction]}
+            column
+            getAllWaypoints={getWaypoints}
+          />
         </If>
       </Flex>
     </Flex>
@@ -121,12 +125,13 @@ const Recipies = ({ allWaypoints }) => {
 
       const actions = allRecipesRef.current[value];
       if (actions) {
-        console.log('ACTIONS', actions);
+        // console.log('ACTIONS', actions);
         // Now compone all those waypoints
         const waypoints = actions.reduce((acc, cur, i) => {
           // Get actions out of all waypoints
           const action = allWaypointsRef.current[cur.action];
           // console.log('ACTION', action);
+          // console.log('ACC', acc);
           return [...acc, ...action];
         }, []);
 
@@ -173,6 +178,7 @@ const Recipies = ({ allWaypoints }) => {
           <Recipe
             recipe={allRecipes?.[selectedRecipe]}
             allActions={Object.keys(allWaypoints || {})}
+            getRecipes={getRecipes}
           />
         </If>
       </Flex>
