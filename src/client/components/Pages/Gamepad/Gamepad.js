@@ -127,7 +127,7 @@ export const Gamepad = () => {
                       minValue={-1}
                       maxValue={1}
                       formatOptions={{ style: 'decimal' }}
-                      value={axes}
+                      value={Math.abs(axes) < 0.075 ? 0 : axes}
                       maxWidth="size-2000"
                     />
                   </Cell>
