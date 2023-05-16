@@ -49,6 +49,7 @@ export const Header = () => {
         <NavLink href="/cookbook">Cookbook</NavLink>
         <NavLink href="/framer">Framer</NavLink>
         <NavLink href="/builder">Builder</NavLink>
+        <NavLink href="/gamepad">Gamepad</NavLink>
         {/* <li className={`spectrum-SideNav-item`}>
           <a href="/static/KinematicsDiagram.pdf" className="spectrum-SideNav-itemLink">
             Kinematics

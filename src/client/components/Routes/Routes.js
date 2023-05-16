@@ -8,6 +8,7 @@ import { Motor } from '../Pages/Motor/Motor';
 import { NotFound } from '../Pages/NotFound/NotFound';
 import { Framer } from '../Pages/Framer/Framer';
 import { Builder } from '../Pages/Builder/Builder';
+import { Gamepad } from '../Pages/Gamepad/Gamepad';
 
 // Routes ------------------------------------------------------------
 
@@ -19,6 +20,7 @@ export const Routes = () => {
       <Route path="/cookbook" element={<Cookbook />} />
       <Route path="/framer" element={<Framer />} />
       <Route path="/builder" element={<Builder />} />
+      <Route path="/gamepad" element={<Gamepad />} />
       <Route path="*" element={<NotFound />} />
     </RouterRoutes>
   );

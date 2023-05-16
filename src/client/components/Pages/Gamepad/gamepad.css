@@ -1,0 +1,45 @@
+/* button grid */
+#buttons {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(min-content, max-content));
+  grid-gap: 15px;
+  justify-content: center;
+  justify-items: start;
+}
+
+.button {
+  background-color: rgb(223, 222, 222);
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+}
+
+.button-text-area {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.button-name {
+  color: grey;
+}
+
+/* controller */
+
+.selected-button {
+  fill: rgb(231, 24, 24);
+}
+
+/* axes */
+
+.axis-name {
+  color: grey;
+  font-weight: bolder;
+}
+
+.axis-value {
+  color: rgb(126, 54, 54);
+}
+
+a {
+  color: red;
+}
