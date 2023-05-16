@@ -12,6 +12,7 @@ import {
   TableView,
 } from '@adobe/react-spectrum';
 import React, { useCallback, useEffect, useState } from 'react';
+import useGamepad from '../../../hooks/useGamepad';
 import { Status } from '../../Shared/Status';
 import './gamepad.css';
 
@@ -29,42 +30,7 @@ function updateStick(elementId, leftRightAxis, upDownAxis) {
 }
 
 export const Gamepad = () => {
-  const [connected, setConnected] = useState();
-  const [gamepad, setGamepad] = useState({});
-  const [buttons, setButtons] = useState([]);
-  const [axes, setAxes] = useState([]);
-
-  const handleConnect = useCallback((event) => {
-    const gamepad = event.gamepad;
-    console.log('Connect', gamepad);
-
-    setConnected(true);
-    setGamepad(gamepad);
-    setButtons(gamepad.buttons);
-    setAxes(gamepad.axes);
-  }, []);
-
-  const handleDisconnect = useCallback(() => {
-    const gamepad = event.gamepad;
-    console.log('Disconnect', gamepad);
-
-    setConnected(false);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('gamepadconnected', handleConnect);
-    window.addEventListener('gamepaddisconnected', handleDisconnect);
-
-    return () => {
-      if (handleConnect) {
-        window.removeEventListener('gamepadconnected', handleConnect);
-        window.removeEventListener('gamepaddisconnected', handleDisconnect);
-        setGamepad({});
-        setButtons([]);
-        setAxes([]);
-      }
-    };
-  }, []);
+  const { buttons, axes, gamepad, connected, setButtons, setAxes } = useGamepad();
 
   const updateStatus = useCallback(() => {
     const gamepadData = navigator.getGamepads()[0];
@@ -98,6 +64,10 @@ export const Gamepad = () => {
 
   useEffect(() => {
     requestAnimationFrame(updateStatus);
+
+    // return () => {
+    //   cancelRequestAnimationFrame(updateStatus);
+    // };
   }, [updateStatus]);
 
   return (
@@ -119,7 +89,7 @@ export const Gamepad = () => {
           <TableBody>
             {axes.map((axes, index) => {
               return (
-                <Row>
+                <Row key={`axes-${index}`}>
                   <Cell>Axes {index}</Cell>
                   <Cell>
                     <ProgressBar
@@ -488,7 +458,7 @@ export const Gamepad = () => {
           <TableBody>
             {buttons.map((button, index) => {
               return (
-                <Row>
+                <Row key={`button-${index}`}>
                   <Cell>Button {index}</Cell>
                   <Cell>
                     <ProgressBar

@@ -26,18 +26,21 @@ import '@spectrum-css/typography/dist/index-vars.css';
 import '@spectrum-css/sidenav/dist/index-vars.css';
 
 import './index.css';
+import GamepadProvider from './providers/GamepadProvider.js';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
   <AppProvider>
     <Informed>
-      <ControlProvider>
-        <RobotProvider>
-          <SimulateProvider>
-            <App />
-          </SimulateProvider>
-        </RobotProvider>
-      </ControlProvider>
+      <GamepadProvider>
+        <ControlProvider>
+          <RobotProvider>
+            <SimulateProvider>
+              <App />
+            </SimulateProvider>
+          </RobotProvider>
+        </ControlProvider>
+      </GamepadProvider>
     </Informed>
   </AppProvider>,
   rootElement

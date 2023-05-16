@@ -9,6 +9,7 @@ import { toDeg } from '../../../lib/toDeg';
 import ArmContext from '../../context/ArmContext';
 import { If } from '../Shared/If';
 import { Joint } from './Joint';
+import useGamepad from '../../hooks/useGamepad';
 
 function useDrag(onDrag, onStart, onEnd, toggle) {
   const active = React.useRef(false);
@@ -177,6 +178,48 @@ const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...pro
       // document.removeEventListener('keyup', handleKeyUp)
     };
   }, [spacePress]);
+
+  // -------- Now add gamepad control -----------
+  const { buttons, axes, gamepad, connected, setButtons, setAxes } = useGamepad();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const gamepadData = navigator.getGamepads()[0];
+
+      if (gamepadData) {
+        setButtons(gamepadData.buttons);
+        setAxes(gamepadData.axes);
+
+        let plusX = 0;
+        let plusY = 0;
+        let plusZ = 0;
+
+        // Only update if value is over 0.1
+        if (Math.abs(gamepadData.axes[0]) > 0.1) {
+          plusX = gamepadData.axes[0];
+        }
+        if (Math.abs(gamepadData.axes[1]) > 0.1) {
+          plusY = -gamepadData.axes[1];
+        }
+        if (Math.abs(gamepadData.axes[3]) > 0.1) {
+          plusZ = -gamepadData.axes[3];
+        }
+
+        if (Math.abs(plusX) + Math.abs(plusY) + Math.abs(plusZ) > 0) {
+          setPosition(([x, y, z, r1, r2, r3]) => {
+            // console.log('Update From Gamepad');
+            return [x + plusX, y + plusY, z + plusZ, r1, r2, r3];
+          });
+        }
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // console.log('RENDER POS');
 
   // ...bind
   return (

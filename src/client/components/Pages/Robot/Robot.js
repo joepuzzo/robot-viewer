@@ -182,6 +182,11 @@ function Info() {
             To rotate the euler angles ( change orientation of the end effector ), use the a,s,d,w
             keys.
           </Text>
+          <br />
+          <br />
+          <Text>
+            In addition you can plug in a gamepad controller and use the joysticks to move the arm.
+          </Text>
         </Content>
       </ContextualHelp>
       <Text>How to control the arm</Text>
