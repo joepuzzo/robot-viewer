@@ -1,40 +1,23 @@
 import { ActionButton, Flex } from '@adobe/react-spectrum';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
+
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
 
 import useMedia from '../../hooks/useMedia';
 import useApp from '../../hooks/useApp';
-
-const NavLink = ({ children, href, ...rest }) => {
-  const navigate = useNavigate();
-
-  const onClick = (e) => {
-    e.preventDefault();
-    navigate(href);
-  };
-
-  let location = useLocation();
-  const isSelected = href === location.pathname;
-
-  return (
-    <li className={`spectrum-SideNav-item ${isSelected ? 'is-selected' : ''}`}>
-      <a {...rest} onClick={onClick} className="spectrum-SideNav-itemLink">
-        {children}
-      </a>
-    </li>
-  );
-};
+import { NavLink } from '../Shared/NavLink';
 
 export const Header = () => {
   // header contents modal open state when resize
   const { isDesktopUp } = useMedia();
   const { toggleNav } = useApp();
 
+  console.log('isDesktopUp', isDesktopUp);
+
   // For resizing header
-  window.addEventListener('resize', () => {
-    setModalOpen(false);
-  });
+  // window.addEventListener('resize', () => {
+  //   setModalOpen(false);
+  // });
 
   return (
     <header className="pageHeader">
@@ -44,12 +27,16 @@ export const Header = () => {
             <ShowMenu />
           </ActionButton>
         ) : null}
-        <NavLink href="/">Robot</NavLink>
-        <NavLink href="/motor">Motor</NavLink>
-        <NavLink href="/cookbook">Cookbook</NavLink>
-        <NavLink href="/framer">Framer</NavLink>
-        <NavLink href="/builder">Builder</NavLink>
-        <NavLink href="/gamepad">Gamepad</NavLink>
+        {isDesktopUp ? (
+          <>
+            <NavLink href="/">Robot</NavLink>
+            <NavLink href="/motor">Motor</NavLink>
+            <NavLink href="/cookbook">Cookbook</NavLink>
+            <NavLink href="/framer">Framer</NavLink>
+            <NavLink href="/builder">Builder</NavLink>
+            <NavLink href="/gamepad">Gamepad</NavLink>
+          </>
+        ) : null}
         {/* <li className={`spectrum-SideNav-item`}>
           <a href="/static/KinematicsDiagram.pdf" className="spectrum-SideNav-itemLink">
             Kinematics

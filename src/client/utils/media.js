@@ -27,6 +27,7 @@ export const isTabletLandscapeOnly = () => isMedia('tablet-landscape-only');
 export const isTabletLandscapeUp = () => isMedia('tablet-landscape-up');
 export const isDesktopOnly = () => isMedia('desktop-only');
 export const isDesktopUp = () => isMedia('desktop-up');
+export const isDesktopBigUp = () => isMedia('desktop-big-up');
 export const isDesktopLargeUp = () => isMedia('desktop-large-up');
 
 /**

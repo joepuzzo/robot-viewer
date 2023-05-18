@@ -6,6 +6,7 @@
   "tablet-landscape-up": "(min-width: 900px)",
   "desktop-only": "(min-width: 1200px) and (max-width: 1799px)",
   "desktop-up": "(min-width: 1200px)",
+  "desktop-big-up": "(min-width: 1600px)",
   "desktop-large-up": "(min-width: 1800px)",
   "density--2x": "only screen and (-o-min-device-pixel-ratio: 5/4), only screen and (-webkit-min-device-pixel-ratio: 1.25), only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 1.25dppx)",
   "density--3x": "only screen and (-o-min-device-pixel-ratio: 9/4), only screen and (-webkit-min-device-pixel-ratio: 2.25), only screen and (min-device-pixel-ratio: 2.25), only screen and (min-resolution: 2.25dppx)",

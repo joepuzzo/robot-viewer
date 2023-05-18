@@ -2,14 +2,19 @@ import React, { useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 // Hooks
-import useApp from '../../hooks/useApp';
+import useMedia from '../../hooks/useMedia';
 
-import useOutsideAlerter from '../../hooks/useOutsideAlerter';
 import { BuilderData } from './BuilderData';
 import { MotorData } from './MotorData';
 import { RobotData } from './RobotData';
 
 export const Data = () => {
+  const { isDesktopBigUp } = useMedia();
+
+  if (!isDesktopBigUp) {
+    return null;
+  }
+
   return (
     <Routes>
       <Route path="/" element={<RobotData />} />
