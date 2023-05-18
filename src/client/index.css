@@ -90,6 +90,10 @@ main {
   color: var(--spectrum-sidenav-item-text-color-hover, var(--spectrum-alias-text-color-hover));
 }
 
+.spectrum-SideNav-itemLink {
+  white-space: nowrap;
+}
+
 .extra {
   display: none;
   background: var(--spectrum-global-color-gray-200);
@@ -140,12 +144,12 @@ main {
   min-width: 700px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1600px) {
   .databar {
     /* z-index: 100; */
     visibility: hidden;
     outline: 0;
-    transition: transform 0.2s, visibility 0s 0.2s;
+    /* transition: transform 0.2s, visibility 0s 0.2s; */
     position: fixed;
     inset: 0 100% 0 auto;
     top: 0;
@@ -156,6 +160,8 @@ main {
     visibility: unset;
     transition-delay: 0s;
     /* transform: translate(calc(100% - 280px)); */
+    /* transform: translate(100%); */
+    position: relative;
   }
 }
 
@@ -297,4 +303,33 @@ button[aria-label='Information'] {
 span[class^='spectrum-Tabs-itemLabel'] {
   background-color: inherit;
   padding: 0px 10px;
+}
+
+.robot-info {
+  display: flex;
+  margin: 12px;
+  background-color: black;
+  padding: 10px 10px;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.robot-info div {
+  color: rgb(212, 205, 205);
+  flex-grow: 1;
+  flex: 1 1 0px;
+}
+
+/* .robot-info.angles div {
+  width: 90px;
+}
+
+.robot-info.location div {
+  width: 60px;
+} */
+
+.robot-info div strong {
+  color: rgb(151, 48, 48);
+  /* color: rgb(187, 125, 33); */
 }

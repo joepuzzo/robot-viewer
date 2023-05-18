@@ -1,11 +1,14 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useApp from '../../hooks/useApp';
 
 export const NavLink = ({ children, href, ...rest }) => {
   const navigate = useNavigate();
+  const { closeData } = useApp();
 
   const onClick = (e) => {
     e.preventDefault();
+    closeData();
     navigate(href);
   };
 

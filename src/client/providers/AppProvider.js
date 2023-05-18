@@ -9,6 +9,7 @@ import { useGet } from '../hooks/useGet';
 const AppProvider = ({ children }) => {
   const [colorScheme, setColorScheme] = useState('dark');
   const [navOpen, setNavOpen] = useState(false);
+  const [dataOpen, setDataOpen] = useState(false);
   const [extraOpen, setExtraOpen] = useState(false);
   const [orbitEnabled, setOrbitalEnabled] = useState(true);
 
@@ -190,6 +191,14 @@ const AppProvider = ({ children }) => {
     document.getElementById('app').classList.toggle('app-extra');
   };
 
+  const toggleData = () => {
+    setDataOpen((prev) => !prev);
+  };
+
+  const closeData = () => {
+    setDataOpen(false);
+  };
+
   const orbitControl = useRef();
   const cameraControl = useRef();
 
@@ -216,6 +225,9 @@ const AppProvider = ({ children }) => {
     control,
     extraOpen,
     toggleExtra,
+    toggleData,
+    dataOpen,
+    closeData,
     robotTypes,
     selectRobot,
     socket: socketRef.current,

@@ -7,6 +7,7 @@ export const Extra = () => {
   return (
     <Routes>
       <Route path="/" element={<RobotExtra />} />
+      <Route path="*" element={null} />
     </Routes>
   );
 };

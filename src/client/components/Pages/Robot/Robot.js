@@ -31,7 +31,7 @@ const Control = ({ controlRef, virtualCam }) => {
   const { values } = useFormState();
   const formApi = useFormApi();
   const { updateRobot, setBallRef } = useRobotController();
-  const { config } = useApp();
+  const { config, dataOpen } = useApp();
 
   const { zeroPosition } = config;
 
@@ -195,7 +195,7 @@ function Info() {
 }
 
 export const Robot = () => {
-  const { config, orbitEnabled, toggleOrbital, orbitControl, cameraControl } = useApp();
+  const { config, orbitEnabled, toggleOrbital, orbitControl, cameraControl, dataOpen } = useApp();
 
   const { values, errors, initialValues } = useFormState();
   const formApi = useFormApi();
@@ -243,32 +243,47 @@ export const Robot = () => {
 
   return (
     <>
-      <h3>
-        Angles:{' '}
-        {JSON.stringify(
-          angles.map((a) => round(a, 100)),
-          null,
-          2
-        )}
-      </h3>
-      <h3>
-        Location: X: {round(endPosition.x, 1000)} {units} Y: {round(endPosition.y, 1000)} {units} Z:{' '}
-        {round(endPosition.z, 1000)} {units}
-      </h3>
+      <div className="robot-info angles" style={{ width: '560px' }}>
+        {angles.map((a, i) => (
+          <div key={`angle-${i}`}>
+            <strong>{`J${i + 1}: `}</strong>
+            {`${round(a, 100)}°`}
+          </div>
+        ))}
+      </div>
+
+      <div className="robot-info location" style={{ width: '350px' }}>
+        <div>
+          <strong>X: </strong>
+          {round(values.x, 1000)}
+        </div>
+        <div>
+          <strong>Y: </strong>
+          {round(values.y, 1000)}
+        </div>
+        <div>
+          <strong>Z: </strong>
+          {round(values.z, 1000)}
+        </div>
+        <div>
+          <strong>R1: </strong>
+          {round(values.r1, 1000)}
+        </div>
+        <div>
+          <strong>R2: </strong>
+          {round(values.r2, 1000)}
+        </div>
+        <div>
+          <strong>R3: </strong>
+          {round(values.r3, 1000)}
+        </div>
+      </div>
+
       <Control controlRef={controlRef} virtualCam={virtualCam} />
       <br />
       {/* WIDTH {window.innerWidth} / HEIGHT {window.innerHeight} */}
       <Info />
-      <Canvas
-      // camera={{
-      //   fov: 75,
-      //   aspect: window.innerWidth / window.innerHeight,
-      //   near: 0.1,
-      //   far: 10000,
-      //   position: [70, 80, 70],
-      //   zoom: 1.2,
-      // }}
-      >
+      <Canvas>
         <PerspectiveCamera
           ref={virtualCam}
           makeDefault={true}
@@ -277,7 +292,7 @@ export const Robot = () => {
           far={10000}
           near={0.1}
           position={[70, 80, 70]}
-          zoom={window.innerWidth < 780 ? 1 : 1.4}
+          zoom={window.innerWidth < 780 || dataOpen ? 1 : 1.4}
         />
         <OrbitControls enabled={orbitEnabled} ref={controlRef} />
         <ambientLight intensity={0.5} />

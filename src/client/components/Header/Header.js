@@ -2,6 +2,7 @@ import { ActionButton, Flex } from '@adobe/react-spectrum';
 import React from 'react';
 
 import ShowMenu from '@spectrum-icons/workflow/ShowMenu';
+import Table from '@spectrum-icons/workflow/Table';
 
 import useMedia from '../../hooks/useMedia';
 import useApp from '../../hooks/useApp';
@@ -9,10 +10,8 @@ import { NavLink } from '../Shared/NavLink';
 
 export const Header = () => {
   // header contents modal open state when resize
-  const { isDesktopUp } = useMedia();
-  const { toggleNav } = useApp();
-
-  console.log('isDesktopUp', isDesktopUp);
+  const { isDesktopUp, isDesktopBigUp } = useMedia();
+  const { toggleNav, toggleData } = useApp();
 
   // For resizing header
   // window.addEventListener('resize', () => {
@@ -21,10 +20,21 @@ export const Header = () => {
 
   return (
     <header className="pageHeader">
-      <Flex direction="row" justifyContent="space-between" alignItems="center" gap="size-100">
+      <Flex
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        gap="size-100"
+        UNSAFE_style={{ overflow: 'scroll' }}
+      >
         {!isDesktopUp ? (
-          <ActionButton aria-label="Open Menu" onClick={() => toggleNav()}>
+          <ActionButton aria-label="Open Menu" onPress={() => toggleNav()}>
             <ShowMenu />
+          </ActionButton>
+        ) : null}
+        {!isDesktopBigUp ? (
+          <ActionButton aria-label="Open Data" onPress={() => toggleData()}>
+            <Table />
           </ActionButton>
         ) : null}
         {isDesktopUp ? (
