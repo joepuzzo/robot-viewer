@@ -252,20 +252,21 @@ export const Robot = () => {
         ))}
       </div>
 
-      <div className="robot-info location" style={{ width: '350px' }}>
+      {/* Reminder .. I use endPosition because this shows FORWARD kinematics not the set values */}
+      <div className="robot-info location" style={{ width: '270px' }}>
         <div>
           <strong>X: </strong>
-          {round(values.x, 1000)}
+          {round(endPosition.x, 1000)} {units}
         </div>
         <div>
           <strong>Y: </strong>
-          {round(values.y, 1000)}
+          {round(endPosition.y, 1000)} {units}
         </div>
         <div>
           <strong>Z: </strong>
-          {round(values.z, 1000)}
+          {round(endPosition.z, 1000)} {units}
         </div>
-        <div>
+        {/* <div>
           <strong>R1: </strong>
           {round(values.r1, 1000)}
         </div>
@@ -276,7 +277,7 @@ export const Robot = () => {
         <div>
           <strong>R3: </strong>
           {round(values.r3, 1000)}
-        </div>
+        </div> */}
       </div>
 
       <Control controlRef={controlRef} virtualCam={virtualCam} />
