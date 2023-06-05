@@ -4,6 +4,7 @@ import path, { dirname } from 'path';
 import bodyParser from 'body-parser';
 
 import health from './routes/health.js';
+import camera from './routes/camera.js';
 import fail from './routes/fail.js';
 import waypoints from './routes/waypoints.js';
 import recipes from './routes/recipes.js';
@@ -22,6 +23,9 @@ const createApp = ({ corsConfig }) => {
 
   // Health endpoint
   app.use(health);
+
+  // Camera endpoint
+  app.use(camera);
 
   // Fail endpoints
   app.use('/fail', fail);

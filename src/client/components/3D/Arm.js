@@ -1,6 +1,7 @@
 // import { useDrag } from '@use-gesture/react';
-import { Line } from '@react-three/drei';
+import { Cone, Cylinder, Line } from '@react-three/drei';
 import { useSpring, animated } from '@react-spring/three';
+import { CylinderBufferGeometry, MeshStandardMaterial, DoubleSide } from 'three';
 
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Grid from './Grid';
@@ -10,6 +11,7 @@ import ArmContext from '../../context/ArmContext';
 import { If } from '../Shared/If';
 import { Joint } from './Joint';
 import useGamepad from '../../hooks/useGamepad';
+import useCamera from '../../hooks/useCamera';
 
 function useDrag(onDrag, onStart, onEnd, toggle) {
   const active = React.useRef(false);
@@ -481,6 +483,36 @@ const Component = ({
   }
 };
 
+const CameraThings = () => {
+  const data = useCamera();
+
+  if (!data) return null;
+
+  return (
+    <>
+      {data.map((obj) => {
+        const { x, y, z } = obj;
+
+        const geometry = new CylinderBufferGeometry(8, 6, 20, 30, 1, true);
+        const material = new MeshStandardMaterial({ color: 'rgb(188,49,44)', side: DoubleSide });
+
+        return (
+          <group position={[x, y, z]} rotation={[Math.PI / 2, 0, 0]}>
+            {/* <Cone args={[5, 10, 30]}>
+              <meshStandardMaterial color="hotpink" />
+            </Cone> */}
+
+            {/* <Cylinder args={[8, 6, 20, 30]}>
+              <meshStandardMaterial color="rgb(188,49,44)" />
+            </Cylinder> */}
+            <mesh geometry={geometry} material={material} />
+          </group>
+        );
+      })}
+    </>
+  );
+};
+
 /**
  *
  * @param {*} a angle in radians
@@ -569,6 +601,7 @@ export function Arm({
           toggleOrbital={toggleOrbital}
           robotController={robotController}
         />
+        <CameraThings />
       </group>
     </ArmContext.Provider>
   );

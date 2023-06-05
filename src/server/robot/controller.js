@@ -1,5 +1,6 @@
 import { RobotMessenger } from './robot-messenger.js';
 import { ClientMessenger } from './client-messenger.js';
+import { CameraMessenger } from './camera-messenger.js';
 
 import { Debug } from '../../lib/debug.js';
 const logger = Debug('robot:controller' + '');
@@ -14,10 +15,14 @@ export class Controller {
     this.robotMessenger = new RobotMessenger(io);
     // Create client messsenger so we can talk to clients
     this.clientMessenger = new ClientMessenger(io);
+    // Create camera messenger
+    this.cameraMessenger = new CameraMessenger(io);
     // Bind to bucket events
     this.subscribeToRobotMessenger();
     // Bind to client events
     this.subscribeToClientMessenger();
+    // Bind to camera events
+    this.subscribeToCameraMessenger();
   }
 
   /* -------------- Client Shit -------------- */
@@ -358,5 +363,17 @@ export class Controller {
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
     this.robotMessenger.on('moved', (...args) => this.robotMoved(...args));
     // this.robotMessenger.on('pulse', (...args) => this.pulse(...args));
+  }
+
+  /* -------------- Camera Shit -------------- */
+
+  cameraData(data) {
+    logger('data', data);
+    this.clientMessenger.send('camera', data);
+  }
+
+  subscribeToCameraMessenger() {
+    this.cameraMessenger.on('data', (...args) => this.cameraData(...args));
+    // this.cameraMessenger.start();
   }
 }

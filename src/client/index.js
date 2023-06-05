@@ -27,19 +27,22 @@ import '@spectrum-css/sidenav/dist/index-vars.css';
 
 import './index.css';
 import GamepadProvider from './providers/GamepadProvider.js';
+import CameraProvider from './providers/CameraProvider.js';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
   <AppProvider>
     <Informed>
       <GamepadProvider>
-        <ControlProvider>
-          <RobotProvider>
-            <SimulateProvider>
-              <App />
-            </SimulateProvider>
-          </RobotProvider>
-        </ControlProvider>
+        <CameraProvider>
+          <ControlProvider>
+            <RobotProvider>
+              <SimulateProvider>
+                <App />
+              </SimulateProvider>
+            </RobotProvider>
+          </ControlProvider>
+        </CameraProvider>
       </GamepadProvider>
     </Informed>
   </AppProvider>,
