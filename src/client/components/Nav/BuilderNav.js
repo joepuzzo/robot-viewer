@@ -388,7 +388,7 @@ export const BuilderNav = () => {
               name="eulerType"
               defaultValue="xyz"
               options={[
-                { value: 'xyz', label: 'XYZ ( Yaw Pitch Roll )' },
+                { value: 'xyz', label: 'XYZ ( Roll Pitch Yaw )' },
                 { value: 'zxz', label: 'ZXZ' },
               ]}
             />
