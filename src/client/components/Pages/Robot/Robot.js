@@ -24,7 +24,7 @@ import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
 import { useOverFlowHidden } from '../../../hooks/useOverflowHidden';
 import { getXYZ, getZXZ } from '../../../utils/getEulers';
-import { URDFRobot } from '../../3D/URDFRobot';
+// import { URDFRobot } from '../../3D/URDFRobot';
 
 const DEG45 = Math.PI / 4;
 
