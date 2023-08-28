@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { ActionButton, Flex } from '@adobe/react-spectrum';
+import { ActionButton, Flex, Tooltip, TooltipTrigger } from '@adobe/react-spectrum';
 
 import Select from '../Informed/Select';
 import InputSlider from '../Informed/InputSlider';
@@ -15,10 +15,12 @@ import {
   useScope,
   useScopedState,
   useFormState,
+  useFormApi,
 } from 'informed';
 import { RobotType } from '../Shared/RobotType';
 import { If } from '../Shared/If';
 import { isParallel, isPerpendicular, xIntersectsZ } from '../../utils/frame';
+import Copy from '@spectrum-icons/workflow/Copy';
 
 function areAllValuesDefined(obj = {}, keys) {
   return keys.every((key) => obj[key] != null);
@@ -369,6 +371,7 @@ const ArrayButtons = ({ index, add, remove, isDisabled }) => {
 
 export const BuilderNav = () => {
   const { values, initialValues } = useFormState();
+  const formApi = useFormApi();
 
   const defaultZoom = 6 / initialValues.frames.length;
 
@@ -491,6 +494,22 @@ export const BuilderNav = () => {
                   ))}
               </>
             </If>
+            <hr />
+            <Flex alignItems="center" gap="20px">
+              <h3>Frames</h3>
+              <TooltipTrigger>
+                <ActionButton
+                  title="copy"
+                  onPress={() => {
+                    const frameState = formApi.getFormState().values.frames;
+                    navigator.clipboard.writeText(JSON.stringify(frameState, null, 2));
+                  }}
+                >
+                  <Copy />
+                </ActionButton>
+                <Tooltip>Copy JSON - Will copy json config for this robot</Tooltip>
+              </TooltipTrigger>
+            </Flex>
             <ArrayField name="frames" defaultValue={DEFAULT_VALUE}>
               {({ add, addWithInitialValue }) => {
                 return (

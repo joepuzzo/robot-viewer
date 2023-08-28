@@ -1,0 +1,103 @@
+{
+  "robotType": "Rizon4",
+  "zeroPosition": [0, 0, 0],
+  "units": "cm",
+  "x0": 0,
+  "y0": 0,
+  "base": 15.5,
+  "endEffector": 8.1,
+  "rangej0": [-160.0, 160.0],
+  "rangej1": [-130.0, 130.0],
+  "rangej2": [-170.0, 170.0],
+  "rangej3": [-107.0, 154.0],
+  "rangej4": [-170.0, 170.0],
+  "rangej5": [-80.0, 260.0],
+  "frames": [
+    {
+      "r1": 0,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 0,
+      "z": 15.5,
+      "moveFrame": false,
+      "frameType": "rotary"
+    },
+    {
+      "r1": 90,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 0,
+      "z": 21,
+      "moveFrame": false,
+      "frameType": "rotary"
+    },
+    {
+      "r1": -90,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 20.5,
+      "z": 0,
+      "moveFrame": true,
+      "moveBackBy": -20.5,
+      "moveBack": "y",
+      "frameType": "rotary"
+    },
+    {
+      "r1": 90,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 0,
+      "z": 19,
+      "moveFrame": false,
+      "frameType": "rotary"
+    },
+    {
+      "r1": -90,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 19.5,
+      "z": 0,
+      "moveFrame": true,
+      "moveBackBy": -19.5,
+      "moveBack": "y",
+      "frameType": "rotary"
+    },
+    {
+      "r1": 90,
+      "r2": 0,
+      "r3": 0,
+      "x": 0,
+      "y": 0,
+      "z": 19,
+      "moveFrame": false,
+      "frameType": "rotary"
+    },
+    {
+      "r1": 0,
+      "r2": 90,
+      "r3": 90,
+      "x": 5.5,
+      "y": 7,
+      "z": 11,
+      "moveFrame": true,
+      "moveBackBy": -5.5,
+      "moveBack": "x",
+      "frameType": "rotary"
+    },
+    {
+      "r1": 0,
+      "r2": 0,
+      "r3": -180,
+      "x": 0,
+      "y": 0,
+      "z": 8.1,
+      "moveFrame": false,
+      "frameType": "stationary"
+    }
+  ]
+}

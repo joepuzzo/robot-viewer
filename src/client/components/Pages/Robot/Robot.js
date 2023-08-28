@@ -5,7 +5,7 @@ import useSimulateController from '../../../hooks/useSimulateController';
 import { useFormApi, useFormState } from 'informed';
 import useApp from '../../../hooks/useApp';
 import { Arm } from '../../3D/Arm';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { round } from '../../../../lib/round';
 import NumberInput from '../../Informed/NumberInput';
 import Switch from '../../Informed/Switch';
@@ -24,6 +24,7 @@ import useRobotKinematics from '../../../hooks/useRobotKinematics';
 import useSimulateState from '../../../hooks/useSimulateState';
 import { useOverFlowHidden } from '../../../hooks/useOverflowHidden';
 import { getXYZ, getZXZ } from '../../../utils/getEulers';
+import { URDFRobot } from '../../3D/URDFRobot';
 
 const DEG45 = Math.PI / 4;
 
@@ -310,6 +311,7 @@ export const Robot = () => {
             toggleOrbital={toggleOrbital}
             frames={frames}
           />
+          {/* <URDFRobot /> */}
         </Suspense>
       </Canvas>
     </>
