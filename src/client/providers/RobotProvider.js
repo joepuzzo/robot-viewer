@@ -15,6 +15,7 @@ import { inverse as inverseUR } from '../../lib/inverse_UR';
 import { toDeg } from '../../lib/toDeg';
 import { forward } from 'kinematics-js';
 import { debounce } from '../utils/debounce';
+// import { forwardKinematics } from '../../lib/newForward';
 
 /**
  * Provide any application specific data
@@ -198,12 +199,39 @@ const RobotProvider = ({ children }) => {
       toRadians(j3),
       toRadians(j4),
       toRadians(j5),
-      robotConfig
+      robotConfig,
     );
+
+    // console.log('CONFIG', robotConfig);
 
     const x = res[0][3];
     const y = res[1][3];
     const z = res[2][3];
+
+    // const { position, orientation } = forwardKinematics([j0, j1, j2, j3, j4, j5], {
+    //   // IGUS
+    //   // dhParameters: [
+    //   //   { theta: 0, alpha: 90, r: 0, d: 25.2 },
+    //   //   { theta: 90, alpha: 0, r: 23.7, d: 0 },
+    //   //   { theta: -90, alpha: -90, r: 0, d: 0 },
+    //   //   { theta: 0, alpha: 90, r: 0, d: 29.7 },
+    //   //   { theta: 0, alpha: -90, r: 0, d: 0 },
+    //   //   { theta: 0, alpha: 0, r: 0, d: 22.6 },
+    //   // ],
+    //   // AR4
+    //   dhParameters: [
+    //     { theta: 0, alpha: 90, r: 6.42, d: 13.867 + 3.11 },
+    //     { theta: 90, alpha: 0, r: 30.5, d: 0 },
+    //     { theta: -90, alpha: -90, r: 0, d: 0 },
+    //     { theta: 0, alpha: 90, r: 0, d: 22.263 },
+    //     { theta: 0, alpha: -90, r: 0, d: 0 },
+    //     { theta: 0, alpha: 0, r: 0, d: 10 + 3.625 }, // TODO fix bug that does not add the 3.625 to the last d value
+    //   ],
+    // });
+
+    // console.log('X', x, 'Y', y, 'Z', z);
+    // console.log('NX', position[0], 'NY', position[1], 'NZ', position[2]);
+    // console.log('R1', orientation[0], 'R2', orientation[1], 'R2', orientation[2]);
 
     setEndPosition({ x, y, z });
   };
@@ -253,7 +281,6 @@ const RobotProvider = ({ children }) => {
         j2: toDeg(angles[2]), //- 2, // TEMP OFFSET FOR TESTING WHAT HAPPENS
         j3: toDeg(angles[3]),
         j4: toDeg(angles[4]),
-        j5: toDeg(angles[5]),
         x,
         y,
         z,
@@ -268,7 +295,7 @@ const RobotProvider = ({ children }) => {
         socket.emit(
           'robotSetAngles',
           robotId,
-          angles.map((angle) => toDeg(angle))
+          angles.map((angle) => toDeg(angle)),
           // TODO add back but need to be careful different speed for AR vs Igus At the moment ( steps/s vs deg/s )
           // speed
         );
@@ -296,7 +323,7 @@ const RobotProvider = ({ children }) => {
       endPosition,
       updateForward: debouncedUpdateForward,
     }),
-    [endPosition, debouncedUpdateForward]
+    [endPosition, debouncedUpdateForward],
   );
 
   return (

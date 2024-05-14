@@ -123,7 +123,7 @@ export function isPerpendicular(dx, dy, dz, rx_deg, ry_deg, rz_deg, b, a) {
  *      [ 0,  0,  0,  1]
  *
  */
-export function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, b, a) {
+export function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, b, a, direction = false) {
   // Convert rotations from degrees to radians
   const rx = (rx_deg * Math.PI) / 180;
   const ry = (ry_deg * Math.PI) / 180;
@@ -142,9 +142,13 @@ export function isParallel(dx, dy, dz, rx_deg, ry_deg, rz_deg, b, a) {
   transform = rotateAroundYAxis(transform, ry);
   transform = rotateAroundZAxis(transform, rz);
 
-  // Check if the a axis of the new frame is parallel to the b axis of the previous frame
-  // return Math.abs(transform[a][b]) === 1;
-  return Math.abs(fromMatrix(transform, b, a)) === 1;
+  if (!direction) {
+    // Check if the a axis of the new frame is parallel to the b axis of the previous frame
+    // return Math.abs(transform[a][b]) === 1;
+    return Math.abs(fromMatrix(transform, b, a)) === 1;
+  } else {
+    return fromMatrix(transform, b, a) === 1;
+  }
 }
 
 function createVector(point1, point2) {

@@ -767,6 +767,8 @@ export const RobotNav = () => {
             <br />
             <Switch name="showLines" label="Show Lines" initialValue={true} />
             <br />
+            <Switch name="showConnections" label="Show Connections" initialValue={false} />
+            <br />
             <Switch name="showArrows" label="Show Arrows" initialValue={false} />
             <br />
             <Switch name="jointGrid" label="Joint Grids" />

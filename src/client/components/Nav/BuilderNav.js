@@ -33,7 +33,7 @@ function decrementFrameIndex(string) {
   return string.replace(/\[(\d+)\]/, (_, number) => `[${Number(number) - 1}]`);
 }
 
-const validate = (value, values, { formApi, scope }) => {
+const validate = (value, values, { formApi, scope, name }) => {
   // Get this value and the value before
   const n = formApi.getValue(`${scope}`);
   const nMinus1 = formApi.getValue(decrementFrameIndex(`${scope}`));
@@ -61,7 +61,9 @@ const validate = (value, values, { formApi, scope }) => {
   if (moveBack === 'z') z = z + moveBackBy;
   if (moveBack === '-z') z = z - moveBackBy;
 
-  // console.log('WTF', 'MoeBack', moveBack, 'MoeBackBy', moveBackBy, 'XYZ', x, y, z);
+  // console.log('--------------------------------------------------------------------');
+
+  // console.log(`${scope}.${name}`, 'MoveBack', moveBack, 'MoveBackBy', moveBackBy, 'XYZ', x, y, z);
 
   // The X axis must be perpendicular to the Z axis of the frame before it
   if (!isPerpendicular(x, y, z, n.r1, n.r2, n.r3, 'x', 'z')) {
@@ -70,6 +72,17 @@ const validate = (value, values, { formApi, scope }) => {
 
   // Each X axis must intersect the Z axis of the frame before it ( except frame 0 )
   if (!xIntersectsZ(x, y, z, n.r1, n.r2, n.r3)) {
+    // console.log(
+    //   `${scope}.${name}-BAD`,
+    //   'MoveBack',
+    //   moveBack,
+    //   'MoveBackBy',
+    //   moveBackBy,
+    //   'XYZ',
+    //   x,
+    //   y,
+    //   z,
+    // );
     return 'X axis must intersect the previous z axis';
   }
 };
@@ -298,7 +311,10 @@ const FrameControl = () => {
       <br />
       <Switch name="moveFrame" label="MoveFrame" defaultValue={false} />
       <br />
-      <Relevant when={({ formApi, scope }) => formApi.getValue(`${scope}.moveFrame`)}>
+      <Relevant
+        when={({ formApi, scope }) => formApi.getValue(`${scope}.moveFrame`)}
+        relevanceWhen={['moveFrame']}
+      >
         <RadioGroup
           label="MoveBack"
           orientation="horizontal"
@@ -455,6 +471,8 @@ export const BuilderNav = () => {
             <br />
             <Switch name="showLines" label="Show Lines" initialValue={false} />
             <br />
+            <Switch name="showConnections" label="Show Connections" initialValue={false} />
+            <br />
             <Switch name="hide" label="Hide Robot" initialValue={false} />
             <br />
             <hr />
@@ -476,13 +494,14 @@ export const BuilderNav = () => {
               maxValue={100}
               step={0.1}
               trackGradient="black"
-              initialValue={0}
+              defaultValue={0}
             />
             <If condition={values.frames}>
               <>
                 {values.frames &&
                   values.frames.map((frame, i) => (
                     <InputSlider
+                      key={`frame-${i}`}
                       name={`j${i}`}
                       label={`J${i}`}
                       type="number"

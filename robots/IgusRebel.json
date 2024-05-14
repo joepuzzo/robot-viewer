@@ -100,5 +100,13 @@
       "z": 3.6,
       "moveFrame": false
     }
+  ],
+  "dhParameters": [
+    { "theta": 0, "alpha": 90, "r": 0, "d": 25.2 },
+    { "theta": 90, "alpha": 0, "r": 23.7, "d": 0 },
+    { "theta": -90, "alpha": -90, "r": 0, "d": 0 },
+    { "theta": 0, "alpha": 90, "r": 0, "d": 29.7 },
+    { "theta": 0, "alpha": -90, "r": 0, "d": 0 },
+    { "theta": 0, "alpha": 0, "r": 0, "d": 22.6 }
   ]
 }

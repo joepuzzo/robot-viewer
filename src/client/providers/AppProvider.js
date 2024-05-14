@@ -165,7 +165,7 @@ const AppProvider = ({ children }) => {
       console.log('TYPES', robotTypes[value]);
       setConfig(robotTypes[value]);
     },
-    [robotTypes]
+    [robotTypes],
   );
 
   const toggleColorScheme = () => {

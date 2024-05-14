@@ -7,6 +7,7 @@ import { If } from '../Shared/If';
 import { isParallel } from '../../utils/frame';
 import { Line } from '@react-three/drei';
 import { toDeg } from '../../../lib/toDeg';
+import { Vector3, Quaternion } from 'three';
 
 const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
@@ -15,6 +16,26 @@ const ErrorBall = () => {
     <mesh>
       <sphereBufferGeometry args={[10, 30, 30]} />
       <meshStandardMaterial color="#880808" opacity={0.4} transparent />
+    </mesh>
+  );
+};
+
+const LineToCylinder = ({ start, end, color, opacity }) => {
+  // Calculate the midpoint
+  const midpoint = new Vector3().addVectors(start, end).multiplyScalar(0.5);
+
+  // Calculate the length
+  const length = start.distanceTo(end);
+
+  // Calculate the rotation to align the cylinder with the line
+  const direction = new Vector3().subVectors(end, start).normalize();
+  const up = new Vector3(0, 1, 0);
+  const quaternion = new Quaternion().setFromUnitVectors(up, direction);
+
+  return (
+    <mesh position={midpoint} quaternion={quaternion}>
+      <cylinderGeometry args={[4.9, 4.9, length, 32]} />
+      <meshStandardMaterial color={color} transparent opacity={opacity} />
     </mesh>
   );
 };
@@ -59,6 +80,7 @@ export const Joint = ({
     endEffector,
     animate,
     runOnRobot,
+    showConnections,
   } = values;
 
   let { value: type } = useFieldState(`eulerType`);
@@ -257,15 +279,13 @@ export const Joint = ({
               transparentJoint={hide}
               hidePadding={hidePadding}
             />
-            <If condition={frames[0] && v && showLinks && Math.abs(v) > 5}>
-              <mesh rotation={linkRotation} position={linkPosition}>
-                <cylinderGeometry args={[5, 5, v, 32]} />
-                <meshStandardMaterial
-                  color="rgb(54, 54, 54)"
-                  opacity={hide ? 0.02 : 1}
-                  transparent
-                />
-              </mesh>
+            <If condition={frames[0] && v && showLinks}>
+              <LineToCylinder
+                start={new Vector3(0, 0, 0)}
+                end={new Vector3(frames[0]?.x, frames[0]?.y, frames[0]?.z)}
+                color="rgb(54, 54, 54)"
+                opacity={hide ? 0.02 : 1}
+              />
             </If>
             <If condition={frames[0] && v && showLines}>
               <Line
@@ -275,6 +295,16 @@ export const Joint = ({
                 ]}
                 color={COLORS[index % COLORS.length]}
                 lineWidth={2}
+              />
+            </If>
+            <If condition={frames[0] && v && showConnections}>
+              <Line
+                points={[
+                  [0, 0, 0],
+                  [frames[0]?.x, frames[0]?.y, frames[0]?.z],
+                ]}
+                color={COLORS[index % COLORS.length]}
+                lineWidth={20}
               />
             </If>
             <If condition={endEffector && lastFrame}>

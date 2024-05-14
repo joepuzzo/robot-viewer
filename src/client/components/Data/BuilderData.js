@@ -203,6 +203,7 @@ const TransformationMatricies = ({ pTable }) => {
 
 const buildParameterTable = ({ frames, base, endEffector }) => {
   const rows = [];
+  // console.log('-----------------------------------------');
   frames.forEach((frame, i) => {
     // Dont do anything for first frame
     if (i != 0) {
@@ -238,14 +239,53 @@ const buildParameterTable = ({ frames, base, endEffector }) => {
       // If there is an end effector distance add that to the d of the last itteration
       if (endEffector && i === frames.length - 1) d += endEffector;
 
-      // If the previous frame was moved add that on
-      if (nMinus1.moveBack === 'x') {
-        d = d + -nMinus1.moveBackBy;
+      // console.log(
+      //   'nMinus1.moveBack',
+      //   nMinus1.moveBack,
+      //   'nMinus1.moveBackBy',
+      //   nMinus1.moveBackBy,
+      //   'd',
+      //   d,
+      // );
+
+      // If the previous frame was moved so take that into account
+      // Why?? because that frames location with respect to this kinematics diagram is actually in a different spot
+      // ( affected by the moveBack )
+      if (nMinus1.moveBack === 'x' || nMinus1.moveBack === 'y') {
+        // In order to do this we must first determine if we want to add or remove this value +/-
+
+        // Case1: Our previous frames z is in the same direction as the previous frames move back by
+        // To elaborate, current frame moves along previous frames z, and previous frame moved back along its previous frames moveBack
+        const backParallel = isParallel(
+          nMinus1.x,
+          nMinus1.y,
+          nMinus1.z,
+          nMinus1.r1,
+          nMinus1.r2,
+          nMinus1.r3,
+          'z',
+          nMinus1.moveBack,
+          true, // Only if its in the same direction :) THIS IS KEY!!!!
+        );
+        // console.log(
+        //   `CHECKING if frame ${i - 1}'s z is parallel and in same direction to frames ${i - 2}'s ${
+        //     nMinus1.moveBack
+        //   }`,
+        //   backParallel,
+        // );
+        if (backParallel) {
+          d = d + -nMinus1.moveBackBy;
+        }
+        // Case2: Our current frames z is NOT in the same direction as the previous frames move back by
+        else {
+          d = d + nMinus1.moveBackBy;
+        }
       }
 
       if (nMinus1.moveBack === 'z') {
         r = r + -nMinus1.moveBackBy;
       }
+      // console.log('theta', theta, 'alpha', alpha, 'r', r, 'd', d);
       rows.push([theta, alpha, r, d]);
     }
   });
