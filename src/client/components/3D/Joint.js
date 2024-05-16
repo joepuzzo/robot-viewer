@@ -286,6 +286,14 @@ export const Joint = ({
                 color="rgb(54, 54, 54)"
                 opacity={hide ? 0.02 : 1}
               />
+              {/* <mesh rotation={linkRotation} position={linkPosition}>
+                <cylinderGeometry args={[5, 5, v, 32]} />
+                <meshStandardMaterial
+                  color="rgb(54, 54, 54)"
+                  opacity={hide ? 0.02 : 1}
+                  transparent
+                />
+              </mesh> */}
             </If>
             <If condition={frames[0] && v && showLines}>
               <Line

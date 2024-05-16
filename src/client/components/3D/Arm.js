@@ -168,7 +168,7 @@ const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...pro
 
       // console.log('KEY', key, keyCode);
     },
-    [spacePress]
+    [spacePress],
   );
 
   useEffect(() => {

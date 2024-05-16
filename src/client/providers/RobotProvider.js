@@ -281,6 +281,7 @@ const RobotProvider = ({ children }) => {
         j2: toDeg(angles[2]), //- 2, // TEMP OFFSET FOR TESTING WHAT HAPPENS
         j3: toDeg(angles[3]),
         j4: toDeg(angles[4]),
+        j5: toDeg(angles[5]),
         x,
         y,
         z,

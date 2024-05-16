@@ -105,7 +105,7 @@ export const RobotNav = () => {
   console.log('RENDER ROBOT NAV');
 
   // Grab ranges off of config
-  const { rangej0, rangej1, rangej2, rangej3, rangej4, rangej5, units, zeroPosition } = config;
+  const { units, zeroPosition, frames } = config;
 
   const robotUpdate = () => {
     // Get pos
@@ -437,6 +437,8 @@ export const RobotNav = () => {
               onNativeChange={onAccelChange}
             />
             <br />
+            {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
+            <hr />
             <Flex direction="row" alignItems="end" gap="size-100">
               <InputSlider
                 name="gripper"
@@ -457,6 +459,8 @@ export const RobotNav = () => {
               />
               <br />
             </Flex>
+            {/* ------------------------- POSITION CONTROLS ------------------------- */}
+            <hr />
             <InputSlider
               name="x"
               onNativeChange={onValueChange('x')}
@@ -512,157 +516,41 @@ export const RobotNav = () => {
               maxValue={180}
               step={1}
             />
+            {/* ------------------------- JOINT CONTROLS ------------------------- */}
             <hr />
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j0"
-                label="J1"
-                type="number"
-                minValue={rangej0[0]}
-                maxValue={rangej0[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j0')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j0')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j0')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j0')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j0')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j1"
-                label="J2"
-                type="number"
-                minValue={rangej1[0]}
-                maxValue={rangej1[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j1')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j1')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j1')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j1')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j1')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j2"
-                label="J3"
-                type="number"
-                minValue={rangej2[0]}
-                maxValue={rangej2[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j2')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j2')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j2')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j2')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j2')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j3"
-                label="J4"
-                type="number"
-                minValue={rangej3[0]}
-                maxValue={rangej3[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j3')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j3')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j3')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j3')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j3')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j4"
-                label="J5"
-                type="number"
-                minValue={rangej4[0]}
-                maxValue={rangej4[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j4')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j4')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j4')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j4')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j4')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="j5"
-                label="J6"
-                type="number"
-                minValue={rangej5[0]}
-                maxValue={rangej5[1]}
-                validateOn="change"
-                showErrorIfError
-                onNativeChange={onJointChange('j5')}
-                step={1}
-              />
-              <ActionButton onPress={() => homeJoint('j5')}>
-                <Home />
-              </ActionButton>
-              <ActionButton onPress={() => motorReference('j5')}>
-                <AlignCenter />
-              </ActionButton>
-              <ActionButton onPress={() => motorResetErrors('j5')}>
-                <RemoveCircle />
-              </ActionButton>
-              <ActionButton onPress={() => motorEnable('j5')}>
-                <LockOpen />
-              </ActionButton>
-            </Flex>
+            {frames.map((frame, i) => {
+              // Dont render control for stationary frame
+              if (frame.frameType === 'stationary') {
+                return null;
+              }
+              return (
+                <Flex direction="row" alignItems="end" gap="size-100">
+                  <InputSlider
+                    name={`j${i}`}
+                    label={`J${i}`}
+                    type="number"
+                    minValue={config[`rangej${i}`][0]}
+                    maxValue={config[`rangej${i}`][1]}
+                    validateOn="change"
+                    showErrorIfError
+                    onNativeChange={onJointChange(`j${i}`)}
+                    step={1}
+                  />
+                  <ActionButton onPress={() => homeJoint(`j${i}`)}>
+                    <Home />
+                  </ActionButton>
+                  <ActionButton onPress={() => motorReference(`j${i}`)}>
+                    <AlignCenter />
+                  </ActionButton>
+                  <ActionButton onPress={() => motorResetErrors(`j${i}`)}>
+                    <RemoveCircle />
+                  </ActionButton>
+                  <ActionButton onPress={() => motorEnable(`j${i}`)}>
+                    <LockOpen />
+                  </ActionButton>
+                </Flex>
+              );
+            })}
             <hr />
             <InputSlider
               name="base"
