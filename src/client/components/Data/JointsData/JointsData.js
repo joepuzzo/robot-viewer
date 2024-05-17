@@ -23,6 +23,7 @@ const JointData = ({ motor }) => {
 
 // Example AR
 const exampleAR = {
+  id: 'j0',
   homing: false,
   home: false,
   homed: false,
@@ -104,9 +105,7 @@ export const JointsData = () => {
       alignItems="center"
       gap="size-100"
     >
-      <If condition={motorId != 'na' && motorId != null}>
-        <JointData motor={robotState.motors[motorId]} />
-      </If>
+      {motorId != 'na' && motorId != null && <JointData motor={robotState.motors[motorId]} />}
       <If condition={motorId == 'na' || motorId == null}>
         {motors.map((motor, i) => (
           <JointData motor={motor} key={`motor-${i}`} />

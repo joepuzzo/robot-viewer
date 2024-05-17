@@ -71,7 +71,9 @@ npm run run:docker
 
 In order to connect to the robots you will need to be connected to the same network as the robots. All communication occurs via socket.io. You will need to have implimented the robot protocol. Every socket event is described below, and in addition there are specific events from the robot you need to subscibe to.
 
-### Socket Events
+### Socket Control Events
+
+The following are all socket events that can be revieved on the robot side and can be sent via robot-controller.
 
 ##### Generic Events
 
@@ -130,7 +132,9 @@ In order to connect to the robots you will need to be connected to the same netw
 
 ---
 
-### Robot Events
+### Robot State Events
+
+The following are events that are emitted from the robot side and can be listened to on the robot-controller side.
 
 | Event   | Description                   | Parameters              |
 | ------- | ----------------------------- | ----------------------- |
@@ -141,24 +145,116 @@ In order to connect to the robots you will need to be connected to the same netw
 | moved   | Emits when the robot moves    | robot.meta              |
 | pulse   | Emits pulse data              | id, pos                 |
 
-#### Notes:
+**NOTE** These events are not a one to one mapping from robot event --- to ---> client side subscription. There is an internal controller in robot-viewer that handles the emitting of the events and passes them up to the client.
 
-Meta is specific information about the robot that is not constantly updated, see example object below:
+For example the meta event is emitted from the robot, that gets emitted to the robot-controller as a "register" event which is then consumed by the `controller.js` file and emitted to the client as a "robots" event.
+
+```
+robot.emit("meta") -----> server.emit("register") -----> client.emit("robots")
+```
+
+To make this more clear I created the following table
+
+| Robot Event | Emitted From Robot Server As | Emitted to Client As     |
+| ----------- | ---------------------------- | ------------------------ |
+|             | connect                      | robots, robotConnected   |
+|             | disconnect                   | robots,robotDisconnected |
+| state       | state                        | robot                    |
+| encoder     | encoder                      | robot                    |
+| meta        | register                     | robots                   |
+| ready       | register, state              | robots, robot            |
+| moved       | moved                        | robotMoved               |
+| pulse       | pulse                        | pulse                    |
+
+Now we can take a look at the events that are emitted to the client side.
+
+| Client Event      | Description                                                          | Parameters            |
+| ----------------- | -------------------------------------------------------------------- | --------------------- |
+| robotConnected    | Emitted when a robot connects to the controller                      | robot.id              |
+| robotDisconnected | Emitted when a robot disconnects from the controller                 | robot.id              |
+| robot             | Emitted when the robot state changes                                 | robot.id, robot.state |
+| robots            | Emitted when a robot registeres, deregisters, or sends updated meta  | [robot.meta]          |
+| robotMoved        | Emitted when the robot moves                                         | robot.id, robot.meta  |
+| pulse             | Emitted when the robot's motor's pulse data changes ( not used atm ) | motor.id, motor.pos   |
+
+##### Robot Meta
+
+Meta is specific information about the robot that is not constantly updated, see example object below.
 
 ```js
-get meta(){
-    // return meta
-    return {
-        stopped: this.stopped,   // boolean if robot is currently stopped
-        ready: this.ready,       // boolean if robot is currently ready
-        home: this.home,         // boolean if robot is currently home
-        homing: this.homing,     // boolean if robot is currently homing
-        moving: this.moving,     // boolean if robot is currently moving
-        config: this.config,     // Current robot configuration
-        motors: this.motorsMeta, // Metadata about motors ( example CAN ID )
-    }
-}
+const meta = {
+  socketId: socketId, // Socket id of the connected robot ( comes from socket io connection in robot-viewers controller )
+  id: this.id, // UUID for the connected robot
+  stopped: this.stopped, // boolean if robot is currently stopped
+  ready: this.ready, // boolean if robot is currently ready
+  home: this.home, // boolean if robot is currently home
+  homing: this.homing, // boolean if robot is currently homing
+  moving: this.moving, // boolean if robot is currently moving
+  config: this.config, // Current robot configuration
+  motors: this.motorsMeta, // Metadata about motors ( example [{id: 'j0', id: 'j1'}] )
+};
 ```
+
+##### Robot State
+
+State is specific information about the robot that IS constantly updated, see example object below:
+
+```js
+const state = {
+  id: 1, // Robot unique id
+  motors: {
+    // ... motor state depends on the robot type see examples below
+  },
+};
+```
+
+##### Required state attributes
+
+| Attribute | Description                                        |
+| --------- | -------------------------------------------------- |
+| id        | Unique identifier for the motor e.g "j0", "j1" ... |
+| homing    | Indicates if the motor is in the homing process    |
+| home      | Indicates if the motor is in the home position     |
+| ready     | Indicates if the motor is ready for operation      |
+| enabled   | Indicates if the motor is enabled                  |
+| moving    | Indicates if the motor is currently moving         |
+| error     | Error message                                      |
+
+##### Attributes Specific to AR4 Robot
+
+| Attribute       | Description                                 |
+| --------------- | ------------------------------------------- |
+| homed           | Indicates if the motor has completed homing |
+| stepPosition    | Current step position of the motor          |
+| encoderPosition | Current encoder position of the motor       |
+
+##### Attributes Specific to IGUS Robot
+
+| Attribute             | Description                               |
+| --------------------- | ----------------------------------------- |
+| canId                 | CAN bus identifier for the motor          |
+| currentPosition       | Current position in degrees               |
+| currentTics           | Current position in tics                  |
+| encoderPulsePosition  | Current encoder pulse position in degrees |
+| encoderPulseTics      | Current encoder pulse position in tics    |
+| jointPositionSetPoint | Set point for joint position in degrees   |
+| jointPositionSetTics  | Set point for joint position in tics      |
+| goalPosition          | Goal position in degrees                  |
+| motorCurrent          | Current motor current                     |
+| errorCode             | Error code                                |
+| errorCodeString       | String representation of the error code   |
+| voltage               | Current voltage                           |
+| tempMotor             | Motor temperature                         |
+| tempBoard             | Board temperature                         |
+| direction             | Direction of motor movement               |
+| motorError            | Specific motor error                      |
+| adcError              | ADC error                                 |
+| rebelError            | Rebel error                               |
+| controlError          | Control error                             |
+| sendInterval          | Interval at which data is sent            |
+| calculatedVelocity    | Calculated velocity                       |
+| currentVelocity       | Current velocity                          |
+| positionHistory       | History of positions with timestamps      |
 
 ---
 
