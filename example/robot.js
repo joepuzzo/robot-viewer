@@ -20,7 +20,7 @@ export class Robot extends EventEmitter {
     super();
 
     this.id = id; // id of the robot
-    this.stopped = false; // if the robot is currently stopped
+    this.stopped = true; // if the robot is currently stopped
     this.ready = false; // if the robot is ready
     this.homing = false; // if the robot is currently homing
     this.moving = false; // if the robot is moving
@@ -320,6 +320,12 @@ export class Robot extends EventEmitter {
   robotSetAngles(angles, speed) {
     logger(`robotSetAngles at speed ${speed} angles:`, angles);
 
+    // Skip if we are stopped
+    if (this.stopped) {
+      logger(`Not moving robot, please enable before attempting to move`);
+      return;
+    }
+
     // We are moving to a new location
     this.moving = true;
 
@@ -346,32 +352,39 @@ export class Robot extends EventEmitter {
 
   motorSetPosition(id, pos, speed) {
     logger(`set position for motor ${id}`);
-    this.motors[id].setPosition(pos, speed);
+
+    // Skip if we are stopped
+    if (this.stopped) {
+      logger(`Not moving motor ${id}, please enable before attempting to move`);
+      return;
+    }
+
+    this.motorMap[id].setPosition(pos, speed);
   }
 
   motorHome(id) {
     logger(`home motor ${id}`);
-    this.motors[id].goHome();
+    this.motorMap[id].goHome();
   }
 
   motorResetErrors(id) {
     logger(`reset motor errors for motor ${id}`);
-    this.motors[id].resetErrors();
+    this.motorMap[id].resetErrors();
   }
 
   motorEnable(id) {
     logger(`enable motor ${id}`);
-    this.motors[id].enable();
+    this.motorMap[id].enable();
   }
 
   motorDisable(id) {
     logger(`enable motor ${id}`);
-    this.motors[id].disable();
+    this.motorMap[id].disable();
   }
 
   motorZero(id) {
     logger(`zero motor ${id}`);
-    this.motors[id].zero();
+    this.motorMap[id].zero();
   }
 
   /* -------------------- Gripper Actions -------------------- */

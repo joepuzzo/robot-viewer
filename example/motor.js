@@ -14,6 +14,7 @@ export class Motor extends EventEmitter {
     this.currentPos = homePos;
     this.goalPos = homePos;
     this.moving = false;
+    this.enabled = false;
     logger(`Motor ${this.id} created with homePos ${this.homePos}`);
   }
 
@@ -57,7 +58,19 @@ export class Motor extends EventEmitter {
           logger(`Motor ${this.id} reached goal position ${this.goalPos}`);
           this.emit('moved', this.id);
           this.emit('pulse', this.id, this.currentPos);
-        } else {
+        }
+        // Check if the motor has been disabled ( occurs on manual disable or robot stop )
+        else if (!this.enabled) {
+          logger(
+            `Motor ${this.id} was moving to ${this.goalPos} but was stoped at ${this.currentPos}`,
+          );
+          this.goalPos = this.currentPos;
+          this.moving = false;
+          this.emit('moved', this.id);
+          this.emit('pulse', this.id, this.currentPos);
+        }
+        // Keep going :)
+        else {
           this.currentPos = this.currentPos + step;
           //   logger(`Motor ${this.id} moving to ${this.currentPos}`);
           this.emit('pulse', this.id, this.currentPos);
@@ -82,11 +95,13 @@ export class Motor extends EventEmitter {
 
   enable() {
     logger(`Motor ${this.id} enabled`);
+    this.enabled = true;
     this.emit('enabled');
   }
 
   disable() {
     logger(`Motor ${this.id} disabled`);
+    this.enabled = false;
     this.emit('disabled');
   }
 
