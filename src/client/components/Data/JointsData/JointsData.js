@@ -6,6 +6,7 @@ import { Flex } from '@adobe/react-spectrum';
 import { ARJointData } from './ARJointData';
 import { IgusRebelJointData } from './IgusRebelJointData';
 import { If } from '../../Shared/If';
+import { ExampleJointData } from './ExampleJointData';
 
 const JointData = ({ motor }) => {
   const { value: robotType } = useFieldState('robotType');
@@ -16,6 +17,10 @@ const JointData = ({ motor }) => {
 
   if (robotType === 'IgusRebel') {
     return <IgusRebelJointData motor={motor} />;
+  }
+
+  if (robotType === 'Example') {
+    return <ExampleJointData motor={motor} />;
   }
 
   return null;

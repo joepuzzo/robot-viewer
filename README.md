@@ -65,6 +65,15 @@ npm run run:docker
 
 ![Kinematics Diagram](https://github.com/joepuzzo/robot-viewer/blob/main/src/server/static/KinematicsDiagram.jpg?raw=true)
 
+## Mock Robot
+
+We have included a mock robot that simulates the robot protocol. You can run it with the following command.
+
+```
+cd example
+DEBUG='mock:.*' node index.js -p 3000 --host localhost
+```
+
 ---
 
 ## Connecting to Robots
@@ -73,7 +82,7 @@ In order to connect to the robots you will need to be connected to the same netw
 
 ### Socket Control Events
 
-The following are all socket events that can be revieved on the robot side and can be sent via robot-controller.
+The following are all socket events that can be recieved on the robot side and can be sent via robot-controller.
 
 ##### Generic Events
 

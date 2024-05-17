@@ -11,7 +11,7 @@ export const startServer = (config) => {
   logger('Created socket', connectionString);
 
   // Create robot
-  const robot = new Robot({ id: config.id, canIf: config.canIf });
+  const robot = new Robot(config);
 
   /* ---------- Subscribe to robot events ---------- */
   robot.on('state', () => {
@@ -85,18 +85,6 @@ export const startServer = (config) => {
   socket.on('motorReference', (id) => {
     logger(`Controller says referenceMotor ${id}`);
     robot.motorReference(id);
-  });
-
-  socket.on('queryMotorPosition', (id) => {
-    logger(`Controller says queryMotorPosition ${id}`);
-    robot.queryMotorPosition(id);
-  });
-
-  socket.on('queryMotorParameter', (id, index, subindex) => {
-    logger(
-      `Controller says queryMotorParameter for motor ${id}, index ${index}, subindex ${subindex}`,
-    );
-    robot.queryMotorParamter(id, index, subindex);
   });
 
   socket.on('motorHome', (id) => {
@@ -186,5 +174,17 @@ export const startServer = (config) => {
   socket.on('home', () => {
     logger(`Controller says home robot`);
     robot.home();
+  });
+
+  socket.on('robotFreedriveEnable', (frame, cartFloatingAxis) => {
+    logger(
+      `Controller says enable freedrive with frame ${frame} and cartFloatingAxis ${cartFloatingAxis}`,
+    );
+    robot.robotFreedriveEnable(frame, cartFloatingAxis);
+  });
+
+  socket.on('robotFreedriveDisable', () => {
+    logger(`Controller says disable freedrive`);
+    robot.robotFreedriveDisable();
   });
 };
