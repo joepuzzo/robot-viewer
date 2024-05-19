@@ -11,6 +11,18 @@ import { MotorVisualizations } from '../../Data/Visualizations/MotorVisualizatio
 
 // import { useSpring, animated } from 'react-spring';
 
+const TYPE_MAPPING = {
+  AR4: {
+    position: 'encoderPosition',
+  },
+  Example: {
+    position: 'currentPos',
+  },
+  IgusRebel: {
+    position: 'currentPosition',
+  },
+};
+
 const MotorCircle = () => {
   const { value } = useFieldState('motorPos');
 
@@ -31,7 +43,9 @@ const MotorCircle = () => {
   // If we are connected to motor use its real position instead
   if (robotId && motorId != 'na' && robotState && robotState.motors[motorId]) {
     const motor = robotState.motors[motorId];
-    motorPos = robotType === 'AR4' ? motor.encoderPosition : motor.currentPosition;
+    // motorPos = robotType === 'AR4' ? motor.encoderPosition : motor.currentPosition;
+    const fieldName = TYPE_MAPPING[robotType].position;
+    motorPos = motor[fieldName];
     // Only add offset if we were zeroed
     referencePos = motor.zeroed ? motor.encoderOffset : 0;
     motorPos += referencePos;

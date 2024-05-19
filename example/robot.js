@@ -69,6 +69,9 @@ export class Robot extends EventEmitter {
     setInterval(() => {
       this.robotEncoder(); // Will emit encoder event
     }, 500);
+
+    this.ready = true;
+    this.emit('ready');
   }
 
   /** ------------------------------
@@ -353,8 +356,8 @@ export class Robot extends EventEmitter {
   motorSetPosition(id, pos, speed) {
     logger(`set position for motor ${id}`);
 
-    // Skip if we are stopped
-    if (this.stopped) {
+    // Skip if the motor is disabled
+    if (!this.motorMap[id].enabled) {
       logger(`Not moving motor ${id}, please enable before attempting to move`);
       return;
     }
