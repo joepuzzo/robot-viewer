@@ -401,7 +401,12 @@ export const RobotNav = () => {
           <MoveUpDown />
         </ActionButton> */}
         <br />
-        <Switch name="runOnRobot" label="Run On Robot" initialValue={false} />
+        <Switch
+          name="runOnRobot"
+          label="Run On Robot"
+          initialValue={false}
+          isDisabled={!connected}
+        />
         <br />
         {/* <ActionButton
           title="Switch Theme"
@@ -435,8 +440,14 @@ export const RobotNav = () => {
               label="Robot Acceleration"
               initialValue={true}
               onNativeChange={onAccelChange}
+              isDisabled={!connected}
             />
-            <Switch name="followrobot" label="Follow Robot" initialValue={false} />
+            <Switch
+              name="followrobot"
+              label="Follow Robot"
+              initialValue={false}
+              isDisabled={!connected}
+            />
             <br />
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />

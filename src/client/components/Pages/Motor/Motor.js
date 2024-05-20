@@ -8,6 +8,7 @@ import useRobotState from '../../../hooks/useRobotState';
 import useRobotMeta from '../../../hooks/useRobotMeta';
 import Input from '../../Informed/Input';
 import { MotorVisualizations } from '../../Data/Visualizations/MotorVisualizations';
+import { TYPE_MAPPING } from '../../../constants';
 
 // import { useSpring, animated } from 'react-spring';
 
