@@ -436,6 +436,7 @@ export const RobotNav = () => {
               initialValue={true}
               onNativeChange={onAccelChange}
             />
+            <Switch name="followrobot" label="Follow Robot" initialValue={false} />
             <br />
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />

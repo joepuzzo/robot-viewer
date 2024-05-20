@@ -8,6 +8,8 @@ import { isParallel } from '../../utils/frame';
 import { Line } from '@react-three/drei';
 import { toDeg } from '../../../lib/toDeg';
 import { Vector3, Quaternion } from 'three';
+import useRobotState from '../../hooks/useRobotState';
+import { TYPE_MAPPING } from '../../constants';
 
 const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 
@@ -86,7 +88,33 @@ export const Joint = ({
   let { value: type } = useFieldState(`eulerType`);
   type = type ?? 'xyz';
 
-  const jRotation = values[`j${index}`] ? toRadians(values[`j${index}`]) : 0;
+  /* --------------------------- Robot State Code --------------------------- */
+  const { robotStates } = useRobotState();
+
+  // Get value of robotId && motorId
+  const { value: robotId } = useFieldState('robotId');
+  const { value: motorId } = useFieldState('motorId');
+  const { value: followrobot } = useFieldState('followrobot');
+
+  // Get the selected robot state
+  const robotState = robotStates[robotId];
+
+  const { value: robotType } = useFieldState('robotType');
+
+  /* --------------------------- Robot State End --------------------------- */
+
+  // By default our rotation is the rotation of the field value
+  let jRotation = values[`j${index}`] ? toRadians(values[`j${index}`]) : 0;
+
+  // If we want to follow the robot we will base the rotation off the actual robots joint location!!
+  if (followrobot && robotState.motors[`j${index}`]) {
+    const motor = robotState.motors[`j${index}`];
+    const fieldName = TYPE_MAPPING[robotType].position;
+    const motorPos = motor[fieldName];
+    jRotation = toRadians(motorPos);
+  }
+
+  // console.log(`RENDER JOINT j${index}`);
 
   const [r1, r2, r3] = useMemo(() => {
     const r1 = { x: 0, y: 0, z: 0 };

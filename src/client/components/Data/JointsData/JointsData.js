@@ -96,7 +96,7 @@ export const JointsData = () => {
     return null;
   }
 
-  console.log('RENDER');
+  console.log('RENDER JOINTS DATA');
 
   const motors = Object.values(robotState.motors);
 

@@ -304,6 +304,7 @@ export const Waypoints = ({ currentWaypoints, column, getAllWaypoints }) => {
                               when={({ scope, formApi }) =>
                                 formApi.getValue(`${scope}.grip`) == null
                               }
+                              relevanceWhen={['grip']}
                             >
                               <NumberInput
                                 name="x"
@@ -333,6 +334,7 @@ export const Waypoints = ({ currentWaypoints, column, getAllWaypoints }) => {
                                 when={({ scope, formApi }) =>
                                   formApi.getValue(`${scope}.orientation`) == 'c'
                                 }
+                                relevanceWhen={['orientation']}
                               >
                                 <NumberInput
                                   name="r1"
@@ -373,6 +375,7 @@ export const Waypoints = ({ currentWaypoints, column, getAllWaypoints }) => {
                             </Relevant>
                             <Relevant
                               when={({ scope, formApi }) => formApi.getValue(`${scope}.gripper`)}
+                              relevanceWhen={['gripper']}
                             >
                               <Switch
                                 name="grip"
