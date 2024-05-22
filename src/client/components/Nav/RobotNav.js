@@ -302,16 +302,18 @@ export const RobotNav = () => {
     };
 
   const onGripperChange = ({ value }) => {
-    updateGripper(value);
+    const { gripperVelocity } = formApi.getFormState().values;
+    updateGripper(value, gripperVelocity);
   };
 
   const gripperOpenChange = ({ value }) => {
+    const { gripperOpened, gripperClosed, gripperVelocity } = formApi.getFormState().values;
     if (value) {
-      updateGripper(60);
-      formApi.setValue('gripper', 60);
+      updateGripper(gripperOpened, gripperVelocity);
+      formApi.setValue('gripper', gripperOpened);
     } else {
-      updateGripper(20);
-      formApi.setValue('gripper', 20);
+      updateGripper(gripperClosed, gripperVelocity);
+      formApi.setValue('gripper', gripperClosed);
     }
   };
 
@@ -446,16 +448,16 @@ export const RobotNav = () => {
               <Status status={selectedRobotMeta?.homing} text="Homing" />
               <Status status={selectedRobotMeta?.moving} text="Moving" />
             </Flex>
-            <Select
-              label="Robot"
-              name="robotId"
-              defaultValue="na"
-              aria-label="Robot"
-              options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
-            />
-            <br />
-            <RobotType filter={(robot) => robot.frames && robot.frames.length > 6} />
-            <br />
+            <Flex direction="row" gap="size-100">
+              <RobotType filter={(robot) => robot.frames && robot.frames.length > 6} />
+              <Select
+                label="Robot"
+                name="robotId"
+                defaultValue="na"
+                aria-label="Robot"
+                options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
+              />
+            </Flex>
             <Switch
               name="robotAccel"
               label="Robot Acceleration"
@@ -499,28 +501,6 @@ export const RobotNav = () => {
               </>
             )}
             <br />
-            {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
-            <hr />
-            <Flex direction="row" alignItems="end" gap="size-100">
-              <InputSlider
-                name="gripper"
-                onNativeChange={onGripperChange}
-                label={`Gripper`}
-                type="number"
-                minValue={20}
-                maxValue={60}
-                initialValue={20}
-                step={1}
-              />
-              <br />
-              <Switch
-                name="gripperOpen"
-                label="Open"
-                initialValue={false}
-                onNativeChange={gripperOpenChange}
-              />
-              <br />
-            </Flex>
             {/* ------------------------- POSITION CONTROLS ------------------------- */}
             <hr />
             <InputSlider
@@ -634,15 +614,76 @@ export const RobotNav = () => {
                       Disable Motor {`j${i}`} - This will stop and disable the motor.
                     </Tooltip>
                   </TooltipTrigger>
+                  <TooltipTrigger>
+                    <ActionButton onPress={() => motorResetErrors(`j${i}`)}>
+                      <RemoveCircle />
+                    </ActionButton>
+                    <Tooltip>
+                      Reset Motor {`j${i}`} Errors - This will reset any errors on this motor.
+                    </Tooltip>
+                  </TooltipTrigger>
                   {/* <ActionButton onPress={() => motorReference(`j${i}`)}>
                     <AlignCenter />
                   </ActionButton> */}
-                  <ActionButton onPress={() => motorResetErrors(`j${i}`)}>
-                    <RemoveCircle />
-                  </ActionButton>
                 </Flex>
               );
             })}
+            {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
+            <hr />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <InputSlider
+                name="gripper"
+                onNativeChange={onGripperChange}
+                label={`Gripper %`}
+                type="number"
+                minValue={0}
+                maxValue={100}
+                initialValue={20}
+                step={1}
+              />
+            </Flex>
+            <InputSlider
+              name="gripperVelocity"
+              // onNativeChange={onGripperVelocityChange}
+              label={`Velocity`}
+              type="number"
+              minValue={0}
+              maxValue={0.1}
+              initialValue={0.05}
+              step={0.01}
+            />
+            <InputSlider
+              name="gripperForce"
+              // onNativeChange={onGripperVelocityChange}
+              label={`Force N`}
+              type="number"
+              minValue={0}
+              maxValue={50}
+              initialValue={0}
+            />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <NumberInput
+                name="gripperClosed"
+                label="Close Position"
+                initialValue={0}
+                minValue={0}
+                maxValue={100}
+              />
+              <NumberInput
+                name="gripperOpened"
+                label="Open Position"
+                initialValue={100}
+                minValue={0}
+                maxValue={100}
+              />
+              <Switch
+                name="gripperOpen"
+                label="Open"
+                initialValue={false}
+                onNativeChange={gripperOpenChange}
+              />
+            </Flex>
+            {/* ------------------------- Adjustment CONTROLS ------------------------- */}
             <hr />
             <InputSlider
               name="base"

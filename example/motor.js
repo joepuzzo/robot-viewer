@@ -32,9 +32,40 @@ export class Motor extends EventEmitter {
     };
   }
 
+  /** ------------------------------
+   * validate
+   *
+   * validates to make sure action is ok based on parameters passed
+   *
+   * Example validate({ enabled: true, cleared: true, message: 'attempting to move '})
+   * will prevent the action if the robot is not enabled and cleared of any errors
+   */
+  validate({ enabled, cleared, log }) {
+    // If action requires robot to be enabled and we are not then error out
+    if (enabled && !this.enabled) {
+      const message = `Please enable before ${log}`;
+      logger(message);
+      this.error = 'DISABLED';
+      this.emit('meta');
+      return false;
+    }
+    // If action requires robot to have zero errors and we have errors then error out
+    if (cleared && this.error) {
+      const message = `Please clear error before ${log}`;
+      logger(message);
+      this.error = 'CLEAR_ERROR';
+      this.emit('meta');
+      return false;
+    }
+    return true;
+  }
+
   setPosition(position, spd, acc) {
     const speed = spd || this.maxSpeed;
     const acceleration = acc || this.maxAccel;
+
+    // Validate action
+    if (!this.validate({ enabled: true, cleared: true, log: 'attempting to set position' })) return;
 
     logger(
       `Motor ${this.id} setPosition called with position ${position}, speed ${speed}, acceleration ${acceleration}`,
@@ -91,6 +122,10 @@ export class Motor extends EventEmitter {
 
   goHome() {
     logger(`Motor ${this.id} going home to ${this.homePos}`);
+
+    // Validate action
+    if (!this.validate({ enabled: true, cleared: true, log: 'attempting to home' })) return;
+
     this.homing = true;
     this.setPosition(this.homePos);
   }

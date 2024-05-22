@@ -402,13 +402,6 @@ export class Robot extends EventEmitter {
 
   motorSetPosition(id, pos, speed) {
     logger(`set position for motor ${id}`);
-
-    // Skip if the motor is disabled
-    if (!this.motorMap[id].enabled) {
-      logger(`Not moving motor ${id}, please enable before attempting to move`);
-      return;
-    }
-
     this.motorMap[id].setPosition(pos, speed);
   }
 

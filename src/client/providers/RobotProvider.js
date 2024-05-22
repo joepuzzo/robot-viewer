@@ -143,14 +143,14 @@ const RobotProvider = ({ children }) => {
   }, []);
 
   // Update gripper function
-  const updateGripper = useCallback((value) => {
-    console.log(`Setting gripper to`, value);
+  const updateGripper = useCallback((value, speed) => {
+    console.log(`Setting gripper to ${value} at a speed of ${speed}`);
     formApi.setValue('gripper', value);
 
     // If we are connected to a robot send update to that robot
     if (connectedRef.current) {
       const robotId = formApi.getValue('robotId');
-      socket.emit('gripperSetPos', robotId, value);
+      socket.emit('gripperSetPos', robotId, value, speed);
     }
   }, []);
 
