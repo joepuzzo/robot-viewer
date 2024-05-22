@@ -104,6 +104,7 @@ export class Motor extends EventEmitter {
           );
           this.goalPos = this.currentPos;
           this.moving = false;
+          this.homing = false;
           this.emit('moved', this.id);
           this.emit('pulse', this.id, this.currentPos);
         }
@@ -151,7 +152,7 @@ export class Motor extends EventEmitter {
   freeze() {
     logger(`Motor ${this.id} freeze called`);
     this.moving = false;
-    this.emit('disabled');
+    this.emit('freeze');
   }
 
   center() {

@@ -78,6 +78,9 @@ export const RobotNav = () => {
   // Get controls for nav and robot config
   const { toggleExtra, config, socket, orbitControl, cameraControl } = useApp();
 
+  // Get features off config
+  const { features } = config;
+
   // Get robot control
   const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
     useRobotController();
@@ -374,17 +377,33 @@ export const RobotNav = () => {
     <>
       <Flex direction="row" alignItems="center" gap="size-100">
         <h1>Robot Control</h1>
-        <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
+        {/* <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh />
-        </ActionButton>
+        </ActionButton> */}
         <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
           <Stopwatch />
         </ActionButton>
         <TooltipTrigger>
-          <ActionButton aria-label="Enable Robot" onPress={() => enable()} isDisabled={disabled}>
+          <ActionButton
+            aria-label="Enable Robot"
+            onPress={() => enable()}
+            isDisabled={disabled}
+            isQuiet={selectedRobotMeta?.stopped}
+          >
             <LockOpen />
           </ActionButton>
           <Tooltip>Enable Robot - This will enable all motors on the robot.</Tooltip>
+        </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton
+            aria-label="Disable Robot"
+            onPress={() => stop()}
+            isDisabled={disabled}
+            isQuiet={!selectedRobotMeta?.stopped}
+          >
+            <LockClosed />
+          </ActionButton>
+          <Tooltip>Disable Robot - This will disable all motors on the robot.</Tooltip>
         </TooltipTrigger>
         <TooltipTrigger>
           <div className="icon-red">
@@ -427,7 +446,11 @@ export const RobotNav = () => {
           </Tooltip>
         </TooltipTrigger>
         <TooltipTrigger>
-          <ActionButton aria-label="Zero Robot" onPress={() => zeroRobot()} isDisabled={disabled}>
+          <ActionButton
+            aria-label="Zero Robot"
+            onPress={() => zeroRobot()}
+            isDisabled={!features?.motorZero}
+          >
             <strong>0</strong>
           </ActionButton>
           <Tooltip>Zero Robot - This will zero out all motors in the robot.</Tooltip>
@@ -436,7 +459,7 @@ export const RobotNav = () => {
           <ActionButton
             aria-label="Reference Robot"
             onPress={() => referenceRobot()}
-            isDisabled={disabled}
+            isDisabled={!features?.motorReference}
           >
             <AlignCenter />
           </ActionButton>

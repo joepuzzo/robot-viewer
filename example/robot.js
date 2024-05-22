@@ -60,6 +60,7 @@ export class Robot extends EventEmitter {
       motor.on('homing', () => this.robotState());
       motor.on('home', (id) => this.motorHomed(id));
       motor.on('disabled', () => this.robotState());
+      motor.on('freeze', () => this.robotState());
       motor.on('enabled', () => this.robotState());
       motor.on('moved', (id) => this.motorMoved(id));
       motor.on('reset', () => this.robotState());
@@ -294,6 +295,17 @@ export class Robot extends EventEmitter {
     // Home all motors
     this.motors.forEach((motor, i) => {
       motor.goHome();
+    });
+
+    this.emit('meta');
+  }
+
+  robotZero() {
+    logger(`zero robot`);
+
+    // Zero out all motors
+    this.motors.forEach((motor, i) => {
+      motor.zero();
     });
 
     this.emit('meta');
