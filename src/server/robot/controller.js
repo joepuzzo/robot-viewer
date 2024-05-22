@@ -193,6 +193,34 @@ export class Controller {
     }
   }
 
+  robotFreedriveEnable(robotId, freedriveFrame, cartFloatingAxis) {
+    logger(
+      `controller client says robotFreedriveEnable`,
+      robotId,
+      freedriveFrame,
+      cartFloatingAxis,
+    );
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(
+        socketId,
+        'robotFreedriveEnable',
+        freedriveFrame,
+        cartFloatingAxis,
+      );
+    }
+  }
+
+  robotFreedriveDisable(robotId) {
+    logger(`controller client says robotFreedriveDisable`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotFreedriveDisable');
+    }
+  }
+
   robotSplitHome(robotId) {
     logger(`controller client says robotSplitHome`, robotId);
     // only send if we are connected
@@ -294,6 +322,12 @@ export class Controller {
     this.clientMessenger.on('robotSetAngles', (...args) => this.robotSetAngles(...args));
     this.clientMessenger.on('robotUpdateConfig', (...args) => this.robotUpdateConfig(...args));
     this.clientMessenger.on('robotWriteConfig', (...args) => this.robotWriteConfig(...args));
+    this.clientMessenger.on('robotFreedriveEnable', (...args) =>
+      this.robotFreedriveEnable(...args),
+    );
+    this.clientMessenger.on('robotFreedriveDisable', (...args) =>
+      this.robotFreedriveDisable(...args),
+    );
   }
 
   /* -------------- Robot Shit -------------- */

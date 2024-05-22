@@ -24,6 +24,7 @@ export class Robot extends EventEmitter {
     this.ready = false; // if the robot is ready
     this.homing = false; // if the robot is currently homing
     this.moving = false; // if the robot is moving
+    this.freedrive = false; // if the robot is currently in freedrive
     this.motorMap = {}; // tracks all motors by joint id
     this.motors = []; // array of all motors ( used for quick itteration )
     this.errors = []; // array of any errors that got triggered
@@ -199,6 +200,7 @@ export class Robot extends EventEmitter {
       config: this.config,
       motors,
       errors: this.errors,
+      freedrive: this.freedrive,
     };
   }
 
@@ -395,6 +397,18 @@ export class Robot extends EventEmitter {
       motor.setPosition(angles[i], travelSpeed, acceleration);
     });
 
+    this.emit('meta');
+  }
+
+  robotFreedriveEnable() {
+    logger(`enabling freedrive`);
+    this.freedrive = true;
+    this.emit('meta');
+  }
+
+  robotFreedriveDisable() {
+    logger(`disabling freedrive`);
+    this.freedrive = false;
     this.emit('meta');
   }
 

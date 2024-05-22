@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 import { Robot } from './robot.js';
 import { Debug } from './debug.js';
 
-const logger = Debug('robot:server' + '\t');
+const logger = Debug('mock:server' + '\t');
 
 export const startServer = (config) => {
   // Create socket
@@ -178,7 +178,9 @@ export const startServer = (config) => {
 
   socket.on('robotFreedriveEnable', (frame, cartFloatingAxis) => {
     logger(
-      `Controller says enable freedrive with frame ${frame} and cartFloatingAxis ${cartFloatingAxis}`,
+      `Controller says enable freedrive with frame ${frame} and cartFloatingAxis ${JSON.stringify(
+        cartFloatingAxis,
+      )}`,
     );
     robot.robotFreedriveEnable(frame, cartFloatingAxis);
   });

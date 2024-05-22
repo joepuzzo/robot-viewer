@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Cell,
@@ -9,6 +9,7 @@ import {
   TableBody,
   TableHeader,
   TableView,
+  Text,
   Tooltip,
   TooltipTrigger,
 } from '@adobe/react-spectrum';
@@ -20,6 +21,7 @@ import StopCircle from '@spectrum-icons/workflow/StopCircle';
 import Stopwatch from '@spectrum-icons/workflow/Stopwatch';
 import AlignCenter from '@spectrum-icons/workflow/AlignCenter';
 import LockOpen from '@spectrum-icons/workflow/LockOpen';
+import LockClosed from '@spectrum-icons/workflow/LockClosed';
 import Gauge3 from '@spectrum-icons/workflow/Gauge3';
 import Contrast from '@spectrum-icons/workflow/Contrast';
 import MoveUpDown from '@spectrum-icons/workflow/MoveUpDown';
@@ -91,6 +93,23 @@ export const RobotNav = () => {
 
   // Get the selected robot
   const { value: selectedRobot } = useFieldState('robotId');
+
+  // Used to toggle on and off cart floating axis
+  const [cartFloatingAxis, setCartFloatingAxis] = useState({
+    x: false,
+    y: false,
+    z: false,
+    rx: false,
+    ry: false,
+    rz: false,
+  });
+
+  const toggleAxis = (axis) => {
+    setCartFloatingAxis((prevState) => ({
+      ...prevState,
+      [axis]: !prevState[axis],
+    }));
+  };
 
   // Get robot state
   const { robotOptions, connected, robots } = useRobotMeta();
@@ -269,6 +288,22 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotResetErrors', robotId);
+    }
+  };
+
+  const enableFreedrive = () => {
+    const { freedriveFrame, robotId } = formApi.getFormState().values;
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotFreedriveEnable', robotId, freedriveFrame, cartFloatingAxis);
+    }
+  };
+
+  const disableFreedrive = () => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotFreedriveDisable', robotId);
     }
   };
 
@@ -682,6 +717,95 @@ export const RobotNav = () => {
                 initialValue={false}
                 onNativeChange={gripperOpenChange}
               />
+            </Flex>
+            {/* ------------------------- FREEDRIVE CONTROLS ------------------------- */}
+            <hr />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <Select
+                label="Freedrive Frame"
+                name="freedriveFrame"
+                initialValue="work"
+                options={[
+                  { value: 'work', label: 'Work Frame' },
+                  { value: 'flange', label: 'Flange Frame' },
+                  { value: 'tcp', label: 'TCP Frame' },
+                ]}
+              />
+              <TooltipTrigger>
+                <ActionButton
+                  onPress={() => enableFreedrive()}
+                  isQuiet={!selectedRobotMeta?.freedrive}
+                >
+                  <LockOpen />
+                </ActionButton>
+                <Tooltip>
+                  Enable Freedrive - This will enable freedrive on the selected cartesian floating
+                  axis.
+                </Tooltip>
+              </TooltipTrigger>
+              <TooltipTrigger>
+                <ActionButton
+                  onPress={() => disableFreedrive()}
+                  isQuiet={selectedRobotMeta?.freedrive}
+                >
+                  <LockClosed />
+                </ActionButton>
+                <Tooltip>Disable Freedrive - This will disable freedrive completely.</Tooltip>
+              </TooltipTrigger>
+            </Flex>
+            <br />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('x')}
+                isQuiet={!cartFloatingAxis?.x}
+              >
+                {cartFloatingAxis?.x ? <LockOpen /> : <LockClosed />}
+                <Text>X</Text>
+              </ActionButton>
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('y')}
+                isQuiet={!cartFloatingAxis?.y}
+              >
+                {cartFloatingAxis?.y ? <LockOpen /> : <LockClosed />}
+                <Text>Y</Text>
+              </ActionButton>
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('z')}
+                isQuiet={!cartFloatingAxis?.z}
+              >
+                {cartFloatingAxis?.z ? <LockOpen /> : <LockClosed />}
+                <Text>Z</Text>
+              </ActionButton>
+            </Flex>
+            <br />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('rx')}
+                isQuiet={!cartFloatingAxis?.rx}
+              >
+                {cartFloatingAxis?.rx ? <LockOpen /> : <LockClosed />}
+                <Text>RX</Text>
+              </ActionButton>
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('ry')}
+                isQuiet={!cartFloatingAxis?.ry}
+              >
+                {cartFloatingAxis?.ry ? <LockOpen /> : <LockClosed />}
+                <Text>RY</Text>
+              </ActionButton>
+              <ActionButton
+                width="size-900"
+                onPress={() => toggleAxis('rz')}
+                isQuiet={!cartFloatingAxis?.rz}
+              >
+                {cartFloatingAxis?.rz ? <LockOpen /> : <LockClosed />}
+                <Text>RZ</Text>
+              </ActionButton>
             </Flex>
             {/* ------------------------- Adjustment CONTROLS ------------------------- */}
             <hr />
