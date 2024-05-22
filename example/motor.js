@@ -14,6 +14,7 @@ export class Motor extends EventEmitter {
     this.currentPos = homePos;
     this.goalPos = homePos;
     this.moving = false;
+    this.homing = false;
     this.enabled = false;
     logger(`Motor ${this.id} created with homePos ${this.homePos}`);
   }
@@ -58,6 +59,12 @@ export class Motor extends EventEmitter {
           logger(`Motor ${this.id} reached goal position ${this.goalPos}`);
           this.emit('moved', this.id);
           this.emit('pulse', this.id, this.currentPos);
+          // Maybe we were homing the robot so update homing
+          if (this.homing) {
+            this.homing = false;
+            logger(`Motor ${this.id} finished homing`);
+            this.emit('home', this.id);
+          }
         }
         // Check if the motor has been disabled ( occurs on manual disable or robot stop )
         else if (!this.enabled) {
@@ -84,12 +91,13 @@ export class Motor extends EventEmitter {
 
   goHome() {
     logger(`Motor ${this.id} going home to ${this.homePos}`);
+    this.homing = true;
     this.setPosition(this.homePos);
-    this.emit('home', this.id);
   }
 
   resetErrors() {
     logger(`Motor ${this.id} resetting errors`);
+    this.error = null;
     this.emit('reset');
   }
 

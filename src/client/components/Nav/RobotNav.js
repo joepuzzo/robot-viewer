@@ -1,5 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Button, Flex, StatusLight, Tooltip, TooltipTrigger } from '@adobe/react-spectrum';
+import {
+  Button,
+  Cell,
+  Column,
+  Flex,
+  Row,
+  StatusLight,
+  TableBody,
+  TableHeader,
+  TableView,
+  Tooltip,
+  TooltipTrigger,
+} from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import Graphic from '@spectrum-icons/workflow/Graphic';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
@@ -32,6 +44,7 @@ import useRobotController from '../../hooks/useRobotController';
 import useRobotKinematics from '../../hooks/useRobotKinematics';
 import useSimulateController from '../../hooks/useSimulateController';
 import { RobotType } from '../Shared/RobotType';
+import { If } from '../Shared/If';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -152,6 +165,14 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('motorEnable', robotId, motorId);
+    }
+  }, []);
+
+  const motorDisable = useCallback((motorId) => {
+    const robotId = formApi.getValue('robotId');
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('motorDisable', robotId, motorId);
     }
   }, []);
 
@@ -448,6 +469,35 @@ export const RobotNav = () => {
               initialValue={false}
               isDisabled={!connected}
             />
+            {/* ------------------------- ERRORS ------------------------- */}
+            {selectedRobotMeta?.errors.length && (
+              <>
+                <hr />
+                <h3>Errors</h3>
+                <Flex direction="row" alignItems="center" gap="size-100">
+                  <>
+                    <TableView aria-label="Motor Statuses" flex width="380px">
+                      <TableHeader>
+                        <Column>Type</Column>
+                        <Column>Error</Column>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedRobotMeta.errors.map((error) => (
+                          <Row>
+                            <Cell>
+                              <span>{error.type}</span>
+                            </Cell>
+                            <Cell>
+                              <span>{error.message}</span>
+                            </Cell>
+                          </Row>
+                        ))}
+                      </TableBody>
+                    </TableView>
+                  </>
+                </Flex>
+              </>
+            )}
             <br />
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />
@@ -548,17 +598,47 @@ export const RobotNav = () => {
                     onNativeChange={onJointChange(`j${i}`)}
                     step={1}
                   />
-                  <ActionButton onPress={() => homeJoint(`j${i}`)}>
-                    <Home />
-                  </ActionButton>
-                  <ActionButton onPress={() => motorReference(`j${i}`)}>
+                  <TooltipTrigger>
+                    <ActionButton
+                      aria-label={`Home Motor j${i}`}
+                      onPress={() => homeJoint(`j${i}`)}
+                      isDisabled={disabled}
+                    >
+                      <Home />
+                    </ActionButton>
+                    <Tooltip>
+                      Home Motor {`j${i}`} - This will send this motor to its home position.
+                    </Tooltip>
+                  </TooltipTrigger>
+                  <TooltipTrigger>
+                    <ActionButton
+                      aria-label={`Enable Motor j${i}`}
+                      onPress={() => motorEnable(`j${i}`)}
+                      isDisabled={disabled}
+                    >
+                      <LockOpen />
+                    </ActionButton>
+                    <Tooltip>Enable Motor {`j${i}`} - This will enable this motor.</Tooltip>
+                  </TooltipTrigger>
+                  <TooltipTrigger>
+                    {/* <div className="icon-red"> */}
+                    <ActionButton
+                      title="Stop"
+                      onPress={() => motorDisable(`j${i}`)}
+                      isDisabled={disabled}
+                    >
+                      <StopCircle />
+                    </ActionButton>
+                    {/* </div> */}
+                    <Tooltip>
+                      Disable Motor {`j${i}`} - This will stop and disable the motor.
+                    </Tooltip>
+                  </TooltipTrigger>
+                  {/* <ActionButton onPress={() => motorReference(`j${i}`)}>
                     <AlignCenter />
-                  </ActionButton>
+                  </ActionButton> */}
                   <ActionButton onPress={() => motorResetErrors(`j${i}`)}>
                     <RemoveCircle />
-                  </ActionButton>
-                  <ActionButton onPress={() => motorEnable(`j${i}`)}>
-                    <LockOpen />
                   </ActionButton>
                 </Flex>
               );

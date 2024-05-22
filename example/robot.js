@@ -24,9 +24,9 @@ export class Robot extends EventEmitter {
     this.ready = false; // if the robot is ready
     this.homing = false; // if the robot is currently homing
     this.moving = false; // if the robot is moving
-    this.home = false; // if the robot is currently home
     this.motorMap = {}; // tracks all motors by joint id
     this.motors = []; // array of all motors ( used for quick itteration )
+    this.errors = []; // array of any errors that got triggered
 
     // Start up the robot when we are ready ( normally you would be connecting to some control interface and waiting here )
     setTimeout(() => {
@@ -61,6 +61,7 @@ export class Robot extends EventEmitter {
       motor.on('disabled', () => this.robotState());
       motor.on('enabled', () => this.robotState());
       motor.on('moved', (id) => this.motorMoved(id));
+      motor.on('reset', () => this.robotState());
     });
 
     // Create Gripper if you have a gripper
@@ -197,7 +198,36 @@ export class Robot extends EventEmitter {
       moving: this.moving,
       config: this.config,
       motors,
+      errors: this.errors,
     };
+  }
+
+  /** ------------------------------
+   * validate
+   *
+   * validates to make sure action is ok based on parameters passed
+   *
+   * Example validate({ enabled: true, cleared: true, message: 'attempting to move '})
+   * will prevent the action if the robot is not enabled and cleared of any errors
+   */
+  validate({ enabled, cleared, log }) {
+    // If action requires robot to be enabled and we are not then error out
+    if (enabled && this.stopped) {
+      const message = `Please enable before ${log}`;
+      logger(message);
+      this.errors.push({ type: 'warning', message });
+      this.emit('meta');
+      return false;
+    }
+    // If action requires robot to have zero errors and we have errors then error out
+    if (cleared && this.errors.length) {
+      const message = `Please clear errors before ${log}`;
+      logger(message);
+      this.errors.push({ type: 'warning', message });
+      this.emit('meta');
+      return false;
+    }
+    return true;
   }
 
   /* -------------------- Motor Events -------------------- */
@@ -207,9 +237,8 @@ export class Robot extends EventEmitter {
 
     // If we are homing robot check to see if we are all done homing
     if (this.homing) {
-      if (this.motors.every((motor) => motor.home)) {
+      if (this.motors.every((motor) => !motor.homing)) {
         logger(`all motors are home!`);
-        this.home = true;
         this.homing = false;
       }
     }
@@ -237,9 +266,6 @@ export class Robot extends EventEmitter {
       }
     }
 
-    // Anytime this gets called its from a robot move so we are no longer home
-    this.home = false;
-
     // Let others know
     this.emit('meta');
     this.emit('state');
@@ -250,8 +276,18 @@ export class Robot extends EventEmitter {
   robotHome() {
     logger(`home robot`);
 
+    // Validate action
+    if (!this.validate({ enabled: true, cleared: true, log: 'attempting to home' })) return;
+
     // Update our state
     this.homing = true;
+    this.moving = true;
+
+    // Because a motor might complete faster than all the others start we need to make sure we initialize all to homing + moving ;)
+    this.motors.forEach((motor, i) => {
+      motor.homing = true;
+      motor.moving = true;
+    });
 
     // Home all motors
     this.motors.forEach((motor, i) => {
@@ -320,14 +356,25 @@ export class Robot extends EventEmitter {
     this.emit('meta');
   }
 
+  robotReset() {
+    logger(`resetting robot errors`);
+
+    // Reset all motors errors
+    this.motors.forEach((motor) => {
+      motor.resetErrors();
+    });
+
+    // Reset all robot errors
+    this.errors = [];
+
+    this.emit('meta');
+  }
+
   robotSetAngles(angles, speed) {
     logger(`robotSetAngles at speed ${speed} angles:`, angles);
 
-    // Skip if we are stopped
-    if (this.stopped) {
-      logger(`Not moving robot, please enable before attempting to move`);
-      return;
-    }
+    // Validate action
+    if (!this.validate({ enabled: true, cleared: true, log: 'attempting to move' })) return;
 
     // We are moving to a new location
     this.moving = true;
