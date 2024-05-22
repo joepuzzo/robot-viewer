@@ -47,6 +47,7 @@ import useRobotKinematics from '../../hooks/useRobotKinematics';
 import useSimulateController from '../../hooks/useSimulateController';
 import { RobotType } from '../Shared/RobotType';
 import { If } from '../Shared/If';
+import Input from '../Informed/Input';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -82,7 +83,7 @@ export const RobotNav = () => {
   const { features } = config;
 
   // Get robot control
-  const { updateRobot, updateJoint, updateConfig, saveConfig, updateGripper } =
+  const { updateRobot, updateJoint, updateJoints, updateConfig, saveConfig, updateGripper } =
     useRobotController();
 
   // Get simulate controls
@@ -367,6 +368,15 @@ export const RobotNav = () => {
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotAccelEnabled', robotId, value);
+    }
+  }, []);
+
+  const setAllJoints = useCallback(() => {
+    const { jointsString } = formApi.getFormState().values;
+    const angles = jointsString.split(' ');
+    // TODO make this based on frames maybe
+    if (angles.length >= 6) {
+      updateJoints(angles);
     }
   }, []);
 
@@ -686,6 +696,18 @@ export const RobotNav = () => {
                 </Flex>
               );
             })}
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <Input name="jointsString" label="All Joints" autocomplete="off" />
+              <ActionButton
+                title="Go"
+                aria-label="Go"
+                type="button"
+                onPress={setAllJoints}
+                minWidth="50px"
+              >
+                Go
+              </ActionButton>
+            </Flex>
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />
             <Flex direction="row" alignItems="end" gap="size-100">

@@ -307,6 +307,48 @@ const RobotProvider = ({ children }) => {
     }
   }, []);
 
+  // Update robot function
+  const updateJoints = useCallback((angles, speed) => {
+    // Get fixed values off of form state
+    const { runOnRobot, endEffector } = formApi.getFormState().values;
+
+    console.log('Setting angles to', angles);
+
+    if (!angles.find((a) => isNaN(a))) {
+      // Step1: Update the form
+      formApi.setTheseValues({
+        j0: angles[0],
+        j1: angles[1],
+        j2: angles[2],
+        j3: angles[3],
+        j4: angles[4],
+        j5: angles[5],
+        // Maybe update this via forward kinematics
+        // x,
+        // y,
+        // z,
+        // r1,
+        // r2,
+        // r3,
+      });
+
+      // Step2: If we are connected to a robot send angles to that robot
+      if (connectedRef.current && runOnRobot) {
+        const robotId = formApi.getValue('robotId');
+        socket.emit(
+          'robotSetAngles',
+          robotId,
+          angles,
+          // TODO add back but need to be careful different speed for AR vs Igus At the moment ( steps/s vs deg/s )
+          // speed
+        );
+      }
+
+      // Update forward kinematics
+      debouncedUpdateForward();
+    }
+  }, []);
+
   // Build robot controller
   const robotController = useMemo(() => {
     return {
@@ -316,6 +358,7 @@ const RobotProvider = ({ children }) => {
       updateConfig,
       saveConfig,
       setBallRef,
+      updateJoints,
     };
   }, []);
 
