@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './components/App/App.js';
 import AppProvider from './providers/AppProvider.js';
 import SimulateProvider from './providers/SimulateProvider.js';
@@ -30,7 +30,9 @@ import GamepadProvider from './providers/GamepadProvider.js';
 import CameraProvider from './providers/CameraProvider.js';
 
 const rootElement = document.getElementById('root');
-ReactDOM.render(
+const root = createRoot(rootElement); // createRoot(container!) if you use TypeScript
+
+root.render(
   <AppProvider>
     <Informed>
       <GamepadProvider>
@@ -46,5 +48,4 @@ ReactDOM.render(
       </GamepadProvider>
     </Informed>
   </AppProvider>,
-  rootElement
 );

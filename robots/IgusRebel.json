@@ -25,6 +25,10 @@
   "rangej4": [-95, 95],
   "rangej5": [-180, 180],
   "flip": true,
+  "features": {
+    "motorZero": true,
+    "motorReference": true
+  },
   "frames": [
     {
       "frameType": "rotary",

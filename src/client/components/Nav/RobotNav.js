@@ -601,7 +601,7 @@ export const RobotNav = () => {
                 return null;
               }
               return (
-                <Flex direction="row" alignItems="end" gap="size-100">
+                <Flex direction="row" alignItems="end" gap="size-100" key={`frame-control-${i}`}>
                   <InputSlider
                     name={`j${i}`}
                     label={`J${i}`}

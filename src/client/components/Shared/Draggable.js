@@ -158,7 +158,7 @@ export const Draggable = ({ children, index, swapper }) => {
   }, [ref, index]);
 
   return (
-    <div ref={ref} class="draggable">
+    <div ref={ref} className="draggable">
       {children}
     </div>
   );

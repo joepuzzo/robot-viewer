@@ -125,9 +125,14 @@ const MotorInfo = () => {
 };
 
 export const Motor = () => {
-  const { socket } = useApp();
+  // Get the socket and the robot config
+  const { socket, config } = useApp();
 
+  // Form Api for getting values
   const formApi = useFormApi();
+
+  // Get attributes off robot config
+  const { features } = config;
 
   // const { rotation: motorPos } = useSpring({
   //   rotation: value,
@@ -289,13 +294,17 @@ export const Motor = () => {
           <ActionButton width="size-2400" onPress={motorHome}>
             Home
           </ActionButton>
-          <ActionButton width="size-2400" onPress={motorZero}>
+          <ActionButton width="size-2400" onPress={motorZero} isDisabled={!features?.motorZero}>
             Zero Motor
           </ActionButton>
           {/* <ActionButton width="size-2400" onPress={robotHome}>
             Robot Home
           </ActionButton> */}
-          <ActionButton width="size-2400" onPress={motorReference}>
+          <ActionButton
+            width="size-2400"
+            onPress={motorReference}
+            isDisabled={!features?.motorReference}
+          >
             Reference Motor
           </ActionButton>
           <ActionButton width="size-2400" onPress={queryMotorPosition}>
