@@ -59,7 +59,9 @@ main {
     z-index: 100;
     visibility: hidden;
     outline: 0;
-    transition: transform 0.2s, visibility 0s 0.2s;
+    transition:
+      transform 0.2s,
+      visibility 0s 0.2s;
     position: fixed;
     inset: 0 100% 0 auto;
   }
@@ -97,7 +99,9 @@ main {
 .extra {
   display: none;
   background: var(--spectrum-global-color-gray-200);
-  transition: transform 0.2s, visibility 0s 0.2s;
+  transition:
+    transform 0.2s,
+    visibility 0s 0.2s;
   position: fixed;
   top: 62vh;
   height: 35vh;
@@ -319,6 +323,26 @@ span[class^='spectrum-Tabs-itemLabel'] {
   color: rgb(212, 205, 205);
   flex-grow: 1;
   flex: 1 1 0px;
+}
+
+.joint-info {
+  display: flex;
+  margin: 12px;
+  background-color: black;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.joint-info div {
+  color: rgb(212, 205, 205);
+  flex-grow: 1;
+  flex: 1 1 0px;
+}
+
+.joint-info div strong {
+  color: rgb(151, 48, 48);
+  /* color: rgb(187, 125, 33); */
 }
 
 /* .robot-info.angles div {
