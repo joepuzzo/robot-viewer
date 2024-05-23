@@ -7,7 +7,7 @@ export class RobotMessenger extends EventEmitter {
   constructor(io) {
     logger('robot constructing MotorMessenger');
     super();
-    // Create io with namespace motor
+    // Create io with namespace robot
     this.io = io.of('/robot');
     // Initialize listeners
     this.io.on('connection', (socket) => this.connect(socket));

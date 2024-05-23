@@ -6,3 +6,5 @@ coverage
 waypoints
 recipes
 .DS_Store
+venv
+**/__pycache__/

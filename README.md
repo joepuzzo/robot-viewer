@@ -65,13 +65,52 @@ npm run run:docker
 
 ![Kinematics Diagram](https://github.com/joepuzzo/robot-viewer/blob/main/src/server/static/KinematicsDiagram.jpg?raw=true)
 
-## Mock Robot
+---
+
+## Mock Javascript Robot ( /example )
 
 We have included a mock robot that simulates the robot protocol. You can run it with the following command.
 
-```
+```bash
 cd example
 DEBUG='mock:.*' node index.js -p 3000 --host localhost
+```
+
+## Mock Python Robot ( /example_py )
+
+## Python Installation
+
+Its reccomended that you set up a viruall python envirnment. Note, you must use version 3.8 or 3.10 of python.
+
+Run the following in the root of the project
+
+```bash
+cd example_py
+python3.10 -m venv venv
+```
+
+The above will set up a virtual envirnment directory. Next you simply activate it.
+
+```bash
+source venv/bin/activate
+```
+
+This will activate the virtual envirnment. Now all thats left is to install the dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+You can run tests like the following from the example_py directory
+
+```bash
+DEBUG=mock:.* python test_debug.py
+```
+
+Here is how you can run the example robot!
+
+```bash
+DEBUG='mock:.*' python main.py --port 3000 --host localhost
 ```
 
 ---

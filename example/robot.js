@@ -288,8 +288,10 @@ export class Robot extends EventEmitter {
 
     // Because a motor might complete faster than all the others start we need to make sure we initialize all to homing + moving ;)
     this.motors.forEach((motor, i) => {
-      motor.homing = true;
-      motor.moving = true;
+      if (motor.enabled) {
+        motor.homing = true;
+        motor.moving = true;
+      }
     });
 
     // Home all motors
@@ -395,7 +397,9 @@ export class Robot extends EventEmitter {
 
     // Because a motor might complete faster than all the others start we need to make sure we initialize all to moving ;)
     this.motors.forEach((motor, i) => {
-      motor.moving = true;
+      if (motor.enabled) {
+        motor.moving = true;
+      }
     });
 
     // Step1: Determine travelSpeed and acceleration

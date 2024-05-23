@@ -6,7 +6,7 @@ import { startServer } from './server.js';
 const config = {
   port: 80, // client port to connect to
   host: 'localhost', // client url to connect to
-  id: 'Example', // robot id
+  id: 'JSExample', // robot id
 };
 
 // Process the arguments
