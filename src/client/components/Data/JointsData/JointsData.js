@@ -2,13 +2,14 @@ import React from 'react';
 
 import { useFieldState } from 'informed';
 import useRobotState from '../../../hooks/useRobotState';
-import { Flex } from '@adobe/react-spectrum';
+import { ActionButton, Flex } from '@adobe/react-spectrum';
 import { ARJointData } from './ARJointData';
 import { IgusRebelJointData } from './IgusRebelJointData';
 import { If } from '../../Shared/If';
 import { ExampleJointData } from './ExampleJointData';
-import { TYPE_MAPPING } from '../../../constants';
+import { EXAMPLE_IGUS_JOINT_DATA, TYPE_MAPPING } from '../../../constants';
 import { round } from '../../../../lib/round';
+import Copy from '@spectrum-icons/workflow/Copy';
 
 const JointData = ({ motor }) => {
   const { value: robotType } = useFieldState('robotType');
@@ -26,62 +27,6 @@ const JointData = ({ motor }) => {
   }
 
   return null;
-};
-
-// Example AR
-const exampleAR = {
-  id: 'j0',
-  homing: false,
-  home: false,
-  homed: false,
-  enabled: true,
-  moving: true,
-  ready: true,
-  stepPosition: -7733,
-  encoderPosition: 77309,
-  error: 'Ahh!!!!',
-};
-
-// EXAMPLE IGUS
-const exampleIgus = {
-  id: 'j0',
-  canId: 16,
-  homing: false,
-  home: false,
-  // TODO add to backend vvv
-  ready: true,
-  enabled: false,
-  moving: false,
-  // TODO add to backend ^^^
-  currentPosition: 90.000235647645,
-  currentTics: 8000,
-  encoderPulsePosition: 90.000235647645,
-  encoderPulseTics: 8000,
-  jointPositionSetPoint: 90,
-  jointPositionSetTics: 8000,
-  goalPosition: 90,
-  motorCurrent: 120,
-  error: null,
-  errorCode: null,
-  errorCodeString: 'n/a',
-  voltage: 0,
-  tempMotor: 20,
-  tempBoard: 30,
-  direction: 'forwards',
-  motorError: null,
-  adcError: null,
-  rebelError: null,
-  controlError: null,
-  sendInterval: 20,
-  calculatedVelocity: 29,
-  currentVelocity: 30,
-  positionHistory: [
-    { time: 1, pos: 10 },
-    { time: 2, pos: 20 },
-    { time: 3, pos: 30 },
-    { time: 4, pos: 30 },
-    { time: 5, pos: 10 },
-  ],
 };
 
 export const JointsData = () => {
@@ -106,7 +51,7 @@ export const JointsData = () => {
   const motors = Object.values(robotState.motors);
 
   // FOR TESTING WITHOUT CONNECTION
-  //const motors = [exampleIgus];
+  // const motors = [EXAMPLE_IGUS_JOINT_DATA];
   return (
     <Flex
       width="100%"
@@ -118,8 +63,33 @@ export const JointsData = () => {
       {motorId != 'na' && motorId != null && <JointData motor={robotState.motors[motorId]} />}
       <If condition={motorId == 'na' || motorId == null}>
         <>
-          <br />
-          <h3>Joints</h3>
+          <div style={{ width: '380px' }}>
+            <Flex
+              direction="row"
+              alignItems="center"
+              justifyContent="start"
+              gap="size-100"
+              width="100%"
+            >
+              <h3>Joints</h3>
+              <ActionButton
+                title="Freeze"
+                onPress={() => {
+                  // Build copy text from current position
+                  const copyText = motors
+                    .map((motor) => {
+                      const fieldName = TYPE_MAPPING[robotType].position;
+                      const motorPos = motor[fieldName];
+                      return round(motorPos, 1000);
+                    })
+                    .join(' ');
+                  navigator.clipboard.writeText(copyText);
+                }}
+              >
+                <Copy />
+              </ActionButton>
+            </Flex>
+          </div>
           <div className="joint-info" style={{ width: '380px' }}>
             {motors.map((motor, i) => {
               const fieldName = TYPE_MAPPING[robotType].position;

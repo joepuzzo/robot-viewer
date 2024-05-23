@@ -542,7 +542,7 @@ export const RobotNav = () => {
               isDisabled={!connected}
             />
             {/* ------------------------- ERRORS ------------------------- */}
-            {selectedRobotMeta?.errors.length && (
+            {selectedRobotMeta?.errors?.length && (
               <>
                 <hr />
                 <h3>Errors</h3>
@@ -550,11 +550,11 @@ export const RobotNav = () => {
                   <>
                     <TableView aria-label="Motor Statuses" flex width="380px">
                       <TableHeader>
-                        <Column>Type</Column>
+                        <Column maxWidth={100}>Type</Column>
                         <Column>Error</Column>
                       </TableHeader>
                       <TableBody>
-                        {selectedRobotMeta.errors.map((error) => (
+                        {selectedRobotMeta?.errors.map((error) => (
                           <Row>
                             <Cell>
                               <span>{error.type}</span>

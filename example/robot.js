@@ -216,7 +216,7 @@ export class Robot extends EventEmitter {
   validate({ enabled, cleared, log }) {
     // If action requires robot to be enabled and we are not then error out
     if (enabled && this.stopped) {
-      const message = `Please enable before ${log}`;
+      const message = `Enable before ${log}`;
       logger(message);
       this.errors.push({ type: 'warning', message });
       this.emit('meta');
@@ -224,7 +224,7 @@ export class Robot extends EventEmitter {
     }
     // If action requires robot to have zero errors and we have errors then error out
     if (cleared && this.errors.length) {
-      const message = `Please clear errors before ${log}`;
+      const message = `Clear errors before ${log}`;
       logger(message);
       this.errors.push({ type: 'warning', message });
       this.emit('meta');
