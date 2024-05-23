@@ -102,6 +102,7 @@ export const JointsData = () => {
                     flexDirection: 'column',
                     border: '1px solid rgb(52,52,52)',
                     padding: '5px',
+                    borderRadius: '2px',
                   }}
                 >
                   <strong>{`J${i}: `}</strong>

@@ -95,28 +95,23 @@ The following are all socket events that can be recieved on the robot side and c
 
 ##### Robot Events
 
-| Event             | Description                       | Parameters    |
-| ----------------- | --------------------------------- | ------------- |
-| robotHome         | Homes the robot                   | None          |
-| robotSplitHome    | Homes the robot in split mode     | None          |
-| robotStop         | Stops the robot                   | None          |
-| robotFreeze       | Freezes the robot                 | None          |
-| robotEnable       | Enables the robot                 | None          |
-| robotCenter       | Centers the robot                 | None          |
-| robotSetAngles    | Sets the robot's angles           | angles, speed |
-| robotUpdateConfig | Updates the robot's configuration | key, value    |
-| robotWriteConfig  | Writes the robot's configuration  | None          |
-| robotAccelEnabled | Enables robot acceleration        | value         |
-| robotResetErrors  | Resets the robot's errors         | None          |
-| robotReference    | References the robot              | None          |
-| robotZero         | Zeros the robot                   | None          |
-
-**TODO** The following events are not implimented yet.
-
-| Event                 | Description                     | Parameters              |
-| --------------------- | ------------------------------- | ----------------------- |
-| robotFreedriveEnable  | Enables Freedrive On the Robot  | frame, cartFloatingAxis |
-| robotFreedriveDisable | Disables Freedrive On the Robot | None                    |
+| Event                 | Description                       | Parameters              |
+| --------------------- | --------------------------------- | ----------------------- |
+| robotHome             | Homes the robot                   | None                    |
+| robotSplitHome        | Homes the robot in split mode     | None                    |
+| robotStop             | Stops the robot                   | None                    |
+| robotFreeze           | Freezes the robot                 | None                    |
+| robotEnable           | Enables the robot                 | None                    |
+| robotCenter           | Centers the robot                 | None                    |
+| robotSetAngles        | Sets the robot's angles           | angles, speed           |
+| robotUpdateConfig     | Updates the robot's configuration | key, value              |
+| robotWriteConfig      | Writes the robot's configuration  | None                    |
+| robotAccelEnabled     | Enables robot acceleration        | value                   |
+| robotResetErrors      | Resets the robot's errors         | None                    |
+| robotReference        | References the robot              | None                    |
+| robotZero             | Zeros the robot                   | None                    |
+| robotFreedriveEnable  | Enables Freedrive On the Robot    | frame, cartFloatingAxis |
+| robotFreedriveDisable | Disables Freedrive On the Robot   | None                    |
 
 ##### Motor Events
 
@@ -199,8 +194,10 @@ const meta = {
   home: this.home, // boolean if robot is currently home
   homing: this.homing, // boolean if robot is currently homing
   moving: this.moving, // boolean if robot is currently moving
+  freedrive: this.freedrive, // boolean if the robot is currently in freedrive
   config: this.config, // Current robot configuration
   motors: this.motorsMeta, // Metadata about motors ( example [{id: 'j0', id: 'j1'}] )
+  errors: this.errors, // any current errors on the robot
 };
 ```
 

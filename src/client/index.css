@@ -1,5 +1,15 @@
 /* ---------- Main ---------- */
 
+:root {
+  --text-color: rgb(253, 253, 253);
+  --background-color: black;
+}
+
+.spectrum--light {
+  --text-color: rgb(70, 70, 70);
+  --background-color: white;
+}
+
 body {
   margin: 0px;
   overflow: scroll;
@@ -312,7 +322,8 @@ span[class^='spectrum-Tabs-itemLabel'] {
 .robot-info {
   display: flex;
   margin: 12px;
-  background-color: black;
+  color: var(--text-color);
+  background-color: var(--background-color);
   padding: 10px 10px;
   border-radius: 5px;
   align-items: center;
@@ -320,7 +331,6 @@ span[class^='spectrum-Tabs-itemLabel'] {
 }
 
 .robot-info div {
-  color: rgb(212, 205, 205);
   flex-grow: 1;
   flex: 1 1 0px;
 }
@@ -328,14 +338,15 @@ span[class^='spectrum-Tabs-itemLabel'] {
 .joint-info {
   display: flex;
   margin: 12px;
-  background-color: black;
+  color: var(--text-color);
+  background-color: var(--background-color);
   border-radius: 5px;
   align-items: center;
   justify-content: center;
 }
 
 .joint-info div {
-  color: rgb(212, 205, 205);
+  color: var(--text-color);
   flex-grow: 1;
   flex: 1 1 0px;
 }

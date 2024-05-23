@@ -77,7 +77,7 @@ const Status = ({ status, posText, negText, text }) => {
 // Robot Nav -----------------------------
 export const RobotNav = () => {
   // Get controls for nav and robot config
-  const { toggleExtra, config, socket, orbitControl, cameraControl } = useApp();
+  const { toggleExtra, config, socket, orbitControl, cameraControl, toggleColorScheme } = useApp();
 
   // Get features off config
   const { features } = config;
@@ -392,6 +392,13 @@ export const RobotNav = () => {
         {/* <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh />
         </ActionButton> */}
+        <ActionButton
+          title="Switch Theme"
+          aria-label="Switch Theme"
+          onClick={() => toggleColorScheme()}
+        >
+          <Contrast />
+        </ActionButton>
         <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
           <Stopwatch />
         </ActionButton>
@@ -500,14 +507,6 @@ export const RobotNav = () => {
           initialValue={false}
           isDisabled={!connected}
         />
-        <br />
-        {/* <ActionButton
-          title="Switch Theme"
-          aria-label="Switch Theme"
-          onClick={() => toggleColorScheme()}
-        >
-          <Contrast />
-        </ActionButton> */}
       </Flex>
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
