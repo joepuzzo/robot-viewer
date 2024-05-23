@@ -2,11 +2,12 @@ import React from 'react';
 
 import { useFieldState } from 'informed';
 import useRobotState from '../../../hooks/useRobotState';
-import { Flex } from '@adobe/react-spectrum';
+import { Cell, Column, Flex, Row, TableBody, TableHeader, TableView } from '@adobe/react-spectrum';
 import { ARJointData } from './ARJointData';
 import { IgusRebelJointData } from './IgusRebelJointData';
 import { If } from '../../Shared/If';
 import { ExampleJointData } from './ExampleJointData';
+import { TYPE_MAPPING } from '../../../constants';
 
 const JointData = ({ motor }) => {
   const { value: robotType } = useFieldState('robotType');
@@ -89,6 +90,9 @@ export const JointsData = () => {
   const { value: robotId } = useFieldState('robotId');
   const { value: motorId } = useFieldState('motorId');
 
+  // Get the robot type
+  const { value: robotType } = useFieldState('robotType');
+
   // Get the selected robot state
   const robotState = robotStates[robotId];
 
@@ -112,9 +116,32 @@ export const JointsData = () => {
     >
       {motorId != 'na' && motorId != null && <JointData motor={robotState.motors[motorId]} />}
       <If condition={motorId == 'na' || motorId == null}>
-        {motors.map((motor, i) => (
-          <JointData motor={motor} key={`motor-${i}`} />
-        ))}
+        <>
+          <br />
+          <Flex direction="row" alignItems="center" gap="size-100">
+            <TableView aria-label="Motor Positions" flex width="380px">
+              <TableHeader>
+                {motors.map((motor, i) => (
+                  <Column key={`JointPos-Header-${i}`}>{`J${i}`}</Column>
+                ))}
+              </TableHeader>
+              <TableBody>
+                <Row>
+                  {motors.map((motor, i) => {
+                    const fieldName = TYPE_MAPPING[robotType].position;
+                    const motorPos = motor[fieldName];
+
+                    return <Cell key={`JointPos-${i}`}>{motorPos}</Cell>;
+                  })}
+                </Row>
+              </TableBody>
+            </TableView>
+          </Flex>
+
+          {motors.map((motor, i) => (
+            <JointData motor={motor} key={`motor-${i}`} />
+          ))}
+        </>
       </If>
     </Flex>
   );
