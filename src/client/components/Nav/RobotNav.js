@@ -372,8 +372,10 @@ export const RobotNav = () => {
   }, []);
 
   const setAllJoints = useCallback(() => {
+    // Get the value of the form state
     const { jointsString } = formApi.getFormState().values;
-    const angles = jointsString.split(' ');
+    // Take the joint string and convert it to an array of numbers to set angles too
+    const angles = jointsString.split(' ').map((a) => +a);
     // TODO make this based on frames maybe
     if (angles.length >= 6) {
       updateJoints(angles);
