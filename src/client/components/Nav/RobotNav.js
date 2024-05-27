@@ -296,10 +296,10 @@ export const RobotNav = () => {
   };
 
   const enableFreedrive = () => {
-    const { freedriveFrame, robotId } = formApi.getFormState().values;
+    const { freedriveFrame, robotId, nullspace } = formApi.getFormState().values;
     // only send if we are connected
     if (connectedRef.current) {
-      socket.emit('robotFreedriveEnable', robotId, freedriveFrame, cartFloatingAxis);
+      socket.emit('robotFreedriveEnable', robotId, freedriveFrame, cartFloatingAxis, nullspace);
     }
   };
 
@@ -516,6 +516,7 @@ export const RobotNav = () => {
               <Status status={selectedRobotMeta?.home} text="Home" />
               <Status status={selectedRobotMeta?.homing} text="Homing" />
               <Status status={selectedRobotMeta?.moving} text="Moving" />
+              <Status status={selectedRobotMeta?.busy} text="Busy" />
             </Flex>
             <Flex direction="row" gap="size-100">
               <RobotType filter={(robot) => robot.frames && robot.frames.length > 6} />
@@ -798,6 +799,7 @@ export const RobotNav = () => {
                 </ActionButton>
                 <Tooltip>Disable Freedrive - This will disable freedrive completely.</Tooltip>
               </TooltipTrigger>
+              <Switch name="nullspace" label="Nullspace" initialValue={false} />
             </Flex>
             <br />
             <Flex direction="row" alignItems="end" gap="size-100">

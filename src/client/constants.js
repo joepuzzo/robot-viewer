@@ -8,6 +8,9 @@ export const TYPE_MAPPING = {
   IgusRebel: {
     position: 'currentPosition',
   },
+  Rizon4: {
+    position: 'angle',
+  },
 };
 
 // Example AR

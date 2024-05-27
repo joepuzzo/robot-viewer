@@ -10,6 +10,7 @@ import { ExampleJointData } from './ExampleJointData';
 import { EXAMPLE_IGUS_JOINT_DATA, TYPE_MAPPING } from '../../../constants';
 import { round } from '../../../../lib/round';
 import Copy from '@spectrum-icons/workflow/Copy';
+import { RizonJointData } from './RizonJointData';
 
 const JointData = ({ motor }) => {
   const { value: robotType } = useFieldState('robotType');
@@ -24,6 +25,10 @@ const JointData = ({ motor }) => {
 
   if (robotType === 'Example') {
     return <ExampleJointData motor={motor} />;
+  }
+
+  if (robotType === 'Rizon4') {
+    return <RizonJointData motor={motor} />;
   }
 
   return null;

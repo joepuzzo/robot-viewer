@@ -7,17 +7,19 @@ logger = Debug('mock:server\t')
 
 sio = socketio.Client()
 
+
 def emit(event, data):
     if sio.connected:
         sio.emit(event, data, namespace='/robot')
     else:
         logger(f'Socket not connected. Cannot emit {event}')
 
+
 def start_server(config):
     # Create socket
     connection_string = f"http://{config['host']}:{config['port']}?id={config['id']}"
     logger(f'Creating socket with connection string: {connection_string}')
-    
+
     # Create robot
     robot = Robot(config)
 
@@ -79,7 +81,8 @@ def start_server(config):
 
     @sio.on('motorSetPos', namespace='/robot')
     def on_motor_set_pos(id, pos, speed):
-        logger(f"Controller says setMotorPos to {pos} at speed {speed} for motor {id}")
+        logger(
+            f"Controller says setMotorPos to {pos} at speed {speed} for motor {id}")
         robot.motor_set_position(id, pos, speed)
 
     @sio.on('motorResetErrors', namespace='/robot')
@@ -197,7 +200,7 @@ def start_server(config):
         logger(
             f"Controller says enable freedrive with frame {frame} and cartFloatingAxis {json.dumps(cartFloatingAxis)}"
         )
-        robot.robot_freedrive_enable(frame, cart_floating_axis)
+        robot.robot_freedrive_enable(frame, cartFloatingAxis)
 
     @sio.on('robotFreedriveDisable', namespace='/robot')
     def on_robot_freedrive_disable():
