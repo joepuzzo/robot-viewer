@@ -135,8 +135,10 @@ const RobotProvider = ({ children }) => {
   const updateJoint = useCallback((motorId, value) => {
     console.log(`Setting joint ${motorId} to`, value);
 
+    const { runOnRobot } = formApi.getFormState().values;
+
     // If we are connected to a robot send update to that robot
-    if (connectedRef.current) {
+    if (connectedRef.current && runOnRobot) {
       const robotId = formApi.getValue('robotId');
       socket.emit('motorSetPos', robotId, motorId, value);
     }

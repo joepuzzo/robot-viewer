@@ -202,12 +202,13 @@ export class Controller {
     }
   }
 
-  robotFreedriveEnable(robotId, freedriveFrame, cartFloatingAxis) {
+  robotFreedriveEnable(robotId, freedriveFrame, cartFloatingAxis, nullspace) {
     logger(
       `controller client says robotFreedriveEnable`,
       robotId,
       freedriveFrame,
       cartFloatingAxis,
+      nullspace,
     );
     // only send if we are connected
     if (this.robots[robotId]) {
@@ -217,6 +218,7 @@ export class Controller {
         'robotFreedriveEnable',
         freedriveFrame,
         cartFloatingAxis,
+        nullspace,
       );
     }
   }

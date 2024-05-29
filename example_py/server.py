@@ -201,11 +201,11 @@ def start_server(config):
         robot.home()
 
     @sio.on('robotFreedriveEnable', namespace='/robot')
-    def on_robot_freedrive_enable(frame, cartFloatingAxis):
+    def on_robot_freedrive_enable(frame, cartFloatingAxis, nullspace=False):
         logger(
-            f"Controller says enable freedrive with frame {frame} and cartFloatingAxis {json.dumps(cartFloatingAxis)}"
+            f"Controller says enable freedrive with frame {frame}, cartFloatingAxis {json.dumps(cartFloatingAxis)}, and nullspace {nullspace}"
         )
-        robot.robot_freedrive_enable(frame, cartFloatingAxis)
+        robot.robot_freedrive_enable(frame, cartFloatingAxis, nullspace)
 
     @sio.on('robotFreedriveDisable', namespace='/robot')
     def on_robot_freedrive_disable():

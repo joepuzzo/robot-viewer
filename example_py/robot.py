@@ -299,7 +299,7 @@ class Robot(EventEmitter):
             motor.set_position(angle, travel_speed, acceleration)
         self.emit('meta')
 
-    def robot_freedrive_enable(self):
+    def robot_freedrive_enable(self, frame, cartFloatingAxis, nullspace=False):
         logger('Enabling freedrive')
         self.freedrive = True
         self.emit('meta')
