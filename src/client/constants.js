@@ -4,12 +4,18 @@ export const TYPE_MAPPING = {
   },
   Example: {
     position: 'currentPos',
+    extWrenchInTcp: 'extWrenchInTcp',
+    tcpPose: 'tcpPose',
+    flangePose: 'flangePose',
   },
   IgusRebel: {
     position: 'currentPosition',
   },
   Rizon4: {
     position: 'angle',
+    extWrenchInTcp: 'extWrenchInTcp',
+    tcpPose: 'tcpPose',
+    flangePose: 'flangePose',
   },
 };
 

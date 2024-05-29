@@ -27,7 +27,8 @@
   "flip": true,
   "features": {
     "motorZero": true,
-    "motorReference": false
+    "motorReference": false,
+    "forceTourqueZero": true
   },
   "frames": [
     {

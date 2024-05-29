@@ -368,3 +368,35 @@ span[class^='spectrum-Tabs-itemLabel'] {
   color: rgb(151, 48, 48);
   /* color: rgb(187, 125, 33); */
 }
+
+/* -------------- Info.css --------------- */
+.info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* justify-content: center; */
+  gap: 5px;
+  border-radius: 2px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: var(--background-color);
+  min-height: 50px;
+}
+
+.info-container strong {
+  font-size: 14px;
+  color: rgb(151, 48, 48);
+}
+
+.info-container span {
+  font-size: 14px;
+}
+
+.info-data {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

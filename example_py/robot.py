@@ -134,7 +134,8 @@ class Robot(EventEmitter):
         motors = {motor.id: motor.state for motor in self.motors}
         return {
             'id': self.id,
-            'motors': motors
+            'motors': motors,
+            'tcpPose': [0, 0, 0, 0, 0, 0]
         }
 
     @property
@@ -210,9 +211,9 @@ class Robot(EventEmitter):
         self.moving = True
         # Because a motor might complete faster than all the others start we need to make sure we initialize all to homing + moving ;)
         for motor in self.motors:
-          if motor.enabled:
-            motor.homing = True
-            motor.moving = True
+            if motor.enabled:
+                motor.homing = True
+                motor.moving = True
         # Home all motors
         for motor in self.motors:
             motor.go_home()
@@ -223,6 +224,10 @@ class Robot(EventEmitter):
         # Zero out all motors
         for motor in self.motors:
             motor.zero()
+        self.emit('meta')
+
+    def robot_zero_ft(self):
+        logger('Zero Force Tourque robot')
         self.emit('meta')
 
     def robot_calibrate(self):
@@ -289,7 +294,8 @@ class Robot(EventEmitter):
         acceleration = speed
         # Step2: Move via speed for each based on time
         for motor, angle in zip(self.motors, angles):
-            logger(f'Setting angle for motor {motor.id} at speed {speed} and angle: {angle}')
+            logger(
+                f'Setting angle for motor {motor.id} at speed {speed} and angle: {angle}')
             motor.set_position(angle, travel_speed, acceleration)
         self.emit('meta')
 

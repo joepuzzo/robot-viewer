@@ -239,6 +239,15 @@ export const RobotNav = () => {
     }
   };
 
+  const ftZeroRobot = () => {
+    const robotId = formApi.getValue('robotId');
+    stopSimulation();
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotZeroFT', robotId);
+    }
+  };
+
   const centerRobot = () => {
     const robotId = formApi.getValue('robotId');
     formApi.setTheseValues({
@@ -494,6 +503,16 @@ export const RobotNav = () => {
           </ActionButton>
           <Tooltip>Reset Errors - This will reset errors on all motors in the robot.</Tooltip>
         </TooltipTrigger>
+        <TooltipTrigger>
+          <ActionButton
+            aria-label="Zero FT Robot"
+            onPress={() => ftZeroRobot()}
+            isDisabled={!features?.forceTourqueZero}
+          >
+            <strong>FT</strong>
+          </ActionButton>
+          <Tooltip>Zero FT Sensors - This will zero the force tourque sensors.</Tooltip>
+        </TooltipTrigger>
         {/* <ActionButton title="Calibrate" onPress={() => calibrate()} isDisabled={disabled}>
           <Compass />
         </ActionButton> */}
@@ -543,7 +562,7 @@ export const RobotNav = () => {
             />
             <Switch name="keyboardControl" label="Keyboard Ctrl" initialValue={true} />
             {/* ------------------------- ERRORS ------------------------- */}
-            {selectedRobotMeta?.errors?.length && (
+            {selectedRobotMeta?.errors?.length > 0 && (
               <>
                 <hr />
                 <h3>Errors</h3>

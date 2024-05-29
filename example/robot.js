@@ -178,6 +178,7 @@ export class Robot extends EventEmitter {
     return {
       id: this.id,
       motors,
+      tcpPose: [0, 0, 0, 0, 0, 0],
     };
   }
 

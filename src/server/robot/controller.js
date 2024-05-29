@@ -121,8 +121,8 @@ export class Controller {
     }
   }
 
-  robotReference(robotId, motorId) {
-    logger(`controller client says robotReference`, robotId, motorId);
+  robotReference(robotId) {
+    logger(`controller client says robotReference`, robotId);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
@@ -130,12 +130,21 @@ export class Controller {
     }
   }
 
-  robotZero(robotId, motorId) {
-    logger(`controller client says robotZero`, robotId, motorId);
+  robotZero(robotId) {
+    logger(`controller client says robotZero`, robotId);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotZero');
+    }
+  }
+
+  robotZeroFT(robotId) {
+    logger(`controller client says robotZeroFT`, robotId);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotZeroFT');
     }
   }
 
@@ -306,6 +315,7 @@ export class Controller {
     this.clientMessenger.on('motorReference', (...args) => this.motorReference(...args));
     this.clientMessenger.on('robotReference', (...args) => this.robotReference(...args));
     this.clientMessenger.on('robotZero', (...args) => this.robotZero(...args));
+    this.clientMessenger.on('robotZeroFT', (...args) => this.robotZeroFT(...args));
     this.clientMessenger.on('queryMotorPosition', (...args) => this.queryMotorPosition(...args));
     this.clientMessenger.on('queryMotorParameter', (...args) => this.queryMotorParameter(...args));
     this.clientMessenger.on('motorZero', (...args) => this.motorZero(...args));

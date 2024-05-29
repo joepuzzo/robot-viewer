@@ -80,7 +80,7 @@ def start_server(config):
         logger('Controller says hello')
 
     @sio.on('motorSetPos', namespace='/robot')
-    def on_motor_set_pos(id, pos, speed):
+    def on_motor_set_pos(id, pos, speed=40):
         logger(
             f"Controller says setMotorPos to {pos} at speed {speed} for motor {id}")
         robot.motor_set_position(id, pos, speed)
@@ -189,6 +189,11 @@ def start_server(config):
     def on_robot_zero():
         logger(f"Controller says zero robot")
         robot.robot_zero()
+
+    @sio.on('robotZeroFT', namespace='/robot')
+    def on_robot_zero_ft():
+        logger(f"Controller says zero force tourque robot")
+        robot.robot_zero_ft()
 
     @sio.on('home', namespace='/robot')
     def on_home():
