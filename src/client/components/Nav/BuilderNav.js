@@ -225,7 +225,7 @@ const FrameControl = () => {
         minValue={-180}
         maxValue={180}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOnMount
         validateWhen={['r2', 'r3', 'x', 'y', 'z', 'moveBackBy']}
@@ -240,7 +240,7 @@ const FrameControl = () => {
         minValue={-180}
         maxValue={180}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOnMount
         validateWhen={['r1', 'r3', 'x', 'y', 'z', 'moveBackBy']}
@@ -255,7 +255,7 @@ const FrameControl = () => {
         minValue={-180}
         maxValue={180}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOnMount
         validateWhen={['r1', 'r2', 'x', 'y', 'z', 'moveBackBy']}
@@ -270,7 +270,7 @@ const FrameControl = () => {
         minValue={-100}
         maxValue={100}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOn="change"
         showErrorIfError
@@ -285,7 +285,7 @@ const FrameControl = () => {
         minValue={-100}
         maxValue={100}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOn="change"
         showErrorIfError
@@ -300,7 +300,7 @@ const FrameControl = () => {
         minValue={-100}
         maxValue={100}
         defaultValue={0}
-        step={1}
+        step={0.1}
         validate={validate}
         validateOn="change"
         showErrorIfError
@@ -483,7 +483,7 @@ export const BuilderNav = () => {
               minValue={-100}
               maxValue={100}
               defaultValue={0}
-              step={1}
+              step={0.1}
               trackGradient="rgb(204, 44, 117)"
             />
             <InputSlider
@@ -507,7 +507,7 @@ export const BuilderNav = () => {
                       type="number"
                       minValue={-180}
                       maxValue={180}
-                      step={1}
+                      step={0.1}
                       initialValue={0}
                     />
                   ))}

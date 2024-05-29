@@ -117,6 +117,12 @@ const Pos = ({ name, args, grid, formApi, toggleOrbital, robotController, ...pro
     (event) => {
       const { key, keyCode } = event;
 
+      // Dont listen if toggled off
+      const { keyboardControl } = formApi.getFormState().values;
+      if (!keyboardControl) {
+        return;
+      }
+
       const step = 1;
 
       if (key === 'ArrowUp') {

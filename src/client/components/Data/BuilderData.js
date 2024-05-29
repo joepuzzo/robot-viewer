@@ -210,43 +210,77 @@ const buildParameterTable = ({ frames, base, endEffector }) => {
       const n = frame;
       const nMinus1 = frames[i - 1];
 
+      // new frame vs previous frame
+      const yzParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'y', 'z');
+      const xxParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'x');
       const xyParallel = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y');
+      const xyParallelSame = isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y', true);
+
+      /* --------------- CALCULATE THETA --------------- */
 
       // theta = rotation around `Zn-1` that is required to get axis `Xn-1` to match `Xn` ( rotate frame n-1)
-      const theta = n.r3;
+      let theta = n.r3;
+      if (yzParallel) theta = -n.r2;
+
+      // Special case for first frame
+      if (i == 1 && yzParallel) {
+        theta += nMinus1.r3;
+      }
+
+      /* --------------- CALCULATE ALPHA --------------- */
+
       // alpha = rotation around `Xn` that is required to get axis `Zn-1` to match axis `Zn` ( rotate frame n-1 )
       let alpha = n.r1;
-      if (xyParallel) alpha = -n.r2;
+      // X is parallel to X
+      if (xxParallel) {
+        alpha = n.r1;
+      }
+      // X is parallel to Y and in same direction
+      else if (xyParallelSame) {
+        alpha = n.r2;
+      }
+      // X is parallel to Y and in different directions
+      else if (xyParallel) {
+        alpha = -n.r2;
+      }
+
+      /* ----------------- CALCULATE r ----------------- */
 
       // r  = look at distance between center of two frames along the `Xn` direction
       let r = 0;
 
-      // If our x is parallel to the previous x
-      if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'x')) {
+      // If our x is parallel to the previous x then distance is based off of x
+      if (xxParallel) {
         r = n.moveBack === 'x' ? n.x + n.moveBackBy : n.x;
       }
-      // If our x is parallel to the previous y
-      if (isParallel(n.x, n.y, n.z, n.r1, n.r2, n.r3, 'x', 'y')) {
+
+      // If our x is parallel to the previous y then distance is based off of y
+
+      // Case1: frame n points away from frame n-1
+      if (xyParallelSame) {
+        // TODO Maybe we need to determine if we moved in a positive or negative direction along y i.e n.y > 0
         r = n.moveBack === 'y' ? n.y + n.moveBackBy : n.y;
       }
+      // Case2: frame n points towards from frame n-1
+      else if (xyParallel) {
+        // TODO maybe do same as when it points away
+        r = n.moveBack === 'y' ? -n.y + n.moveBackBy : -n.y;
+      }
 
-      // d = look at the distance between center of two fames along `Zn-1` direction.
+      // NOTE: X should never be parallel to z as that breaks one of the frame rules so we dont worry about that case
+
+      /* ----------------- CALCULATE d ----------------- */
+
+      // d = look at the distance between center of two fames along `Zn-1` direction. ( this is n.z + any previous offsets )
       let d = n.moveBack === 'z' ? n.z + n.moveBackBy : n.z;
 
       // If there is a base distance add that too d of the second itteration
-      if (base && i === 1) d += base;
+      if (base && i === 1) {
+        d = d + base;
+      }
 
       // If there is an end effector distance add that to the d of the last itteration
       if (endEffector && i === frames.length - 1) d += endEffector;
-
-      // console.log(
-      //   'nMinus1.moveBack',
-      //   nMinus1.moveBack,
-      //   'nMinus1.moveBackBy',
-      //   nMinus1.moveBackBy,
-      //   'd',
-      //   d,
-      // );
 
       // If the previous frame was moved so take that into account
       // Why?? because that frames location with respect to this kinematics diagram is actually in a different spot
@@ -267,12 +301,6 @@ const buildParameterTable = ({ frames, base, endEffector }) => {
           nMinus1.moveBack,
           true, // Only if its in the same direction :) THIS IS KEY!!!!
         );
-        // console.log(
-        //   `CHECKING if frame ${i - 1}'s z is parallel and in same direction to frames ${i - 2}'s ${
-        //     nMinus1.moveBack
-        //   }`,
-        //   backParallel,
-        // );
         if (backParallel) {
           d = d + -nMinus1.moveBackBy;
         }
@@ -282,9 +310,8 @@ const buildParameterTable = ({ frames, base, endEffector }) => {
         }
       }
 
-      if (nMinus1.moveBack === 'z') {
-        r = r + -nMinus1.moveBackBy;
-      }
+      // console.log(`HERE AFTER n.z: ${n.z}, n.moveBackBy: ${n.moveBackBy}, d: ${d}, r: ${r}`);
+
       // console.log('theta', theta, 'alpha', alpha, 'r', r, 'd', d);
       rows.push([theta, alpha, r, d]);
     }
@@ -326,6 +353,8 @@ export const BuilderData = () => {
   // d = look at the distance between center of two fames along `Zn-1` direction.
 
   if (!frames) return null;
+
+  console.log('WTF', frames);
 
   const pTable = buildParameterTable({ frames, base, endEffector });
 

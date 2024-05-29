@@ -530,17 +530,18 @@ export const RobotNav = () => {
             </Flex>
             <Switch
               name="robotAccel"
-              label="Robot Acceleration"
+              label="Acceleration"
               initialValue={true}
               onNativeChange={onAccelChange}
               isDisabled={!connected}
             />
             <Switch
               name="followrobot"
-              label="Follow Robot"
+              label="Follow"
               initialValue={false}
               isDisabled={!connected}
             />
+            <Switch name="keyboardControl" label="Keyboard Ctrl" initialValue={true} />
             {/* ------------------------- ERRORS ------------------------- */}
             {selectedRobotMeta?.errors?.length && (
               <>

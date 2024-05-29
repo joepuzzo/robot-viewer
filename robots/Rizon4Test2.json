@@ -15,28 +15,29 @@
   "rangej6": [-170.0, 170.0],
   "frames": [
     {
+      "frameType": "rotary",
       "r1": 0,
       "r2": 0,
       "r3": 180,
       "x": 0,
       "y": 0,
       "z": 0,
-      "moveFrame": false,
-      "frameType": "rotary"
+      "moveFrame": false
     },
     {
+      "frameType": "rotary",
       "r1": 90,
       "r2": 0,
       "r3": 0,
       "x": 0,
-      "y": 3,
+      "y": -3,
       "z": 21,
       "moveFrame": true,
-      "moveBackBy": -3,
-      "moveBack": "y",
-      "frameType": "rotary"
+      "moveBackBy": 3,
+      "moveBack": "y"
     },
     {
+      "frameType": "rotary",
       "r1": -90,
       "r2": 0,
       "r3": 0,
@@ -45,66 +46,65 @@
       "z": 3.5,
       "moveFrame": true,
       "moveBackBy": -20.5,
-      "moveBack": "y",
-      "frameType": "rotary"
+      "moveBack": "y"
     },
     {
+      "frameType": "rotary",
       "r1": 90,
-      "r2": 0,
+      "r2": 180,
       "r3": 0,
       "x": 2,
       "y": 3,
       "z": 19,
       "moveFrame": true,
       "moveBackBy": -3,
-      "moveBack": "y",
-      "frameType": "rotary"
+      "moveBack": "y"
     },
     {
+      "frameType": "rotary",
       "r1": -90,
       "r2": 0,
       "r3": 0,
       "x": -2,
       "y": 19.5,
-      "z": -2.5,
+      "z": 2.5,
       "moveFrame": true,
       "moveBackBy": -19.5,
-      "moveBack": "y",
-      "frameType": "rotary"
+      "moveBack": "y"
     },
     {
+      "frameType": "rotary",
       "r1": 90,
-      "r2": 0,
+      "r2": 180,
       "r3": 0,
       "x": 0,
-      "y": -3,
+      "y": 3,
       "z": 19,
       "moveFrame": true,
-      "moveBackBy": 3,
-      "moveBack": "y",
-      "frameType": "rotary"
+      "moveBackBy": -3,
+      "moveBack": "y"
     },
     {
-      "r1": 0,
+      "frameType": "rotary",
+      "r1": 90,
       "r2": 90,
-      "r3": 90,
+      "r3": -180,
       "x": 5.5,
       "y": 11,
       "z": 7,
       "moveFrame": true,
       "moveBackBy": -5.5,
-      "moveBack": "x",
-      "frameType": "rotary"
+      "moveBack": "x"
     },
     {
+      "frameType": "stationary",
       "r1": 0,
       "r2": 0,
-      "r3": -180,
+      "r3": 0,
       "x": 0,
       "y": 0,
       "z": 8.1,
-      "moveFrame": false,
-      "frameType": "stationary"
+      "moveFrame": false
     }
   ]
 }
