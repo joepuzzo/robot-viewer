@@ -463,7 +463,7 @@ export class Robot extends EventEmitter {
 
   /* -------------------- Gripper Actions -------------------- */
 
-  gripperSetPosition(pos, speed = 500) {
-    logger(`set position for gripper to ${pos}, at speed ${speed}`);
+  gripperSetPosition(pos, speed = 500, force) {
+    logger(`set position for gripper to ${pos}, at speed ${speed} with force ${force}`);
   }
 }

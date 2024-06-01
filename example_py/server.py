@@ -121,9 +121,10 @@ def start_server(config):
         robot.motor_zero(id)
 
     @sio.on('gripperSetPos', namespace='/robot')
-    def on_gripper_set_pos(pos, speed):
-        logger(f"Controller says gripperSetPos to {pos} at speed {speed}")
-        robot.gripper_set_position(pos, speed)
+    def on_gripper_set_pos(pos, speed, force):
+        logger(
+            f"Controller says gripperSetPos to {pos} at speed {speed} with force {force}")
+        robot.gripper_set_position(pos, speed, force)
 
     @sio.on('robotHome', namespace='/robot')
     def on_robot_home():

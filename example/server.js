@@ -97,9 +97,9 @@ export const startServer = (config) => {
     robot.motorZero(id);
   });
 
-  socket.on('gripperSetPos', (pos, speed) => {
-    logger(`Controller says gripperSetPos to ${pos} at speed ${speed}`);
-    robot.gripperSetPosition(pos, speed);
+  socket.on('gripperSetPos', (pos, speed, force) => {
+    logger(`Controller says gripperSetPos to ${pos} at speed ${speed} with force ${force}`);
+    robot.gripperSetPosition(pos, speed, force);
   });
 
   socket.on('robotHome', () => {

@@ -333,5 +333,6 @@ class Robot(EventEmitter):
         logger(f'Zero motor {id}')
         self.motor_map[id].zero()
 
-    def gripper_set_position(self, pos, speed=500):
-        logger(f'Set position for gripper to {pos}, at speed {speed}')
+    def gripper_set_position(self, pos, speed=500, force=0):
+        logger(
+            f'Set position for gripper to {pos}, at speed {speed} with force {force}')

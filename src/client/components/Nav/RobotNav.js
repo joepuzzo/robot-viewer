@@ -18,6 +18,8 @@ import {
 } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import Graphic from '@spectrum-icons/workflow/Graphic';
+import RailRightClose from '@spectrum-icons/workflow/RailRightClose';
+import RailRightOpen from '@spectrum-icons/workflow/RailRightOpen';
 import Sync from '@spectrum-icons/workflow/Sync';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
@@ -356,19 +358,20 @@ export const RobotNav = () => {
     };
 
   const onGripperChange = ({ value }) => {
-    const { gripperVelocity } = formApi.getFormState().values;
-    updateGripper(value, gripperVelocity);
+    const { gripperVelocity, gripperForce } = formApi.getFormState().values;
+    updateGripper(value, gripperVelocity, gripperForce);
   };
 
-  const gripperOpenChange = ({ value }) => {
-    const { gripperOpened, gripperClosed, gripperVelocity } = formApi.getFormState().values;
-    if (value) {
-      updateGripper(gripperOpened, gripperVelocity);
-      formApi.setValue('gripper', gripperOpened);
-    } else {
-      updateGripper(gripperClosed, gripperVelocity);
-      formApi.setValue('gripper', gripperClosed);
-    }
+  const gripperOpen = () => {
+    const { gripperOpened, gripperVelocity, gripperForce } = formApi.getFormState().values;
+    updateGripper(gripperOpened, gripperVelocity, gripperForce);
+    formApi.setValue('gripper', gripperOpened);
+  };
+
+  const gripperClose = () => {
+    const { gripperClosed, gripperVelocity, gripperForce } = formApi.getFormState().values;
+    updateGripper(gripperClosed, gripperVelocity, gripperForce);
+    formApi.setValue('gripper', gripperClosed);
   };
 
   const onConfigChange =
@@ -914,7 +917,7 @@ export const RobotNav = () => {
             <InputSlider
               name="gripperVelocity"
               // onNativeChange={onGripperVelocityChange}
-              label={`Velocity`}
+              label={`Velocity m/s`}
               type="number"
               minValue={0}
               maxValue={0.1}
@@ -945,13 +948,22 @@ export const RobotNav = () => {
                 minValue={0}
                 maxValue={100}
               />
-              <Switch
-                name="gripperOpen"
-                label="Open"
-                initialValue={false}
-                onNativeChange={gripperOpenChange}
-              />
+              <Flex direction="column" gap="size-50">
+                <small>Open</small>
+                <ActionButton onPress={() => gripperOpen()} width="size-900">
+                  <RailRightOpen />
+                  <RailRightClose />
+                </ActionButton>
+              </Flex>
+              <Flex direction="column" gap="size-50">
+                <small>Close</small>
+                <ActionButton onPress={() => gripperClose()} width="size-900">
+                  <RailRightClose />
+                  <RailRightOpen />
+                </ActionButton>
+              </Flex>
             </Flex>
+
             {/* ------------------------- FREEDRIVE CONTROLS ------------------------- */}
             <hr />
             <strong>Freedrive</strong>

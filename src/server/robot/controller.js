@@ -40,12 +40,12 @@ export class Controller {
     logger(`controller client says hello`, args);
   }
 
-  gripperSetPos(robotId, pos, speed) {
-    logger(`controller client says gripperSetPos`, robotId, pos, speed);
+  gripperSetPos(robotId, pos, speed, force) {
+    logger(`controller client says gripperSetPos`, robotId, pos, speed, force);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed);
+      this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed, force);
     }
   }
 
