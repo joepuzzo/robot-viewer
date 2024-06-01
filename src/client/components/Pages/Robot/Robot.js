@@ -258,7 +258,7 @@ export const Robot = () => {
       </div>
 
       {/* Reminder .. I use endPosition because this shows FORWARD kinematics not the set values */}
-      <div className="robot-info location" style={{ width: '270px' }}>
+      <div className="robot-info location" style={{ width: '300px' }}>
         <div>
           <strong>X: </strong>
           {round(endPosition.x, 1000)} {units}

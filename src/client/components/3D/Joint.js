@@ -107,7 +107,7 @@ export const Joint = ({
   let jRotation = values[`j${index}`] ? toRadians(values[`j${index}`]) : 0;
 
   // If we want to follow the robot we will base the rotation off the actual robots joint location!!
-  if (followrobot && robotState.motors[`j${index}`]) {
+  if (followrobot && robotState?.motors[`j${index}`]) {
     const motor = robotState.motors[`j${index}`];
     const fieldName = TYPE_MAPPING[robotType].position;
     const motorPos = motor[fieldName];

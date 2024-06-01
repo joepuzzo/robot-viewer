@@ -900,6 +900,50 @@ export const RobotNav = () => {
                 </Tooltip>
               </TooltipTrigger>
             </Flex>
+
+            {selectedRobotMeta?.config?.favorites?.joints && (
+              <>
+                <br />
+                <strong>Saved Joint Positions</strong>
+                <ContextualHelp variant="info">
+                  <Heading>Saved Joint Positions</Heading>
+                  <Content>
+                    <Text>
+                      Saved joint positions for the connected robot.
+                      <br />
+                      <br />
+                      <strong>Note:</strong> Clicking these buttons will move the robot to the saved
+                      positions
+                    </Text>
+                  </Content>
+                </ContextualHelp>
+                <br />
+                <Flex
+                  direction="row"
+                  alignItems="end"
+                  gap="size-100"
+                  width="440px"
+                  wrap
+                  UNSAFE_style={{ marginTop: '10px' }}
+                >
+                  {Object.entries(selectedRobotMeta.config.favorites.joints).map(([key, value]) => {
+                    return (
+                      <div className="icon-orange">
+                        <ActionButton
+                          onPress={() => {
+                            updateJoints(value);
+                          }}
+                          width="216px"
+                        >
+                          {key}
+                        </ActionButton>
+                      </div>
+                    );
+                  })}
+                </Flex>
+              </>
+            )}
+
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />
             <Flex direction="row" alignItems="end" gap="size-100">
