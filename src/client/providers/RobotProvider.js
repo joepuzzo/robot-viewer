@@ -30,6 +30,8 @@ const RobotProvider = ({ children }) => {
   // For registered robots
   const [robots, setRobots] = useState({});
   const [robotStates, setRobotStates] = useState({});
+  const robotStatesRef = useRef();
+  robotStatesRef.current = robotStates;
 
   // For connection
   const [connected, setConnected] = useState(false);
@@ -124,10 +126,16 @@ const RobotProvider = ({ children }) => {
   // define robot meta
   const meta = useMemo(() => {
     console.log('ROBOTS', robots);
+
+    const getRobotState = (robotId) => {
+      return robotStatesRef.current[robotId];
+    };
+
     return {
       robots,
       robotOptions,
       connected,
+      getRobotState,
     };
   }, [robots, robotOptions, connected]);
 
@@ -317,14 +325,16 @@ const RobotProvider = ({ children }) => {
     console.log('Setting angles to', angles);
 
     if (!angles.find((a) => isNaN(a))) {
+      const updatedValues = {};
+
+      // Dynamically add joint angles to updatedValues object
+      for (let i = 0; i < angles.length; i++) {
+        updatedValues[`j${i}`] = angles[i];
+      }
+
       // Step1: Update the form
       formApi.setTheseValues({
-        j0: angles[0],
-        j1: angles[1],
-        j2: angles[2],
-        j3: angles[3],
-        j4: angles[4],
-        j5: angles[5],
+        ...updatedValues,
         // Maybe update this via forward kinematics
         // x,
         // y,

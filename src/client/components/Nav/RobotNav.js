@@ -3,7 +3,10 @@ import {
   Button,
   Cell,
   Column,
+  Content,
+  ContextualHelp,
   Flex,
+  Heading,
   Row,
   StatusLight,
   TableBody,
@@ -15,6 +18,7 @@ import {
 } from '@adobe/react-spectrum';
 import Refresh from '@spectrum-icons/workflow/Refresh';
 import Graphic from '@spectrum-icons/workflow/Graphic';
+import Sync from '@spectrum-icons/workflow/Sync';
 import ChevronRight from '@spectrum-icons/workflow/ChevronRight';
 import Home from '@spectrum-icons/workflow/Home';
 import StopCircle from '@spectrum-icons/workflow/StopCircle';
@@ -48,6 +52,8 @@ import useSimulateController from '../../hooks/useSimulateController';
 import { RobotType } from '../Shared/RobotType';
 import { If } from '../Shared/If';
 import Input from '../Informed/Input';
+import { TYPE_MAPPING } from '../../constants';
+import { round } from '../../../lib/round';
 
 const triggers = ['x', 'y', 'z', 'r1', 'r2', 'r3'];
 
@@ -116,7 +122,7 @@ export const RobotNav = () => {
   };
 
   // Get robot state
-  const { robotOptions, connected, robots } = useRobotMeta();
+  const { robotOptions, connected, robots, getRobotState } = useRobotMeta();
 
   const connectedRef = useRef();
   connectedRef.current = connected;
@@ -391,6 +397,63 @@ export const RobotNav = () => {
     }
   }, []);
 
+  const syncJointAngles = useCallback(() => {
+    // Get all the current joint angles from inputs
+    const { j0, j1, j2, j3, j4, j5, j6 } = formApi.getFormState().values;
+
+    // Create array of angles
+    let angles = [j0, j1, j2, j3, j4, j5];
+
+    // For 7 axis robots
+    if (j6) {
+      angles.push(j6);
+    }
+
+    // Round them
+    angles = angles.map((a) => round(a, 100));
+
+    // Update the value
+    formApi.setValue('jointsString', angles.join(' '));
+  });
+
+  const syncRobotAngles = useCallback(() => {
+    // Get selected robotId and type
+    const { robotId, robotType } = formApi.getFormState().values;
+
+    // Get the state of that robot
+    if (robotId) {
+      // Get current robot state
+      const robotState = getRobotState(robotId);
+
+      // Build list of motors
+      const motors = Object.values(robotState.motors);
+
+      // Get angles from robot states motors
+      const angles = motors.map((motor) => {
+        // Example TYPE_MAPPING["Rizon4"].position ==> "angle"
+        const fieldName = TYPE_MAPPING[robotType].position;
+        const motorPos = motor[fieldName];
+        return round(motorPos, 1000);
+      });
+
+      // Update the joint angles in the control nav
+      // NOTE: this is not native event so will trigger no actual movement on real robot
+      const updatedValues = {};
+
+      // Dynamically add joint angles to updatedValues object
+      for (let i = 0; i < angles.length; i++) {
+        updatedValues[`j${i}`] = angles[i];
+      }
+
+      // Add the jointsString to the updatedValues object
+      updatedValues.jointsString = angles.join(' ');
+
+      // Update the joint angles in the control nav
+      // NOTE: this is not native event so will trigger no actual movement on real robot
+      formApi.setTheseValues(updatedValues);
+    }
+  }, []);
+
   // const disabled = !connected;
   const disabled = false;
 
@@ -530,7 +593,12 @@ export const RobotNav = () => {
       <Flex direction="row" gap="size-500">
         <div className="sidenav-controls">
           <ul className="spectrum-SideNav">
-            <Flex direction="row" alignItems="center" gap="size-100">
+            <Flex
+              direction="row"
+              alignItems="center"
+              gap="size-100"
+              UNSAFE_style={{ marginLeft: '-10px' }}
+            >
               <Status status={!selectedRobotMeta?.stopped} posText="Enabled" negText="Disabled" />
               <Status status={selectedRobotMeta?.home} text="Home" />
               <Status status={selectedRobotMeta?.homing} text="Homing" />
@@ -547,20 +615,41 @@ export const RobotNav = () => {
                 options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
               />
             </Flex>
-            <Switch
-              name="robotAccel"
-              label="Acceleration"
-              initialValue={true}
-              onNativeChange={onAccelChange}
-              isDisabled={!connected}
-            />
-            <Switch
-              name="followrobot"
-              label="Follow"
-              initialValue={false}
-              isDisabled={!connected}
-            />
-            <Switch name="keyboardControl" label="Keyboard Ctrl" initialValue={true} />
+            <Flex direction="row" alignItems="center" UNSAFE_style={{ marginBottom: '-20px' }}>
+              <Switch
+                name="robotAccel"
+                label="Acceleration"
+                initialValue={true}
+                onNativeChange={onAccelChange}
+                isDisabled={!connected}
+              />
+              <ContextualHelp variant="info">
+                <Heading>Follow Robot</Heading>
+                <Content>
+                  <Text>
+                    The robot in the 3D view will follow the actual robot.
+                    <br />
+                    <br />
+                    <strong>Note:</strong> The control inputs on the left panel will NOT follow the
+                    robot, they are purely used for controlling the robot. All real time joint
+                    updates can be viewed on the right panel.
+                  </Text>
+                </Content>
+              </ContextualHelp>
+              <Switch
+                name="followrobot"
+                label="Follow"
+                initialValue={false}
+                isDisabled={!connected}
+              />
+              <ContextualHelp variant="info">
+                <Heading>Keyboard Control</Heading>
+                <Content>
+                  <Text>Enables ability to control robot using arrow keys.</Text>
+                </Content>
+              </ContextualHelp>
+              <Switch name="keyboardControl" label="Keyboard" initialValue={true} />
+            </Flex>
             {/* ------------------------- ERRORS ------------------------- */}
             {selectedRobotMeta?.errors?.length > 0 && (
               <>
@@ -593,6 +682,28 @@ export const RobotNav = () => {
             <br />
             {/* ------------------------- POSITION CONTROLS ------------------------- */}
             <hr />
+            <strong>Cartesian Controls</strong>
+            <ContextualHelp variant="info">
+              <Heading>Cartesian Controls</Heading>
+              <Content>
+                <Text>
+                  These will control the cartesian position of the robot in the simulator.
+                  <br />
+                  <br />
+                  <strong>Note:</strong> These controls will only affect the simulator unless "Run
+                  On Robot" is toggled on.
+                  <br />
+                  <br />
+                  <strong>Also Note:</strong> These controls always use the Inverse Kinematics of
+                  our simulator to drive the robot. Changing a value here will affect the joint
+                  controls below based on our IK.
+                  <br />
+                  <br />
+                  If "Run On robot" is toggled on, this will result in moving the robot via a
+                  "robotSetAngles" command to the connected robot.
+                </Text>
+              </Content>
+            </ContextualHelp>
             <InputSlider
               name="x"
               onNativeChange={onValueChange('x')}
@@ -650,6 +761,38 @@ export const RobotNav = () => {
             />
             {/* ------------------------- JOINT CONTROLS ------------------------- */}
             <hr />
+            <Flex direction="row" alignItems="center" gap="size-100">
+              <strong>Joint Controls</strong>
+              <ContextualHelp variant="info">
+                <Heading>Joint Controls</Heading>
+                <Content>
+                  <Text>
+                    These will control the individual joint positions of the robot in the simulator.
+                    <br />
+                    <br />
+                    <strong>Note:</strong> These controls will only affect the simulator unless "Run
+                    On Robot" is toggled on.
+                  </Text>
+                </Content>
+              </ContextualHelp>
+              <TooltipTrigger>
+                <ActionButton
+                  aria-label="Sync Joint Positions"
+                  onPress={() => syncRobotAngles()}
+                  isDisabled={!selectedRobotMeta}
+                >
+                  <Sync />
+                </ActionButton>
+                <Tooltip>
+                  Sync Joint Positions - This will set these inputs to the robots current joint
+                  positions on the connected robot.
+                  <br />
+                  <br />
+                  Note: This will NOT trigger a command to the robot, its simply a one time snyc to
+                  set these values to the robot actual values.
+                </Tooltip>
+              </TooltipTrigger>
+            </Flex>
             {frames.map((frame, i) => {
               // Dont render control for stationary frame
               if (frame.frameType === 'stationary') {
@@ -719,16 +862,40 @@ export const RobotNav = () => {
               );
             })}
             <Flex direction="row" alignItems="end" gap="size-100">
-              <Input name="jointsString" label="All Joints" autocomplete="off" />
-              <ActionButton
-                title="Go"
-                aria-label="Go"
-                type="button"
-                onPress={setAllJoints}
-                minWidth="50px"
-              >
-                Go
-              </ActionButton>
+              <Input name="jointsString" label="All Joints" autocomplete="off" width="340px" />
+              <TooltipTrigger>
+                <ActionButton aria-label="Sync Joint Angles" onPress={() => syncJointAngles()}>
+                  <Sync />
+                </ActionButton>
+                <Tooltip>
+                  Sync Joint Angles - This will set this input to the current values of all the
+                  joint inputs above.
+                  <br />
+                  <br />
+                  Note: This will NOT trigger a command to the robot, its simply a one time snyc
+                  this field. To move the robot you can click "Go"
+                </Tooltip>
+              </TooltipTrigger>
+              <TooltipTrigger>
+                <div className="icon-orange">
+                  <ActionButton
+                    title="Go"
+                    aria-label="Go"
+                    type="button"
+                    onPress={setAllJoints}
+                    minWidth="50px"
+                  >
+                    Go
+                  </ActionButton>
+                </div>
+                <Tooltip>
+                  Go - This will set all the space seperated joint angles in the input.
+                  <br />
+                  <br />
+                  <strong>Note:</strong> This will trigger a robotSetAngles to the connected robot
+                  if "Run On Robot" is enabled.
+                </Tooltip>
+              </TooltipTrigger>
             </Flex>
             {/* ------------------------- GRIPPER CONTROLS ------------------------- */}
             <hr />
@@ -787,9 +954,19 @@ export const RobotNav = () => {
             </Flex>
             {/* ------------------------- FREEDRIVE CONTROLS ------------------------- */}
             <hr />
+            <strong>Freedrive</strong>
+            <ContextualHelp variant="info">
+              <Heading>Joint Controls</Heading>
+              <Content>
+                <Text>
+                  These will allow you to freedrive the robot. To do so you must unlock the joints
+                  or axis that you want to float.
+                </Text>
+              </Content>
+            </ContextualHelp>
             <Flex direction="row" alignItems="end" gap="size-100">
               <Select
-                label="Freedrive Frame"
+                label="Frame"
                 name="freedriveFrame"
                 initialValue="work"
                 options={[
@@ -821,8 +998,9 @@ export const RobotNav = () => {
               </TooltipTrigger>
               <Switch name="nullspace" label="Nullspace" initialValue={false} />
             </Flex>
-            <br />
-            <Flex direction="row" alignItems="end" gap="size-100">
+            {/* <strong className="nav-label">Cartesian</strong> */}
+            <span className="nav-label">Cartesian</span>
+            <Flex direction="row" alignItems="end" gap="size-100" width="235px" wrap>
               <ActionButton
                 width="size-900"
                 onPress={() => toggleAxis('x')}
@@ -847,9 +1025,6 @@ export const RobotNav = () => {
                 {cartFloatingAxis?.z ? <LockOpen /> : <LockClosed />}
                 <Text>Z</Text>
               </ActionButton>
-            </Flex>
-            <br />
-            <Flex direction="row" alignItems="end" gap="size-100">
               <ActionButton
                 width="size-900"
                 onPress={() => toggleAxis('rx')}
@@ -875,6 +1050,26 @@ export const RobotNav = () => {
                 <Text>RZ</Text>
               </ActionButton>
             </Flex>
+            <span className="nav-label">Joints</span>
+            <Flex direction="row" alignItems="end" gap="size-100" width="235px" wrap>
+              {frames.map((frame, i) => {
+                // Dont render control for stationary frame
+                if (frame.frameType === 'stationary') {
+                  return null;
+                }
+                return (
+                  <ActionButton
+                    width="size-900"
+                    onPress={() => toggleAxis(`j${i}`)}
+                    isQuiet={!cartFloatingAxis[`j${i}`]}
+                  >
+                    {cartFloatingAxis[`j${i}`] ? <LockOpen /> : <LockClosed />}
+                    <Text>{`j${i}`}</Text>
+                  </ActionButton>
+                );
+              })}
+            </Flex>
+
             {/* ------------------------- Adjustment CONTROLS ------------------------- */}
             <hr />
             <InputSlider

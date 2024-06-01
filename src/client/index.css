@@ -276,6 +276,20 @@ canvas {
   fill: #d10e0e !important;
 }
 
+.icon-red span {
+  color: red;
+  font-weight: bold;
+}
+
+.icon-orange span {
+  color: orange;
+  font-weight: bold;
+}
+
+.icon-orange svg {
+  fill: orange !important;
+}
+
 .icon-green svg {
   fill: #36881a !important;
 }
@@ -399,4 +413,10 @@ span[class^='spectrum-Tabs-itemLabel'] {
   display: flex;
   width: 100%;
   justify-content: space-between;
+}
+
+.nav-label {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  display: block;
 }

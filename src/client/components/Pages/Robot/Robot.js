@@ -131,15 +131,17 @@ const Control = ({ controlRef, virtualCam }) => {
           initialValue={10}
           maxWidth="100px"
         />
-        <ActionButton
-          title="Go"
-          aria-label="Go"
-          type="button"
-          onPress={robotUpdate}
-          minWidth="50px"
-        >
-          Go
-        </ActionButton>
+        <div className="icon-orange">
+          <ActionButton
+            title="Go"
+            aria-label="Go"
+            type="button"
+            onPress={robotUpdate}
+            minWidth="50px"
+          >
+            Go
+          </ActionButton>
+        </div>
         <Switch name="animate" label="Animate" initialValue />
       </Flex>
       <br />
