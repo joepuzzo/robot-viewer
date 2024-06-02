@@ -374,6 +374,16 @@ export const RobotNav = () => {
     formApi.setValue('gripper', gripperClosed);
   };
 
+  const gripperSet = ({ width, vel, force }) => {
+    formApi.setTheseValues({
+      gripper: width,
+      gripperVelocity: vel,
+      gripperForce: force,
+    });
+
+    updateGripper(width, vel, force);
+  };
+
   const onConfigChange =
     (key) =>
     ({ value }) => {
@@ -1007,6 +1017,45 @@ export const RobotNav = () => {
                 </ActionButton>
               </Flex>
             </Flex>
+
+            {selectedRobotMeta?.config?.favorites?.gripper && (
+              <>
+                <br />
+                <strong>Saved Gripper Positions</strong>
+                <ContextualHelp variant="info">
+                  <Heading>Saved Gripper Positions</Heading>
+                  <Content>
+                    <Text>Clicking these buttos will send gripper to saved locaitons</Text>
+                  </Content>
+                </ContextualHelp>
+                <br />
+                <Flex
+                  direction="row"
+                  alignItems="end"
+                  gap="size-100"
+                  width="440px"
+                  wrap
+                  UNSAFE_style={{ marginTop: '10px' }}
+                >
+                  {Object.entries(selectedRobotMeta.config.favorites.gripper).map(
+                    ([key, value]) => {
+                      return (
+                        <div className="icon-orange">
+                          <ActionButton
+                            onPress={() => {
+                              gripperSet(value);
+                            }}
+                            width="216px"
+                          >
+                            {key}
+                          </ActionButton>
+                        </div>
+                      );
+                    },
+                  )}
+                </Flex>
+              </>
+            )}
 
             {/* ------------------------- FREEDRIVE CONTROLS ------------------------- */}
             <hr />
