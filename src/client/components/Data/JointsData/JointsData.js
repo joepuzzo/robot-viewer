@@ -21,7 +21,7 @@ const JointData = ({ motor }) => {
     return <IgusRebelJointData motor={motor} />;
   }
 
-  if (robotType === 'Example') {
+  if (robotType === 'Example' || robotType === 'Example7Axis') {
     return <ExampleJointData motor={motor} />;
   }
 

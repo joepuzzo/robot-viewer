@@ -1,0 +1,5 @@
+python-socketio>=5.0.0
+colorama
+pyee
+requests
+websocket-client

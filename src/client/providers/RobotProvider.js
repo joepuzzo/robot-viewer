@@ -110,7 +110,7 @@ const RobotProvider = ({ children }) => {
     return robotsArray.map((robot) => {
       return {
         value: robot.id,
-        label: `Robot-${robot.id}`,
+        label: `${robot.id}`,
       };
     });
   }, [robots]);

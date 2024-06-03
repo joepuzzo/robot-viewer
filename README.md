@@ -119,6 +119,27 @@ DEBUG='mock:.*' python main.py --port 3000 --host localhost
 
 In order to connect to the robots you will need to be connected to the same network as the robots. All communication occurs via socket.io. You will need to have implimented the robot protocol. Every socket event is described below, and in addition there are specific events from the robot you need to subscibe to.
 
+### Architecture
+
+This application makes up `Robot Viewer` and `Controller`
+
+In addition you can have multiple clients sending commands to the controler and listening to robot updates.
+
+```
++------------------+                 +------------------+               +------------------------+
+|                  |                 |                  |               | igus-motor-controller  |
+|    RobotViewer   | <-- /client --> |    Controller    | <-- /robot -->| rizon-robot-controller |
+|     (Client)     |   (socket.io)   |     (server)     |               | or ...                 |
++------------------+                 +------------------+               +------------------------+
+                                               ^
+                                               |
++------------------+                           |
+|      Custom      |                           |
+|   Control/Viewer | <-- /client ---------------
+|     (Client)     |   (socket.io)
++------------------+
+```
+
 ### Socket Control Events
 
 The following are all socket events that can be recieved on the robot side and can be sent via robot-controller.

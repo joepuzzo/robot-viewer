@@ -628,7 +628,7 @@ export const RobotNav = () => {
                 options={[{ value: 'na', label: 'Disconnect' }, ...robotOptions]}
               />
             </Flex>
-            <Flex direction="row" alignItems="center" UNSAFE_style={{ marginBottom: '-20px' }}>
+            <Flex direction="row" alignItems="center">
               <Switch
                 name="robotAccel"
                 label="Acceleration"

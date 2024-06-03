@@ -165,6 +165,13 @@ export class Robot extends EventEmitter {
   }
 
   /** ------------------------------
+   * get busy
+   */
+  get busy() {
+    return this.homing || this.moving || this.freedrive;
+  }
+
+  /** ------------------------------
    * get state
    */
   get state() {
@@ -203,6 +210,7 @@ export class Robot extends EventEmitter {
       motors,
       errors: this.errors,
       freedrive: this.freedrive,
+      busy: this.busy,
     };
   }
 
@@ -406,7 +414,7 @@ export class Robot extends EventEmitter {
     // Step1: Determine travelSpeed and acceleration
     // Normally this involves complex math to ensure all motors start / stop at same time
     const travelSpeed = speed;
-    const acceleration = speed;
+    const acceleration = 20;
 
     // Step2: Move via speed for each based on time
     this.motors.forEach((motor, i) => {

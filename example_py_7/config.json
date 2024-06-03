@@ -1,0 +1,32 @@
+{
+  "j0": { "limNeg": -160, "limPos": 160, "homePos": 0 },
+  "j1": { "limNeg": -130, "limPos": 130, "homePos": 0 },
+  "j2": { "limNeg": -170, "limPos": 170, "homePos": 0 },
+  "j3": { "limNeg": -107, "limPos": 154, "homePos": 0 },
+  "j4": { "limNeg": -170, "limPos": 170, "homePos": 0 },
+  "j5": { "limNeg": -80, "limPos": 260, "homePos": 0 },
+  "j6": { "limNeg": -170, "limPos": 170, "homePos": 0 },
+  "favorites": {
+    "joints": {
+      "HomeRight": [-44.467, -45.1, 18.142, 119.753, -54.867, -18.267, -6.997],
+      "HomeLeft": [-150, 0.37, 1.93, 123.71, 107.81, 25.81, 52.41]
+    },
+    "gripper": {
+      "Open": {
+        "width": 95,
+        "force": 10,
+        "vel": 0.05
+      },
+      "Hold": {
+        "width": 76,
+        "force": 17,
+        "vel": 0.05
+      },
+      "Grasp": {
+        "width": 50,
+        "force": 10,
+        "vel": 0.05
+      }
+    }
+  }
+}

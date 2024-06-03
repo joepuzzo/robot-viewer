@@ -8,6 +8,12 @@ export const TYPE_MAPPING = {
     tcpPose: 'tcpPose',
     flangePose: 'flangePose',
   },
+  Example7Axis: {
+    position: 'currentPos',
+    extWrenchInTcp: 'extWrenchInTcp',
+    tcpPose: 'tcpPose',
+    flangePose: 'flangePose',
+  },
   IgusRebel: {
     position: 'currentPosition',
   },
