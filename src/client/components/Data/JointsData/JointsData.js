@@ -25,7 +25,7 @@ const JointData = ({ motor }) => {
     return <ExampleJointData motor={motor} />;
   }
 
-  if (robotType === 'Rizon4') {
+  if (robotType === 'Rizon4' || robotType === 'Rizon4Test') {
     return <RizonJointData motor={motor} />;
   }
 

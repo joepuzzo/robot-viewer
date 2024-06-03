@@ -165,6 +165,22 @@ def start_server(config):
         logger(f"Controller says setAngles for robot")
         robot.robot_set_angles(angles, speed)
 
+    @sio.on('robotMoveL', namespace='/robot')
+    def on_robot_MoveL(parameters):
+        logger(
+            f"Controller says robotMoveL with parameters {json.dumps(parameters,  indent=4)}"
+        )
+
+        # Get parameters off of the event
+        position = parameters["position"]
+        frame = parameters["frame"]
+        speed = parameters["speed"]
+        preferJntPos = parameters["preferJntPos"]
+
+        # Call the robots moveL command
+        robot.robot_move_l(position=position, frame=frame,
+                           maxVel=speed, preferJntPos=preferJntPos)
+
     @sio.on('robotUpdateConfig', namespace='/robot')
     def on_robot_update_config(key, value):
         logger(f"Controller says updateConfig for robot")
@@ -208,7 +224,7 @@ def start_server(config):
     @sio.on('robotFreedriveEnable', namespace='/robot')
     def on_robot_freedrive_enable(frame, cartFloatingAxis, nullspace=False):
         logger(
-            f"Controller says enable freedrive with frame {frame}, cartFloatingAxis {json.dumps(cartFloatingAxis)}, and nullspace {nullspace}"
+            f"Controller says enable freedrive with frame {frame}, cartFloatingAxis {json.dumps(cartFloatingAxis,  indent=4)}, and nullspace {nullspace}"
         )
         robot.robot_freedrive_enable(frame, cartFloatingAxis, nullspace)
 

@@ -291,7 +291,7 @@ class Robot(EventEmitter):
 
         # Step1: Determine travelSpeed and acceleration
         travel_speed = speed
-        acceleration = speed
+        acceleration = 20
         # Step2: Move via speed for each based on time
         for motor, angle in zip(self.motors, angles):
             logger(

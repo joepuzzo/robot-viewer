@@ -1,4 +1,5 @@
 import json
+import time
 import threading
 from pathlib import Path
 from pyee import EventEmitter
@@ -203,6 +204,8 @@ class Robot(EventEmitter):
             if all(not motor.moving for motor in self.motors):
                 logger('All motors have moved!')
                 self.moving = False
+                # important to emit meta first such that the controller has updated state before emitting moved
+                self.emit('meta')
                 self.emit('moved')
         # Let others know
         self.emit('meta')
@@ -298,13 +301,35 @@ class Robot(EventEmitter):
 
         # Step1: Determine travelSpeed and acceleration
         travel_speed = speed
-        acceleration = speed
+        acceleration = 20
         # Step2: Move via speed for each based on time
         for motor, angle in zip(self.motors, angles):
             logger(
                 f'Setting angle for motor {motor.id} at speed {speed} and angle: {angle}')
             motor.set_position(angle, travel_speed, acceleration)
         self.emit('meta')
+
+    def robot_move_l(self, position, frame='WORLD WORLD_ORIGIN', maxVel="0.1", preferJntPos=None, stop=False):
+        logger(
+            f"Moving L to {position} on frame {frame} at speed {maxVel} with preferJntPos {preferJntPos} and stop {stop}")
+
+        # Validate action
+        if not self.validate(enabled=True, cleared=True, log='attempting to move'):
+            return
+
+        # We are moving to a new location
+        self.moving = True
+        self.emit('meta')
+
+        # Pretend to move
+        time.sleep(5)
+
+        # Done moving
+        self.moving = False
+
+        # important to emit meta first such that the controller has updated state before emitting moved
+        self.emit('meta')
+        self.emit('moved')
 
     def robot_freedrive_enable(self, frame, cartFloatingAxis, nullspace=False):
         logger('Enabling freedrive')
