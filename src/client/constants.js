@@ -23,6 +23,12 @@ export const TYPE_MAPPING = {
     tcpPose: 'tcpPose',
     flangePose: 'flangePose',
   },
+  Rizon4Test: {
+    position: 'angle',
+    extWrenchInTcp: 'extWrenchInTcp',
+    tcpPose: 'tcpPose',
+    flangePose: 'flangePose',
+  },
 };
 
 // Example AR
