@@ -20,6 +20,9 @@ process.argv.forEach(function (val, i, arr) {
     case '--host':
       config.host = arr[i + 1];
       break;
+    case '--url':
+      config.url = arr[i + 1];
+      break;
     default:
   }
 });

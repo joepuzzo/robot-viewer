@@ -76,6 +76,13 @@ cd example
 DEBUG='mock:.*' node index.js -p 3000 --host localhost
 ```
 
+Also you can even have this connect to the deployed instance :)
+
+```bash
+cd example
+DEBUG='mock:.*' node index.js --url https://robot-viewer.com
+```
+
 ## Mock Python Robot ( /example_py )
 
 ## Python Installation
