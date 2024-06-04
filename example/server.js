@@ -185,6 +185,8 @@ export const startServer = (config) => {
     logger(
       `Controller says enable freedrive with frame ${frame} and cartFloatingAxis ${JSON.stringify(
         cartFloatingAxis,
+        null,
+        2,
       )}`,
     );
     robot.robotFreedriveEnable(frame, cartFloatingAxis);

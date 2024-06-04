@@ -107,7 +107,7 @@ export const RobotNav = () => {
   const { value: selectedRobot } = useFieldState('robotId');
 
   // Used to toggle on and off cart floating axis
-  const [cartFloatingAxis, setCartFloatingAxis] = useState({
+  const [floating, setFloating] = useState({
     x: false,
     y: false,
     z: false,
@@ -117,10 +117,34 @@ export const RobotNav = () => {
   });
 
   const toggleAxis = (axis) => {
-    setCartFloatingAxis((prevState) => ({
-      ...prevState,
-      [axis]: !prevState[axis],
-    }));
+    setFloating((prevState) => {
+      const newState = { ...prevState };
+
+      // If we are toggling on a joint axis make sure we toggle off the cartetian
+      if (axis.startsWith('j') && !prevState[axis]) {
+        newState.x = false;
+        newState.y = false;
+        newState.z = false;
+        newState.rx = false;
+        newState.ry = false;
+        newState.rz = false;
+      }
+
+      // If we are toggling on a cartesian axis make sure we toggle off the joint axis
+      if (['x', 'y', 'z', 'rx', 'ry', 'rz'].includes(axis)) {
+        // Itterate through all values in new state that start with j and toggle them off
+        for (const [key, value] of Object.entries(newState)) {
+          if (key.startsWith('j') && value) {
+            newState[key] = false;
+          }
+        }
+      }
+
+      return {
+        ...newState,
+        [axis]: !prevState[axis],
+      };
+    });
   };
 
   // Get robot state
@@ -316,7 +340,21 @@ export const RobotNav = () => {
     const { freedriveFrame, robotId, nullspace } = formApi.getFormState().values;
     // only send if we are connected
     if (connectedRef.current) {
-      socket.emit('robotFreedriveEnable', robotId, freedriveFrame, cartFloatingAxis, nullspace);
+      // Check if any values that start with j have a true value then its a joint freedrive
+      if (Object.entries(floating).some(([key, value]) => key.startsWith('j') && value)) {
+        // Create object that only has the j values
+        const floatingJoints = Object.fromEntries(
+          Object.entries(floating).filter(([key]) => key.startsWith('j')),
+        );
+        socket.emit('robotJointFreedriveEnable', robotId, floatingJoints);
+      }
+      // Otherwise traditional freedrive
+      else {
+        const floatingAxis = {
+          ...Object.fromEntries(Object.entries(floating).filter(([key]) => !key.startsWith('j'))),
+        };
+        socket.emit('robotFreedriveEnable', robotId, freedriveFrame, floatingAxis, nullspace);
+      }
     }
   };
 
@@ -1106,52 +1144,40 @@ export const RobotNav = () => {
             {/* <strong className="nav-label">Cartesian</strong> */}
             <span className="nav-label">Cartesian</span>
             <Flex direction="row" alignItems="end" gap="size-100" width="235px" wrap>
-              <ActionButton
-                width="size-900"
-                onPress={() => toggleAxis('x')}
-                isQuiet={!cartFloatingAxis?.x}
-              >
-                {cartFloatingAxis?.x ? <LockOpen /> : <LockClosed />}
+              <ActionButton width="size-900" onPress={() => toggleAxis('x')} isQuiet={!floating?.x}>
+                {floating?.x ? <LockOpen /> : <LockClosed />}
                 <Text>X</Text>
               </ActionButton>
-              <ActionButton
-                width="size-900"
-                onPress={() => toggleAxis('y')}
-                isQuiet={!cartFloatingAxis?.y}
-              >
-                {cartFloatingAxis?.y ? <LockOpen /> : <LockClosed />}
+              <ActionButton width="size-900" onPress={() => toggleAxis('y')} isQuiet={!floating?.y}>
+                {floating?.y ? <LockOpen /> : <LockClosed />}
                 <Text>Y</Text>
               </ActionButton>
-              <ActionButton
-                width="size-900"
-                onPress={() => toggleAxis('z')}
-                isQuiet={!cartFloatingAxis?.z}
-              >
-                {cartFloatingAxis?.z ? <LockOpen /> : <LockClosed />}
+              <ActionButton width="size-900" onPress={() => toggleAxis('z')} isQuiet={!floating?.z}>
+                {floating?.z ? <LockOpen /> : <LockClosed />}
                 <Text>Z</Text>
               </ActionButton>
               <ActionButton
                 width="size-900"
                 onPress={() => toggleAxis('rx')}
-                isQuiet={!cartFloatingAxis?.rx}
+                isQuiet={!floating?.rx}
               >
-                {cartFloatingAxis?.rx ? <LockOpen /> : <LockClosed />}
+                {floating?.rx ? <LockOpen /> : <LockClosed />}
                 <Text>RX</Text>
               </ActionButton>
               <ActionButton
                 width="size-900"
                 onPress={() => toggleAxis('ry')}
-                isQuiet={!cartFloatingAxis?.ry}
+                isQuiet={!floating?.ry}
               >
-                {cartFloatingAxis?.ry ? <LockOpen /> : <LockClosed />}
+                {floating?.ry ? <LockOpen /> : <LockClosed />}
                 <Text>RY</Text>
               </ActionButton>
               <ActionButton
                 width="size-900"
                 onPress={() => toggleAxis('rz')}
-                isQuiet={!cartFloatingAxis?.rz}
+                isQuiet={!floating?.rz}
               >
-                {cartFloatingAxis?.rz ? <LockOpen /> : <LockClosed />}
+                {floating?.rz ? <LockOpen /> : <LockClosed />}
                 <Text>RZ</Text>
               </ActionButton>
             </Flex>
@@ -1166,9 +1192,9 @@ export const RobotNav = () => {
                   <ActionButton
                     width="size-900"
                     onPress={() => toggleAxis(`j${i}`)}
-                    isQuiet={!cartFloatingAxis[`j${i}`]}
+                    isQuiet={!floating[`j${i}`]}
                   >
-                    {cartFloatingAxis[`j${i}`] ? <LockOpen /> : <LockClosed />}
+                    {floating[`j${i}`] ? <LockOpen /> : <LockClosed />}
                     <Text>{`j${i}`}</Text>
                   </ActionButton>
                 );

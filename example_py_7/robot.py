@@ -332,12 +332,17 @@ class Robot(EventEmitter):
         self.emit('moved')
 
     def robot_freedrive_enable(self, frame, cartFloatingAxis, nullspace=False):
-        logger('Enabling freedrive')
+        logger('Enabling Freedrive')
+        self.freedrive = True
+        self.emit('meta')
+
+    def robot_joint_freedrive_enable(self, joints):
+        logger('Enabling Joint Freedrive')
         self.freedrive = True
         self.emit('meta')
 
     def robot_freedrive_disable(self):
-        logger('Disabling freedrive')
+        logger('Disabling Freedrive')
         self.freedrive = False
         self.emit('meta')
 

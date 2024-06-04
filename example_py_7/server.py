@@ -228,6 +228,13 @@ def start_server(config):
         )
         robot.robot_freedrive_enable(frame, cartFloatingAxis, nullspace)
 
+    @sio.on('robotJointFreedriveEnable', namespace='/robot')
+    def on_robot_joint_freedrive_enable(joints):
+        logger(
+            f"Controller says enable joint freedrive with joints {joints}"
+        )
+        robot.robot_joint_freedrive_enable(joints)
+
     @sio.on('robotFreedriveDisable', namespace='/robot')
     def on_robot_freedrive_disable():
         logger(f"Controller says disable freedrive")

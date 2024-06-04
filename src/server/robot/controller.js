@@ -223,6 +223,15 @@ export class Controller {
     }
   }
 
+  robotJointFreedriveEnable(robotId, joints) {
+    logger(`controller client says robotJointFreedriveEnable`, robotId, joints);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotJointFreedriveEnable', joints);
+    }
+  }
+
   robotFreedriveDisable(robotId) {
     logger(`controller client says robotFreedriveDisable`, robotId);
     // only send if we are connected
@@ -349,6 +358,9 @@ export class Controller {
     );
     this.clientMessenger.on('robotFreedriveDisable', (...args) =>
       this.robotFreedriveDisable(...args),
+    );
+    this.clientMessenger.on('robotJointFreedriveEnable', (...args) =>
+      this.robotJointFreedriveEnable(...args),
     );
   }
 
