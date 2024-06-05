@@ -229,9 +229,9 @@ Note: Here ar. examples of cartFloatingAxis and joint parameters for the freedri
 
 ##### Gripper Events
 
-| Event         | Description               | Parameters        |
-| ------------- | ------------------------- | ----------------- |
-| gripperSetPos | Sets the gripper position | pos, speed, force |
+| Event         | Description               | Parameters              |
+| ------------- | ------------------------- | ----------------------- |
+| gripperSetPos | Sets the gripper position | pos, speed, force, wait |
 
 ---
 

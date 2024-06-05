@@ -40,12 +40,12 @@ export class Controller {
     logger(`controller client says hello`, args);
   }
 
-  gripperSetPos(robotId, pos, speed, force) {
-    logger(`controller client says gripperSetPos`, robotId, pos, speed, force);
+  gripperSetPos(robotId, pos, speed, force, wait) {
+    logger(`controller client says gripperSetPos`, robotId, pos, speed, force, wait);
     // only send if we are connected
     if (this.robots[robotId]) {
       const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed, force);
+      this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed, force, wait);
     }
   }
 
@@ -428,6 +428,11 @@ export class Controller {
     this.clientMessenger.send('robotMoved', id, state);
   }
 
+  robotGrasped(id, state) {
+    logger(`controller robot grasped ${id}:`);
+    this.clientMessenger.send('robotGrasped', id, state);
+  }
+
   pulse(id, pos) {
     // logger(`controller robot pulse id: ${id} pos: ${pos}`);
     this.clientMessenger.send('pulse', id, pos);
@@ -440,6 +445,7 @@ export class Controller {
     this.robotMessenger.on('encoder', (...args) => this.robotEncoder(...args));
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
     this.robotMessenger.on('moved', (...args) => this.robotMoved(...args));
+    this.robotMessenger.on('grasped', (...args) => this.robotGrasped(...args));
     // this.robotMessenger.on('pulse', (...args) => this.pulse(...args));
   }
 
