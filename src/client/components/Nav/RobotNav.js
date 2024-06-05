@@ -441,7 +441,7 @@ export const RobotNav = () => {
     // Get the value of the form state
     const { jointsString } = formApi.getFormState().values;
     // Take the joint string and convert it to an array of numbers to set angles too
-    const angles = jointsString.split(' ').map((a) => +a);
+    const angles = jointsString.split(',').map((a) => +a.trim());
     // TODO make this based on frames maybe
     if (angles.length >= 6) {
       updateJoints(angles);
@@ -464,7 +464,7 @@ export const RobotNav = () => {
     angles = angles.map((a) => round(a, 100));
 
     // Update the value
-    formApi.setValue('jointsString', angles.join(' '));
+    formApi.setValue('jointsString', angles.join(', '));
   });
 
   const syncRobotAngles = useCallback(() => {
@@ -497,7 +497,7 @@ export const RobotNav = () => {
       }
 
       // Add the jointsString to the updatedValues object
-      updatedValues.jointsString = angles.join(' ');
+      updatedValues.jointsString = angles.join(', ');
 
       // Update the joint angles in the control nav
       // NOTE: this is not native event so will trigger no actual movement on real robot

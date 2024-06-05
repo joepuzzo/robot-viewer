@@ -39,7 +39,7 @@ const Joints = ({ motors, robotType }) => {
       const motorPos = motor[fieldName];
       return round(motorPos, 1000);
     })
-    .join(' ');
+    .join(', ');
 
   const displayText = motors
     .map((motor) => {
@@ -63,7 +63,7 @@ const ToolCenterPointPosition = ({ robotState, robotType }) => {
     return null;
   }
 
-  const copyText = tcpPos.map((p) => round(p, 1000)).join(' ');
+  const copyText = tcpPos.map((p) => round(p, 1000)).join(', ');
 
   const displayText = tcpPos.map((p) => round(p, 100)).join('\u00A0\u00A0\u00A0\u00A0');
 
