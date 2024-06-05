@@ -322,6 +322,15 @@ export class Controller {
     }
   }
 
+  robotMoveContact(robotId, parameters) {
+    logger(`controller client says robotMoveContact ${robotId} with parameters ${parameters}`);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotMoveContact', parameters);
+    }
+  }
+
   subscribeToClientMessenger() {
     this.clientMessenger.on('hello', (...args) => this.clientHello(...args));
     this.clientMessenger.on('connect', (...args) => this.clientConnect(...args));
@@ -351,6 +360,7 @@ export class Controller {
     this.clientMessenger.on('robotEnable', (...args) => this.robotEnable(...args));
     this.clientMessenger.on('robotSetAngles', (...args) => this.robotSetAngles(...args));
     this.clientMessenger.on('robotMoveL', (...args) => this.robotMoveL(...args));
+    this.clientMessenger.on('robotMoveContact', (...args) => this.robotMoveContact(...args));
     this.clientMessenger.on('robotUpdateConfig', (...args) => this.robotUpdateConfig(...args));
     this.clientMessenger.on('robotWriteConfig', (...args) => this.robotWriteConfig(...args));
     this.clientMessenger.on('robotFreedriveEnable', (...args) =>
