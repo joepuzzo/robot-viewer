@@ -277,8 +277,9 @@ class Robot(EventEmitter):
         self.errors = []
         self.emit('meta')
 
-    def robot_set_angles(self, angles, speed):
-        logger(f'robotSetAngles at speed {speed} angles: {angles}')
+    def robot_set_angles(self, angles, speed, idle=True):
+        logger(
+            f'robotSetAngles at speed {speed} angles: {angles} idle: {idle}')
         # Validate action
         if not self.validate(enabled=True, cleared=True, log='attempting to move'):
             return

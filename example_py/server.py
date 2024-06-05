@@ -157,9 +157,11 @@ def start_server(config):
         robot.robot_center()
 
     @sio.on('robotSetAngles', namespace='/robot')
-    def on_robot_set_angles(angles, speed):
+    def on_robot_set_angles(angles, speed, idle):
+        if idle is None:
+            idle = True
         logger(f"Controller says setAngles for robot")
-        robot.robot_set_angles(angles, speed)
+        robot.robot_set_angles(angles, speed, idle)
 
     @sio.on('robotUpdateConfig', namespace='/robot')
     def on_robot_update_config(key, value):

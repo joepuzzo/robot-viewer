@@ -157,13 +157,16 @@ def start_server(config):
         robot.robot_center()
 
     @sio.on('robotSetAngles', namespace='/robot')
-    def on_robot_set_angles(angles, speed):
+    def on_robot_set_angles(angles, speed, idle=True):
+        if idle is None:
+            idle = True
+
         # Convert speed to deg/s instead of m/s ( wich is sent in )
         if (speed):
             speed = speed * 180 / 3.14159265359
 
         logger(f"Controller says setAngles for robot")
-        robot.robot_set_angles(angles, speed)
+        robot.robot_set_angles(angles, speed, idle)
 
     @sio.on('robotMoveL', namespace='/robot')
     def on_robot_MoveL(parameters):
@@ -176,10 +179,11 @@ def start_server(config):
         frame = parameters["frame"]
         speed = parameters["speed"]
         preferJntPos = parameters["preferJntPos"]
+        idle = parameters.get("idle", True)
 
         # Call the robots moveL command
         robot.robot_move_l(position=position, frame=frame,
-                           maxVel=speed, preferJntPos=preferJntPos)
+                           maxVel=speed, preferJntPos=preferJntPos, idle=idle)
 
     @sio.on('robotUpdateConfig', namespace='/robot')
     def on_robot_update_config(key, value):

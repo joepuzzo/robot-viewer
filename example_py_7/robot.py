@@ -287,8 +287,9 @@ class Robot(EventEmitter):
         self.errors = []
         self.emit('meta')
 
-    def robot_set_angles(self, angles, speed):
-        logger(f'robotSetAngles at speed {speed} angles: {angles}')
+    def robot_set_angles(self, angles, speed, idle=True):
+        logger(
+            f'robotSetAngles at speed {speed} angles: {angles} idle: {idle}')
         # Validate action
         if not self.validate(enabled=True, cleared=True, log='attempting to move'):
             return
@@ -309,9 +310,9 @@ class Robot(EventEmitter):
             motor.set_position(angle, travel_speed, acceleration)
         self.emit('meta')
 
-    def robot_move_l(self, position, frame='WORLD WORLD_ORIGIN', maxVel="0.1", preferJntPos=None, stop=False):
+    def robot_move_l(self, position, frame='WORLD WORLD_ORIGIN', maxVel="0.1", preferJntPos=None, idle=True):
         logger(
-            f"Moving L to {position} on frame {frame} at speed {maxVel} with preferJntPos {preferJntPos} and stop {stop}")
+            f"Moving L to {position} on frame {frame} at speed {maxVel} with preferJntPos {preferJntPos} and idle {idle}")
 
         # Validate action
         if not self.validate(enabled=True, cleared=True, log='attempting to move'):
