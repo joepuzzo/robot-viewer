@@ -13,6 +13,9 @@
   "rangej4": [-170.0, 170.0],
   "rangej5": [-80.0, 260.0],
   "rangej6": [-170.0, 170.0],
+  "features": {
+    "forceTourqueZero": true
+  },
   "frames": [
     {
       "frameType": "rotary",

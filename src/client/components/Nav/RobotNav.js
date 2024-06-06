@@ -422,6 +422,41 @@ export const RobotNav = () => {
     updateGripper(width, vel, force);
   };
 
+  const moveL = () => {
+    const { tcpString, preferJntPosString } = formApi.getFormState().values;
+
+    const robotId = formApi.getValue('robotId');
+    const moveFrame = formApi.getValue('moveFrame');
+
+    // only send if we are connected
+    if (connectedRef.current) {
+      const position = tcpString.split(',').map((a) => +a.trim());
+      const preferJntPos = preferJntPosString.split(',').map((a) => +a.trim());
+
+      socket.emit('robotMoveL', robotId, {
+        position,
+        frame: moveFrame,
+        speed: 0.1,
+        preferJntPos,
+      });
+    }
+  };
+
+  const moveLTo = ({ tcpPos, frame, speed, preferJntPos }) => {
+    // Get current connected robot
+    const robotId = formApi.getValue('robotId');
+
+    // only send if we are connected
+    if (connectedRef.current) {
+      socket.emit('robotMoveL', robotId, {
+        position: tcpPos,
+        frame,
+        speed: 0.1,
+        preferJntPos,
+      });
+    }
+  };
+
   const onConfigChange =
     (key) =>
     ({ value }) => {
@@ -467,7 +502,7 @@ export const RobotNav = () => {
     formApi.setValue('jointsString', angles.join(', '));
   });
 
-  const syncRobotAngles = useCallback(() => {
+  const getRobotAngles = useCallback(() => {
     // Get selected robotId and type
     const { robotId, robotType } = formApi.getFormState().values;
 
@@ -487,6 +522,19 @@ export const RobotNav = () => {
         return round(motorPos, 1000);
       });
 
+      return angles;
+    }
+  }, []);
+
+  const syncRobotAngles = useCallback(() => {
+    // Get selected robotId and type
+    const { robotId, robotType } = formApi.getFormState().values;
+
+    // Get the state of that robot
+    if (robotId) {
+      // Get the current robot angles from actual robot
+      const angles = getRobotAngles();
+
       // Update the joint angles in the control nav
       // NOTE: this is not native event so will trigger no actual movement on real robot
       const updatedValues = {};
@@ -503,6 +551,32 @@ export const RobotNav = () => {
       // NOTE: this is not native event so will trigger no actual movement on real robot
       formApi.setTheseValues(updatedValues);
     }
+  }, []);
+
+  const syncTcp = useCallback(() => {
+    const { robotId, robotType } = formApi.getFormState().values;
+
+    // Get current robot state
+    const robotState = getRobotState(robotId);
+
+    const fieldName = TYPE_MAPPING[robotType].tcpPose;
+
+    // Array x, y, z, r1, r2, r3
+    const tcpPos = robotState[fieldName];
+
+    // Dont try if we dont have it
+    if (!tcpPos) {
+      return;
+    }
+
+    // Create TCP string
+    const tcpString = tcpPos.map((p) => round(p, 1000)).join(', ');
+
+    // Get the current robot angles from actual robot
+    const angles = getRobotAngles().join(', ');
+
+    formApi.setValue('tcpString', tcpString);
+    formApi.setValue('preferJntPosString', angles);
   }, []);
 
   // const disabled = !connected;
@@ -988,6 +1062,122 @@ export const RobotNav = () => {
                       </div>
                     );
                   })}
+                </Flex>
+              </>
+            )}
+
+            {/* ------------------------- Move Commands ------------------------- */}
+            <hr />
+            <div>
+              <strong>Move Commands</strong>
+              <ContextualHelp variant="info">
+                <Heading>Move Commands</Heading>
+                <Content>
+                  <Text>
+                    These will send direct move commands to the robot
+                    <br />
+                    <br />
+                    <strong>Note:</strong> These controls will use the robots onboard move commands
+                    and kinematics. NOT the kinematics on this simulator.
+                  </Text>
+                </Content>
+              </ContextualHelp>
+            </div>
+            <Flex direction="column" gap="size-100">
+              <Input name="tcpString" label="Tcp Pos" autocomplete="off" width="340px" />
+              <Input
+                name="preferJntPosString"
+                label="Prefered Joint Posisions"
+                autocomplete="off"
+                width="340px"
+              />
+              <Select
+                label="Frame"
+                name="moveFrame"
+                initialValue="WORLD WORLD_ORIGIN"
+                options={[
+                  { value: 'TRAJ START', label: 'TRAJ START' },
+                  { value: 'WORLD WORLD_ORIGIN', label: 'WORLD WORLD_ORIGIN' },
+                ]}
+              />
+            </Flex>
+            <br />
+            <Flex direction="row" alignItems="end" gap="size-100">
+              <TooltipTrigger>
+                <ActionButton aria-label="Sync TCP Position" onPress={() => syncTcp()}>
+                  <Sync />
+                </ActionButton>
+                <Tooltip>
+                  Sync TCP Position - This will set the tcp input to the current value of the robots
+                  TCP.
+                  <br />
+                  <br />
+                  Note: This will NOT trigger a command to the robot, its simply a one time snyc to
+                  set these values to the robot actual values.
+                </Tooltip>
+              </TooltipTrigger>
+              <TooltipTrigger>
+                <div className="icon-orange">
+                  <ActionButton
+                    title="Go"
+                    aria-label="Go"
+                    type="button"
+                    onPress={moveL}
+                    minWidth="50px"
+                  >
+                    MoveL
+                  </ActionButton>
+                </div>
+                <Tooltip>
+                  MoveL - This will call the robots moveL command to the TCP
+                  <br />
+                  <br />
+                  <strong>Note:</strong> This will trigger a robotMoveL to the connected robot if
+                  "Run On Robot" is enabled.
+                </Tooltip>
+              </TooltipTrigger>
+            </Flex>
+            {selectedRobotMeta?.config?.favorites?.tcpPositions && (
+              <>
+                <br />
+                <strong>Saved TCP Positions</strong>
+                <ContextualHelp variant="info">
+                  <Heading>Saved TCP Positions</Heading>
+                  <Content>
+                    <Text>
+                      Saved TCP positions for the connected robot.
+                      <br />
+                      <br />
+                      <strong>Note:</strong> Clicking these buttons will move the robot to the saved
+                      positions
+                    </Text>
+                  </Content>
+                </ContextualHelp>
+                <br />
+                <Flex
+                  direction="row"
+                  alignItems="end"
+                  gap="size-100"
+                  width="440px"
+                  wrap
+                  UNSAFE_style={{ marginTop: '10px' }}
+                >
+                  {Object.entries(selectedRobotMeta.config.favorites.tcpPositions).map(
+                    ([key, value]) => {
+                      return (
+                        <div className="icon-orange">
+                          <ActionButton
+                            onPress={() => {
+                              moveLTo(value);
+                            }}
+                            width="216px"
+                          >
+                            {key}
+                          </ActionButton>
+                        </div>
+                      );
+                    },
+                  )}
                 </Flex>
               </>
             )}

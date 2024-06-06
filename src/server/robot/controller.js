@@ -259,6 +259,15 @@ export class Controller {
     }
   }
 
+  robotMode(robotId, mode) {
+    logger(`controller client says robotMode`, robotId, mode);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotMode', mode);
+    }
+  }
+
   robotFreeze(robotId) {
     logger(`controller client says robotFreeze`, robotId);
     // only send if we are connected
@@ -355,6 +364,7 @@ export class Controller {
     this.clientMessenger.on('robotAccelEnabled', (...args) => this.robotAccelEnabled(...args));
     this.clientMessenger.on('robotSplitHome', (...args) => this.robotSplitHome(...args));
     this.clientMessenger.on('robotStop', (...args) => this.robotStop(...args));
+    this.clientMessenger.on('robotMode', (...args) => this.robotMode(...args));
     this.clientMessenger.on('robotFreeze', (...args) => this.robotFreeze(...args));
     this.clientMessenger.on('robotCenter', (...args) => this.robotCenter(...args));
     this.clientMessenger.on('robotEnable', (...args) => this.robotEnable(...args));
@@ -433,6 +443,16 @@ export class Controller {
     this.clientMessenger.send('robotGrasped', id, state);
   }
 
+  robotZeroedFT(id, state) {
+    logger(`controller robot zeroedFT ${id}:`);
+    this.clientMessenger.send('robotZeroedFT', id, state);
+  }
+
+  robotModeChange(id, mode) {
+    logger(`controller robot mode ${id}:`);
+    this.clientMessenger.send('robotModeChange', id, mode);
+  }
+
   pulse(id, pos) {
     // logger(`controller robot pulse id: ${id} pos: ${pos}`);
     this.clientMessenger.send('pulse', id, pos);
@@ -446,6 +466,8 @@ export class Controller {
     this.robotMessenger.on('register', (...args) => this.robotRegister(...args));
     this.robotMessenger.on('moved', (...args) => this.robotMoved(...args));
     this.robotMessenger.on('grasped', (...args) => this.robotGrasped(...args));
+    this.robotMessenger.on('zeroedFT', (...args) => this.robotZeroedFT(...args));
+    this.robotMessenger.on('mode', (...args) => this.robotModeChange(...args));
     // this.robotMessenger.on('pulse', (...args) => this.pulse(...args));
   }
 

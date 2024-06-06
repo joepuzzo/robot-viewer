@@ -70,6 +70,24 @@ const ToolCenterPointPosition = ({ robotState, robotType }) => {
   return <Info label="TCP:" data={displayText} copy={copyText} />;
 };
 
+const TCPWrench = ({ robotState, robotType }) => {
+  const fieldName = TYPE_MAPPING[robotType].extWrenchInTcp;
+
+  // Array x, y, z, r1, r2, r3
+  const extWrenchInTcp = robotState[fieldName];
+
+  // Dont try to render if we dont have it
+  if (!extWrenchInTcp) {
+    return null;
+  }
+
+  const copyText = extWrenchInTcp.map((p) => round(p, 1000)).join(', ');
+
+  const displayText = extWrenchInTcp.map((p) => round(p, 100)).join('\u00A0\u00A0\u00A0\u00A0');
+
+  return <Info label="TCP Wrench:" data={displayText} copy={copyText} />;
+};
+
 export const GeneralData = () => {
   const { robotStates } = useRobotState();
 
@@ -100,6 +118,7 @@ export const GeneralData = () => {
       >
         <Joints motors={motors} robotType={robotType} />
         <ToolCenterPointPosition robotState={robotState} robotType={robotType} />
+        <TCPWrench robotState={robotState} robotType={robotType} />
       </Flex>
     </>
   );

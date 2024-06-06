@@ -162,27 +162,28 @@ The following are all socket events that can be recieved on the robot side and c
 
 ##### Robot Events
 
-| Event                     | Description                                | Parameters                         |
-| ------------------------- | ------------------------------------------ | ---------------------------------- |
-| robotHome                 | Homes the robot                            | None                               |
-| robotSplitHome            | Homes the robot in split mode              | None                               |
-| robotStop                 | Stops the robot                            | None                               |
-| robotFreeze               | Freezes the robot                          | None                               |
-| robotEnable               | Enables the robot                          | None                               |
-| robotCenter               | Centers the robot                          | None                               |
-| robotSetAngles            | Sets the robot's angles                    | angles, speed                      |
-| robotMoveL                | Tels the robot to move linear              | liearParameters                    |
-| robotMoveContact          | Tels the robot to move until contact force | contactParameters                  |
-| robotUpdateConfig         | Updates the robot's configuration          | key, value                         |
-| robotWriteConfig          | Writes the robot's configuration           | None                               |
-| robotAccelEnabled         | Enables robot acceleration                 | value                              |
-| robotResetErrors          | Resets the robot's errors                  | None                               |
-| robotReference            | References the robot                       | None                               |
-| robotZero                 | Zeros the robot                            | None                               |
-| robotZeroFT               | Zeros the robots force tourque sensors     | None                               |
-| robotFreedriveEnable      | Enables Freedrive On the Robot             | frame, cartFloatingAxis, nullspace |
-| robotFreedriveDisable     | Disables Freedrive On the Robot            | None                               |
-| robotJointFreedriveEnable | Enables freedrive on specific joints       | joints                             |
+| Event                     | Description                                   | Parameters                         |
+| ------------------------- | --------------------------------------------- | ---------------------------------- |
+| robotHome                 | Homes the robot                               | None                               |
+| robotSplitHome            | Homes the robot in split mode                 | None                               |
+| robotStop                 | Stops the robot                               | None                               |
+| robotMode                 | Puts the robot into the passed mode ex "IDLE" | None                               |
+| robotFreeze               | Freezes the robot                             | None                               |
+| robotEnable               | Enables the robot                             | None                               |
+| robotCenter               | Centers the robot                             | None                               |
+| robotSetAngles            | Sets the robot's angles                       | angles, speed                      |
+| robotMoveL                | Tels the robot to move linear                 | liearParameters                    |
+| robotMoveContact          | Tels the robot to move until contact force    | contactParameters                  |
+| robotUpdateConfig         | Updates the robot's configuration             | key, value                         |
+| robotWriteConfig          | Writes the robot's configuration              | None                               |
+| robotAccelEnabled         | Enables robot acceleration                    | value                              |
+| robotResetErrors          | Resets the robot's errors                     | None                               |
+| robotReference            | References the robot                          | None                               |
+| robotZero                 | Zeros the robot                               | None                               |
+| robotZeroFT               | Zeros the robots force tourque sensors        | None                               |
+| robotFreedriveEnable      | Enables Freedrive On the Robot                | frame, cartFloatingAxis, nullspace |
+| robotFreedriveDisable     | Disables Freedrive On the Robot               | None                               |
+| robotJointFreedriveEnable | Enables freedrive on specific joints          | joints                             |
 
 Note: Here ar. examples of cartFloatingAxis and joint parameters for the freedrive functions
 
