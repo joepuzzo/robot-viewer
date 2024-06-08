@@ -277,6 +277,15 @@ export class Controller {
     }
   }
 
+  robotRunActions(robotId, actions) {
+    logger(`controller client says robotRunActions`, robotId, actions);
+    // only send if we are connected
+    if (this.robots[robotId]) {
+      const socketId = this.robots[robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotRunActions', actions);
+    }
+  }
+
   robotFreeze(robotId) {
     logger(`controller client says robotFreeze`, robotId);
     // only send if we are connected
@@ -375,6 +384,7 @@ export class Controller {
     this.clientMessenger.on('robotStop', (...args) => this.robotStop(...args));
     this.clientMessenger.on('robotMode', (...args) => this.robotMode(...args));
     this.clientMessenger.on('robotRunPlan', (...args) => this.robotRunPlan(...args));
+    this.clientMessenger.on('robotRunActions', (...args) => this.robotRunActions(...args));
     this.clientMessenger.on('robotFreeze', (...args) => this.robotFreeze(...args));
     this.clientMessenger.on('robotCenter', (...args) => this.robotCenter(...args));
     this.clientMessenger.on('robotEnable', (...args) => this.robotEnable(...args));
@@ -463,6 +473,11 @@ export class Controller {
     this.clientMessenger.send('robotModeChange', id, mode);
   }
 
+  robotActionsComplete(id, name) {
+    logger(`controller robot actions complete ${id}:`);
+    this.clientMessenger.send('robotActionsComplete', id, name);
+  }
+
   pulse(id, pos) {
     // logger(`controller robot pulse id: ${id} pos: ${pos}`);
     this.clientMessenger.send('pulse', id, pos);
@@ -478,6 +493,7 @@ export class Controller {
     this.robotMessenger.on('grasped', (...args) => this.robotGrasped(...args));
     this.robotMessenger.on('zeroedFT', (...args) => this.robotZeroedFT(...args));
     this.robotMessenger.on('mode', (...args) => this.robotModeChange(...args));
+    this.robotMessenger.on('actionsComplete', (...args) => this.robotActionsComplete(...args));
     // this.robotMessenger.on('pulse', (...args) => this.pulse(...args));
   }
 

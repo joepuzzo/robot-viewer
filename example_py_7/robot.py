@@ -374,3 +374,9 @@ class Robot(EventEmitter):
     def gripper_set_position(self, pos, speed=500, force=0, wait=0):
         logger(
             f'Set position for gripper to {pos}, at speed {speed} with force {force} and wait {wait}')
+
+    def run_actions(self, actions):
+        logger(f'Running actions {json.dumps(actions, indent=4)}')
+        # important to emit meta first such that the controller has updated state before emitting actionsComplete
+        self.emit('meta')
+        self.emit('actionsComplete', actions['name'])

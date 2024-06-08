@@ -70,6 +70,11 @@ def start_server(config):
         logger('Sending moved')
         emit('moved', robot.meta)
 
+    @robot.on('actionsComplete')
+    def on_actions_complete(name):
+        logger('Sending actionsComplete')
+        emit('actionsComplete', name)
+
     @robot.on('pulse')
     def on_pulse(id, pos):
         emit('pulse', id)
@@ -243,5 +248,10 @@ def start_server(config):
     def on_robot_freedrive_disable():
         logger(f"Controller says disable freedrive")
         robot.robot_freedrive_disable()
+
+    @sio.on('robotRunActions', namespace='/robot')
+    def on_robot_run_actions(actions):
+        logger(f"Controller says robotRunActions")
+        robot.run_actions(actions)
 
     sio.wait()
