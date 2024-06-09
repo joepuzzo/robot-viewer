@@ -137,7 +137,8 @@ class Robot(EventEmitter):
         return {
             'id': self.id,
             'motors': motors,
-            'tcpPose': [0, 0, 0, 0, 0, 0]
+            'tcpPose': [0, 0, 0, 0, 0, 0],
+            'extWrenchInTcp': [-3.5, 0, 0, 0, 0, 0]
         }
 
     @property
@@ -238,7 +239,10 @@ class Robot(EventEmitter):
 
     def robot_zero_ft(self):
         logger('Zero Force Tourque robot')
+        # Note order is important here, we need to make sure state is updated before we let anyone know that we are done zeroing
+        self.emit('encoder')
         self.emit('meta')
+        self.emit('zeroedFT')
 
     def robot_calibrate(self):
         logger('Calibrate robot')
@@ -315,7 +319,27 @@ class Robot(EventEmitter):
             f"Moving L to {position} on frame {frame} at speed {maxVel} with preferJntPos {preferJntPos} and idle {idle}")
 
         # Validate action
-        if not self.validate(enabled=True, cleared=True, log='attempting to move'):
+        if not self.validate(enabled=True, cleared=True, log='attempting to moveL'):
+            return
+
+        # We are moving to a new location
+        self.moving = True
+        self.emit('meta')
+
+        # Pretend to move
+        time.sleep(5)
+
+        # Done moving
+        self.moving = False
+
+        # important to emit meta first such that the controller has updated state before emitting moved
+        self.emit('meta')
+        self.emit('moved')
+
+    def move_contact(self, contactDir, contactVel, maxContactForce, stop=True):
+
+        # Validate action
+        if not self.validate(enabled=True, cleared=True, log='attempting to move contact'):
             return
 
         # We are moving to a new location
@@ -374,6 +398,11 @@ class Robot(EventEmitter):
     def gripper_set_position(self, pos, speed=500, force=0, wait=0):
         logger(
             f'Set position for gripper to {pos}, at speed {speed} with force {force} and wait {wait}')
+
+        # Note order is important here, we need to make sure meta is sent before grasped
+        # This will ensure anyone listening to grasped event has the corect meta state of this robot :)
+        self.emit('meta')
+        self.emit('grasped')
 
     def run_actions(self, actions):
         logger(f'Running actions {json.dumps(actions, indent=4)}')

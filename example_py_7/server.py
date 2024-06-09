@@ -70,6 +70,16 @@ def start_server(config):
         logger('Sending moved')
         emit('moved', robot.meta)
 
+    @robot.on('grasped')
+    def on_grasped():
+        logger('Sending grasped')
+        emit('grasped', robot.meta)
+
+    @robot.on('zeroedFT')
+    def on_zeroed_ft():
+        logger('Sending zeroedFT')
+        emit('zeroedFT', robot.meta)
+
     @robot.on('actionsComplete')
     def on_actions_complete(name):
         logger('Sending actionsComplete')
@@ -146,6 +156,12 @@ def start_server(config):
         logger(f"Controller says stop robot")
         robot.robot_stop()
 
+    @sio.on('robotMode', namespace='/robot')
+    def on_robot_mode(mode):
+        logger(f"Controller says put the robot into {mode}")
+        logger('Sending mode change event')
+        emit('mode', mode)
+
     @sio.on('robotFreeze', namespace='/robot')
     def on_robot_freeze():
         logger(f"Controller says freeze robot")
@@ -189,6 +205,23 @@ def start_server(config):
         # Call the robots moveL command
         robot.robot_move_l(position=position, frame=frame,
                            maxVel=speed, preferJntPos=preferJntPos, idle=idle)
+
+    @sio.on('robotMoveContact', namespace='/robot')
+    def on_robot_MoveContact(parameters):
+        logger(
+            f"Controller says robotMoveContact with parameters {json.dumps(parameters,  indent=4)}"
+        )
+
+        # Get parameters off of the event
+        contactDir = parameters["contactDir"]
+        contactVel = parameters["contactVel"]
+        maxContactForce = parameters["maxContactForce"]
+        idle = parameters.get("idle", True)
+
+        # Call the robots moveL command
+        contactDirStr = ' '.join(map(str, contactDir))
+        robot.move_contact(contactDir=contactDirStr, contactVel=contactVel,
+                           maxContactForce=maxContactForce, stop=idle)
 
     @sio.on('robotUpdateConfig', namespace='/robot')
     def on_robot_update_config(key, value):
