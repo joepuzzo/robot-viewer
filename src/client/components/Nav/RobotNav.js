@@ -423,7 +423,7 @@ export const RobotNav = () => {
   };
 
   const moveL = () => {
-    const { tcpString, preferJntPosString } = formApi.getFormState().values;
+    const { tcpString, preferJntPosString, moveWaypoints } = formApi.getFormState().values;
 
     const robotId = formApi.getValue('robotId');
     const moveFrame = formApi.getValue('moveFrame');
@@ -432,12 +432,14 @@ export const RobotNav = () => {
     if (connectedRef.current) {
       const position = tcpString.split(',').map((a) => +a.trim());
       const preferJntPos = preferJntPosString.split(',').map((a) => +a.trim());
+      const waypoints = JSON.parse(moveWaypoints ?? '[]');
 
       socket.emit('robotMoveL', robotId, {
         position,
         frame: moveFrame,
         speed: 0.1,
         preferJntPos,
+        waypoints,
       });
     }
   };
@@ -1091,6 +1093,7 @@ export const RobotNav = () => {
                 autocomplete="off"
                 width="340px"
               />
+              <Input name="moveWaypoints" label="Waypoints" autocomplete="off" width="340px" />
               <Select
                 label="Frame"
                 name="moveFrame"
