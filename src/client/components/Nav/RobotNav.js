@@ -423,7 +423,8 @@ export const RobotNav = () => {
   };
 
   const moveL = () => {
-    const { tcpString, preferJntPosString, moveWaypoints } = formApi.getFormState().values;
+    const { tcpString, preferJntPosString, moveWaypoints, moveCommandSpeed, moveCommandAcc } =
+      formApi.getFormState().values;
 
     const robotId = formApi.getValue('robotId');
     const moveFrame = formApi.getValue('moveFrame');
@@ -437,24 +438,29 @@ export const RobotNav = () => {
       socket.emit('robotMoveL', robotId, {
         position,
         frame: moveFrame,
-        speed: 0.1,
+        speed: moveCommandSpeed,
+        acc: moveCommandAcc,
         preferJntPos,
         waypoints,
       });
     }
   };
 
-  const moveLTo = ({ tcpPos, frame, speed, preferJntPos }) => {
+  const moveLTo = ({ tcpPos, frame, preferJntPos, waypoints }) => {
     // Get current connected robot
     const robotId = formApi.getValue('robotId');
+    const speed = formApi.getValue('moveCommandSpeed');
+    const acc = formApi.getValue('moveCommandAcc');
 
     // only send if we are connected
     if (connectedRef.current) {
       socket.emit('robotMoveL', robotId, {
         position: tcpPos,
         frame,
-        speed: 0.1,
+        speed,
+        acc,
         preferJntPos,
+        waypoints,
       });
     }
   };
@@ -1086,6 +1092,25 @@ export const RobotNav = () => {
               </ContextualHelp>
             </div>
             <Flex direction="column" gap="size-100">
+              <InputSlider
+                name="moveCommandSpeed"
+                label={`Speed m/s`}
+                type="number"
+                minValue={0.05}
+                maxValue={1}
+                step={0.05}
+                initialValue={0.1}
+              />
+              <InputSlider
+                name="moveCommandAcc"
+                label={`Accel m/s^2`}
+                type="number"
+                minValue={0.1}
+                maxValue={2}
+                step={0.05}
+                initialValue={1.5}
+              />
+              moveCommandAcc
               <Input name="tcpString" label="Tcp Pos" autocomplete="off" width="340px" />
               <Input
                 name="preferJntPosString"
