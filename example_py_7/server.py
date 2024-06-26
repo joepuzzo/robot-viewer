@@ -7,6 +7,7 @@ logger = Debug('mock:server\t')
 
 sio = socketio.Client()
 
+# fmt: off
 
 def emit(event, data):
     if sio.connected:
@@ -79,6 +80,25 @@ def start_server(config):
     def on_zeroed_ft():
         logger('Sending zeroedFT')
         emit('zeroedFT', robot.meta)
+
+     # Single Action Events
+
+    @robot.on('actionStart')
+    def on_action_start(name):
+        logger('Sending actionStart')
+        emit('actionStart', name)
+
+    @robot.on('actionComplete')
+    def on_action_complete(name):
+        logger('Sending actionComplete')
+        emit('actionComplete', name)
+
+    # List Of Actions Events
+
+    @robot.on('actionsStart')
+    def on_actions_start(name):
+        logger('Sending actionsStart')
+        emit('actionsStart', name)
 
     @robot.on('actionsComplete')
     def on_actions_complete(name):
@@ -191,9 +211,7 @@ def start_server(config):
 
     @sio.on('robotMoveL', namespace='/robot')
     def on_robot_MoveL(parameters):
-        logger(
-            f"Controller says robotMoveL with parameters {json.dumps(parameters,  indent=4)}"
-        )
+        logger(f"Controller says robotMoveL with parameters {json.dumps(parameters,  indent=4)}")
 
         # Get parameters off of the event
         position = parameters["position"]
@@ -202,6 +220,10 @@ def start_server(config):
         preferJntPos = parameters["preferJntPos"]
         idle = parameters.get("idle", True)
 
+        # Convert speed to deg/s instead of m/s ( wich is sent in )
+        if (speed):
+            speed = speed * 180 / 3.14159265359
+
         # Call the robots moveL command
         robot.robot_move_l(position=position, frame=frame,
                            maxVel=speed, preferJntPos=preferJntPos, idle=idle)
@@ -209,8 +231,7 @@ def start_server(config):
     @sio.on('robotMoveContact', namespace='/robot')
     def on_robot_MoveContact(parameters):
         logger(
-            f"Controller says robotMoveContact with parameters {json.dumps(parameters,  indent=4)}"
-        )
+            f"Controller says robotMoveContact with parameters {json.dumps(parameters,  indent=4)}")
 
         # Get parameters off of the event
         contactDir = parameters["contactDir"]
@@ -266,8 +287,7 @@ def start_server(config):
     @sio.on('robotFreedriveEnable', namespace='/robot')
     def on_robot_freedrive_enable(frame, cartFloatingAxis, nullspace=False):
         logger(
-            f"Controller says enable freedrive with frame {frame}, cartFloatingAxis {json.dumps(cartFloatingAxis,  indent=4)}, and nullspace {nullspace}"
-        )
+            f"Controller says enable freedrive with frame {frame}, cartFloatingAxis {json.dumps(cartFloatingAxis,  indent=4)}, and nullspace {nullspace}")
         robot.robot_freedrive_enable(frame, cartFloatingAxis, nullspace)
 
     @sio.on('robotJointFreedriveEnable', namespace='/robot')

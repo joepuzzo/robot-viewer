@@ -483,6 +483,25 @@ export class Controller {
     this.clientMessenger.send('robotModeChange', id, mode);
   }
 
+  // For Single action
+
+  robotActionStart(id, name) {
+    logger(`controller robot action start ${id}:`);
+    this.clientMessenger.send('robotActionStart', id, name);
+  }
+
+  robotActionComplete(id, name) {
+    logger(`controller robot action complete ${id}:`);
+    this.clientMessenger.send('robotActionComplete', id, name);
+  }
+
+  // For Multiple actions
+
+  robotActionsStart(id, name) {
+    logger(`controller robot actions start ${id}:`);
+    this.clientMessenger.send('robotActionsStart', id, name);
+  }
+
   robotActionsComplete(id, name) {
     logger(`controller robot actions complete ${id}:`);
     this.clientMessenger.send('robotActionsComplete', id, name);
@@ -508,6 +527,11 @@ export class Controller {
     this.robotMessenger.on('grasped', (...args) => this.robotGrasped(...args));
     this.robotMessenger.on('zeroedFT', (...args) => this.robotZeroedFT(...args));
     this.robotMessenger.on('mode', (...args) => this.robotModeChange(...args));
+    // For single Action
+    this.robotMessenger.on('actionStart', (...args) => this.robotActionStart(...args));
+    this.robotMessenger.on('actionComplete', (...args) => this.robotActionComplete(...args));
+    // For multiple Actions
+    this.robotMessenger.on('actionsStart', (...args) => this.robotActionsStart(...args));
     this.robotMessenger.on('actionsComplete', (...args) => this.robotActionsComplete(...args));
     this.robotMessenger.on('averageReadComplete', (...args) =>
       this.robotAverageReadComplete(...args),

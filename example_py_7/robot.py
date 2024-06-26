@@ -9,6 +9,22 @@ from debug import Debug
 logger = Debug('mock:robot\t')
 
 
+# Helper function for outputing perfect seperator line
+# Example print_header_line('My Title', 50)
+# Output:
+# -------------------- My Title ---------------------
+def print_header_line(header, total_width):
+    # Subtracting 2 for the spaces around the header
+    padding = (total_width - len(header) - 2) // 2
+    header_line = f"{'-' * padding} {header} {'-' * padding}"
+
+    # Adjust if total width is odd
+    if len(header_line) < total_width:
+        header_line += '-'
+
+    print(header_line)
+
+
 class Robot(EventEmitter):
     def __init__(self, config):
         logger(f'Creating robot with id {config["id"]}')
@@ -326,15 +342,8 @@ class Robot(EventEmitter):
         self.moving = True
         self.emit('meta')
 
-        # Pretend to move
-        time.sleep(5)
-
-        # Done moving
-        self.moving = False
-
-        # important to emit meta first such that the controller has updated state before emitting moved
-        self.emit('meta')
-        self.emit('moved')
+        # Pretend to move L ( actually do a moveJ using preferJntPos )
+        self.robot_set_angles(preferJntPos, maxVel, idle)
 
     def move_contact(self, contactDir, contactVel, maxContactForce, stop=True):
 
@@ -406,6 +415,28 @@ class Robot(EventEmitter):
 
     def run_actions(self, actions):
         logger(f'Running actions {json.dumps(actions, indent=4)}')
+
+        self.emit('actionsStart', actions['name'])
+
+        # Loop through each action and execute it
+        for action in actions['actions']:
+
+            action_type = action['type']
+            parameters = action['parameters']
+            log = action.get('log', '')
+
+            # Print the header line
+            print_header_line(f"ACTION ( {action_type} )", 60)
+            if log:
+                logger(log)
+
+            self.emit('actionStart', action['name'])
+
+            # Simulate action taking time ( will update eventually to actually perform action )
+            time.sleep(1)
+
+            self.emit('actionComplete', action['name'])
+
         # important to emit meta first such that the controller has updated state before emitting actionsComplete
         self.emit('meta')
         self.emit('actionsComplete', actions['name'])

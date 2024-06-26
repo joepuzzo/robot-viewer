@@ -138,7 +138,7 @@ const Recipies = ({ allWaypoints }) => {
         formApi.setValue('waypoints', waypoints);
       }
     },
-    [allRecipes]
+    [allRecipes],
   );
 
   return (

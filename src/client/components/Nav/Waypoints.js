@@ -61,40 +61,6 @@ export const Waypoints = ({ currentWaypoints, column, getAllWaypoints }) => {
   const formApi = useFormApi();
   const { value: waypointLabels } = useFieldState('waypointLabels');
 
-  // const defaultValue = [
-  //   {
-  //     x: 30,
-  //     y: 10,
-  //     z: 60,
-  //     orientation: 'x',
-  //   },
-  //   {
-  //     x: 30,
-  //     y: -10,
-  //     z: 60,
-  //     orientation: 'x',
-  //   },
-  //   {
-  //     x: -30,
-  //     y: 10,
-  //     z: 60,
-  //     orientation: '-x',
-  //   },
-  //   {
-  //     x: 50,
-  //     y: 0,
-  //     z: 0,
-  //     orientation: '-z',
-  //   },
-  //   {
-  //     x: 30,
-  //     y: -10,
-  //     z: 60,
-  //     orientation: 'x',
-  //   },
-  //   {},
-  // ];
-
   const defaultValue = [
     {
       x: 30,
