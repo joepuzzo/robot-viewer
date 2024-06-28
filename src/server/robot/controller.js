@@ -27,182 +27,185 @@ export class Controller {
 
   /* -------------- Client Shit -------------- */
 
-  clientConnect() {
-    logger('controller client connected');
-    this.clientMessenger.send('robots', this.robots);
+  clientConnect(key, socket) {
+    logger(`controller client with key ${key} connected`);
+    // Add this connection to a room
+    socket.join(key);
+    // Send message to that room
+    this.clientMessenger.sendTo(key, 'robots', this.robots[key] || {});
   }
 
-  clientDisconnect() {
-    logger(`controller client disconnected`);
+  clientDisconnect(key) {
+    logger(`controller client with key ${key} disconnected`);
   }
 
   clientHello(...args) {
     logger(`controller client says hello`, args);
   }
 
-  gripperSetPos(robotId, pos, speed, force, wait) {
+  gripperSetPos(key, robotId, pos, speed, force, wait) {
     logger(`controller client says gripperSetPos`, robotId, pos, speed, force, wait);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'gripperSetPos', pos, speed, force, wait);
     }
   }
 
-  motorSetPos(robotId, motorId, pos) {
+  motorSetPos(key, robotId, motorId, pos) {
     logger(`controller client says motorSetPos`, robotId, motorId, pos);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorSetPos', motorId, pos);
     }
   }
 
-  motorResetErrors(robotId, motorId) {
+  motorResetErrors(key, robotId, motorId) {
     logger(`controller client says motorResetErrors`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorResetErrors', motorId);
     }
   }
 
-  motorEnable(robotId, motorId) {
+  motorEnable(key, robotId, motorId) {
     logger(`controller client says motorEnable`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorEnable', motorId);
     }
   }
 
-  motorDisable(robotId, motorId) {
+  motorDisable(key, robotId, motorId) {
     logger(`controller client says motorDisable`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorDisable', motorId);
     }
   }
 
-  queryMotorPosition(robotId, motorId) {
+  queryMotorPosition(key, robotId, motorId) {
     logger(`controller client says queryMotorPosition`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'queryMotorPosition', motorId);
     }
   }
 
-  queryMotorParameter(robotId, motorId, index, subindex) {
+  queryMotorParameter(key, robotId, motorId, index, subindex) {
     logger(`controller client says queryMotorParameter`, robotId, motorId, index, subindex);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'queryMotorParameter', motorId, index, subindex);
     }
   }
 
-  motorCalibrate(robotId, motorId) {
+  motorCalibrate(key, robotId, motorId) {
     logger(`controller client says motorCalibrate`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorCalibrate', motorId);
     }
   }
 
-  motorReference(robotId, motorId) {
+  motorReference(key, robotId, motorId) {
     logger(`controller client says motorReference`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorReference', motorId);
     }
   }
 
-  robotReference(robotId) {
+  robotReference(key, robotId) {
     logger(`controller client says robotReference`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotReference');
     }
   }
 
-  robotZero(robotId) {
+  robotZero(key, robotId) {
     logger(`controller client says robotZero`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotZero');
     }
   }
 
-  robotZeroFT(robotId) {
+  robotZeroFT(key, robotId) {
     logger(`controller client says robotZeroFT`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotZeroFT');
     }
   }
 
-  motorZero(robotId, motorId) {
+  motorZero(key, robotId, motorId) {
     logger(`controller client says motorZero`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorZero', motorId);
     }
   }
 
-  motorHome(robotId, motorId) {
+  motorHome(key, robotId, motorId) {
     logger(`controller client says motorHome`, robotId, motorId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'motorHome', motorId);
     }
   }
 
-  robotHome(robotId) {
+  robotHome(key, robotId) {
     logger(`controller client says robotHome`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotHome');
     }
   }
 
-  robotCalibrate(robotId) {
+  robotCalibrate(key, robotId) {
     logger(`controller client says robotCalibrate`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotCalibrate');
     }
   }
 
-  robotResetErrors(robotId) {
+  robotResetErrors(key, robotId) {
     logger(`controller client says robotResetErrors`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotResetErrors');
     }
   }
 
-  robotAccelEnabled(robotId, value) {
+  robotAccelEnabled(key, robotId, value) {
     logger(`controller client says robotAccelEnabled`, robotId, value);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotAccelEnabled', value);
     }
   }
 
-  robotFreedriveEnable(robotId, freedriveFrame, cartFloatingAxis, nullspace) {
+  robotFreedriveEnable(key, robotId, freedriveFrame, cartFloatingAxis, nullspace) {
     logger(
       `controller client says robotFreedriveEnable`,
       robotId,
@@ -211,8 +214,8 @@ export class Controller {
       nullspace,
     );
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(
         socketId,
         'robotFreedriveEnable',
@@ -223,146 +226,146 @@ export class Controller {
     }
   }
 
-  robotJointFreedriveEnable(robotId, joints) {
+  robotJointFreedriveEnable(key, robotId, joints) {
     logger(`controller client says robotJointFreedriveEnable`, robotId, joints);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotJointFreedriveEnable', joints);
     }
   }
 
-  robotFreedriveDisable(robotId) {
+  robotFreedriveDisable(key, robotId) {
     logger(`controller client says robotFreedriveDisable`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotFreedriveDisable');
     }
   }
 
-  robotSplitHome(robotId) {
+  robotSplitHome(key, robotId) {
     logger(`controller client says robotSplitHome`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotSplitHome');
     }
   }
 
-  robotStop(robotId) {
+  robotStop(key, robotId) {
     logger(`controller client says robotStop`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotStop');
     }
   }
 
-  robotMode(robotId, mode) {
+  robotMode(key, robotId, mode) {
     logger(`controller client says robotMode`, robotId, mode);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotMode', mode);
     }
   }
 
-  robotRunPlan(robotId, name) {
+  robotRunPlan(key, robotId, name) {
     logger(`controller client says robotRunPlan`, robotId, name);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotRunPlan', name);
     }
   }
 
-  robotRunActions(robotId, actions) {
+  robotRunActions(key, robotId, actions) {
     logger(`controller client says robotRunActions`, robotId, actions);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotRunActions', actions);
     }
   }
 
-  robotAverageRead(robotId, actions) {
+  robotAverageRead(key, robotId, actions) {
     logger(`controller client says robotAverageRead`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotAverageRead');
     }
   }
 
-  robotFreeze(robotId) {
+  robotFreeze(key, robotId) {
     logger(`controller client says robotFreeze`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotFreeze');
     }
   }
 
-  robotCenter(robotId) {
+  robotCenter(key, robotId) {
     logger(`controller client says robotCenter`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotCenter');
     }
   }
 
-  robotUpdateConfig(robotId, key, value) {
-    logger(`controller client says update ${key} to ${value} for robot ${robotId}`);
+  robotUpdateConfig(key, robotId, field, value) {
+    logger(`controller client says update ${field} to ${value} for robot ${robotId}`);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
-      this.robotMessenger.sendTo(socketId, 'robotUpdateConfig', key, value);
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
+      this.robotMessenger.sendTo(socketId, 'robotUpdateConfig', field, value);
     }
   }
 
-  robotWriteConfig(robotId) {
+  robotWriteConfig(key, robotId) {
     logger(`controller client says write config for robot ${robotId}`);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotWriteConfig');
     }
   }
 
-  robotEnable(robotId) {
+  robotEnable(key, robotId) {
     logger(`controller client says robotEnable`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotEnable');
     }
   }
 
-  robotSetAngles(robotId, angles, speed, idle) {
+  robotSetAngles(key, robotId, angles, speed, idle) {
     logger(`controller client says robotSetAngles`, robotId);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotSetAngles', angles, speed, idle);
     }
   }
 
-  robotMoveL(robotId, parameters) {
+  robotMoveL(key, robotId, parameters) {
     logger(`controller client says robotMoveL ${robotId} with parameters ${parameters}`);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotMoveL', parameters);
     }
   }
 
-  robotMoveContact(robotId, parameters) {
+  robotMoveContact(key, robotId, parameters) {
     logger(`controller client says robotMoveContact ${robotId} with parameters ${parameters}`);
     // only send if we are connected
-    if (this.robots[robotId]) {
-      const socketId = this.robots[robotId].socketId;
+    if (this.robots[key][robotId]) {
+      const socketId = this.robots[key][robotId].socketId;
       this.robotMessenger.sendTo(socketId, 'robotMoveContact', parameters);
     }
   }
@@ -416,105 +419,113 @@ export class Controller {
 
   /* -------------- Robot Shit -------------- */
 
-  robotConnect(id, socket) {
-    logger(`controller robot ${id} connected`);
+  robotConnect(key, id, socket) {
+    logger(`robot with key ${key} and id ${id} connected`);
+
+    // Initialize the key if it does not exist
+    if (!this.robots[key]) {
+      this.robots[key] = {};
+    }
 
     // Register that robot via its robot id
-    this.robots[id] = {
+    this.robots[key][id] = {
       id: id,
+      key: key,
       socketId: socket.id,
     };
 
     // Let the clients know of this new robot registration
-    this.clientMessenger.send('robots', this.robots);
-    this.clientMessenger.send('robotConnected', id);
+    this.clientMessenger.sendTo(key, 'robots', this.robots[key]);
+    this.clientMessenger.sendTo(key, 'robotConnected', id);
   }
 
-  robotDisconnect(id) {
+  robotDisconnect(key, id) {
     logger(`controller robot ${id} disconnected`);
-    delete this.robots[id];
-    this.clientMessenger.send('robots', this.robots);
-    this.clientMessenger.send('robotDisconnected', id);
+    const robots = this.robots[key];
+    delete robots[id];
+    // Determine which robots to send to client based on key
+    this.clientMessenger.sendTo(key, 'robots', this.robots[key]);
+    this.clientMessenger.sendTo(key, 'robotDisconnected', id);
   }
 
-  robotState(id, state) {
+  robotState(key, id, state) {
     logger(`controller robot state ${id}:`);
-    this.clientMessenger.send('robot', id, state);
+    this.clientMessenger.sendTo(key, 'robot', id, state);
     if (this.websocket) this.websocket.send(state);
   }
 
-  robotEncoder(id, state) {
+  robotEncoder(key, id, state) {
     // Specifically dont log this because its a lot
-    this.clientMessenger.send('robot', id, state);
+    this.clientMessenger.sendTo(key, 'robot', id, state);
     if (this.websocket) this.websocket.send(state);
   }
 
-  robotRegister(id, robot) {
+  robotRegister(key, id, robot) {
     logger(`controller robot register ${id}:`, robot);
 
     // Add meta to registered robot
-    if (this.robots[id]) {
-      this.robots[id] = {
-        ...this.robots[id],
+    if (this.robots[key][id]) {
+      this.robots[key][id] = {
+        ...this.robots[key][id],
         ...robot,
       };
     }
 
-    this.clientMessenger.send('robots', this.robots);
+    this.clientMessenger.sendTo(key, 'robots', this.robots[key]);
   }
 
-  robotMoved(id, state) {
+  robotMoved(key, id, state) {
     logger(`controller robot moved ${id}:`);
-    this.clientMessenger.send('robotMoved', id, state);
+    this.clientMessenger.sendTo(key, 'robotMoved', id, state);
   }
 
-  robotGrasped(id, state) {
+  robotGrasped(key, id, state) {
     logger(`controller robot grasped ${id}:`);
-    this.clientMessenger.send('robotGrasped', id, state);
+    this.clientMessenger.sendTo(key, 'robotGrasped', id, state);
   }
 
-  robotZeroedFT(id, state) {
+  robotZeroedFT(key, id, state) {
     logger(`controller robot zeroedFT ${id}:`);
-    this.clientMessenger.send('robotZeroedFT', id, state);
+    this.clientMessenger.sendTo(key, 'robotZeroedFT', id, state);
   }
 
-  robotModeChange(id, mode) {
+  robotModeChange(key, id, mode) {
     logger(`controller robot mode ${id}:`);
-    this.clientMessenger.send('robotModeChange', id, mode);
+    this.clientMessenger.sendTo(key, 'robotModeChange', id, mode);
   }
 
   // For Single action
 
-  robotActionStart(id, name) {
+  robotActionStart(key, id, name) {
     logger(`controller robot action start ${id}:`);
-    this.clientMessenger.send('robotActionStart', id, name);
+    this.clientMessenger.sendTo(key, 'robotActionStart', id, name);
   }
 
-  robotActionComplete(id, name) {
+  robotActionComplete(key, id, name) {
     logger(`controller robot action complete ${id}:`);
-    this.clientMessenger.send('robotActionComplete', id, name);
+    this.clientMessenger.sendTo(key, 'robotActionComplete', id, name);
   }
 
   // For Multiple actions
 
-  robotActionsStart(id, name) {
+  robotActionsStart(key, id, name) {
     logger(`controller robot actions start ${id}:`);
-    this.clientMessenger.send('robotActionsStart', id, name);
+    this.clientMessenger.sendTo(key, 'robotActionsStart', id, name);
   }
 
-  robotActionsComplete(id, name) {
+  robotActionsComplete(key, id, name) {
     logger(`controller robot actions complete ${id}:`);
-    this.clientMessenger.send('robotActionsComplete', id, name);
+    this.clientMessenger.sendTo(key, 'robotActionsComplete', id, name);
   }
 
-  robotAverageReadComplete(id, name) {
+  robotAverageReadComplete(key, id, name) {
     logger(`controller robot average read complete ${id}:`);
-    this.clientMessenger.send('robotAverageReadComplete', id);
+    this.clientMessenger.sendTo(key, 'robotAverageReadComplete', id);
   }
 
-  pulse(id, pos) {
+  pulse(key, id, pos) {
     // logger(`controller robot pulse id: ${id} pos: ${pos}`);
-    this.clientMessenger.send('pulse', id, pos);
+    this.clientMessenger.sendTo(key, 'pulse', id, pos);
   }
 
   subscribeToRobotMessenger() {

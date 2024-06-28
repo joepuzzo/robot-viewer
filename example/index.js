@@ -6,7 +6,6 @@ import { startServer } from './server.js';
 const config = {
   port: 80, // client port to connect to
   host: 'localhost', // client url to connect to
-  id: 'JSExample', // robot id
 };
 
 // Process the arguments
@@ -22,6 +21,12 @@ process.argv.forEach(function (val, i, arr) {
       break;
     case '--url':
       config.url = arr[i + 1];
+      break;
+    case '--id':
+      config.id = arr[i + 1];
+      break;
+    case '--key':
+      config.key = arr[i + 1];
       break;
     default:
   }

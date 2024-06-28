@@ -20,26 +20,28 @@ export class ClientMessenger extends EventEmitter {
 
   sendTo(id, event, ...args) {
     // Send event direct via socket
-    logger(`client sending ${event} to ${id}`, ...args);
+    // logger(`client sending ${event} to ${id}`, ...args);
     this.io.to(id).emit(event, ...args);
   }
 
   connect(socket) {
+    // Get the key if there is one
+    const key = socket.handshake.query.key;
     // Log connection
-    logger(`client connected`);
+    logger(`client with key ${key} connected`);
     // Publish connection event
-    this.emit('connect', socket);
+    this.emit('connect', key, socket);
 
     // Subscribe to disconnect event
     socket.on('disconnect', (...args) => {
-      logger(`client disconnected`, args);
-      this.emit('disconnect', args);
+      logger(`client disconnected`, key, args);
+      this.emit('disconnect', key, socket, args);
     });
 
-    // Subscribe to any events from motor
+    // Subscribe to any events from client
     socket.onAny((eventName, ...args) => {
-      logger(`client recived ${eventName}`, args);
-      this.emit(eventName, ...args);
+      logger(`client recived ${eventName} on key ${key}`, args);
+      this.emit(eventName, key, ...args);
     });
   }
 }
