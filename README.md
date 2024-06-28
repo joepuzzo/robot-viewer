@@ -73,14 +73,26 @@ We have included a mock robot that simulates the robot protocol. You can run it 
 
 ```bash
 cd example
-DEBUG='mock:.*' node index.js -p 3000 --host localhost
+DEBUG='mock:.*' node index.js -p 3000 --host localhost --key customer-key --id example-js
+```
+
+Now you can navigate to this url, select the robot from the dropdown, and control the mock robot
+
+```
+http://localhost:3000?key=customer-key
 ```
 
 Also you can even have this connect to the deployed instance :)
 
 ```bash
 cd example
-DEBUG='mock:.*' node index.js --url https://robot-viewer.com
+DEBUG='mock:.*' node index.js --url https://robot-viewer.com --key customer-key --id example-js
+```
+
+Navigate to the following url to view
+
+```
+https://robot-viewer.com?key=customer-key
 ```
 
 ## Mock Python Robot ( /example_py )
@@ -117,14 +129,14 @@ DEBUG=mock:.* python test_debug.py
 Here is how you can run the example robot!
 
 ```bash
-DEBUG='mock:.*' python main.py --port 3000 --host localhost
+DEBUG='mock:.*' python main.py --port 3000 --host localhost --key customer-key --id example-py
 ```
 
 ---
 
 ## Connecting to Robots
 
-In order to connect to the robots you will need to be connected to the same network as the robots. All communication occurs via socket.io. You will need to have implimented the robot protocol. Every socket event is described below, and in addition there are specific events from the robot you need to subscibe to.
+In order to connect to the robots the robot implimentation must be connected to robot viewer. All communication occurs via socket.io. You will need to have implimented the robot protocol. Every socket event is described below, and in addition there are specific events from the robot you need to subscibe to.
 
 ### Architecture
 

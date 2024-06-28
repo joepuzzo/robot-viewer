@@ -18,8 +18,15 @@ def emit(event, data):
 
 def start_server(config):
     # Create socket
+    # Create socket
     connection_string = f"http://{config['host']}:{config['port']}?id={config['id']}&key={config['key']}"
+
+    if config.get('url', False):
+        connection_string = f"{config['url']}?id={config['id']}&key={config['key']}"
+
     logger(f'Creating socket with connection string: {connection_string}')
+
+    logger(f'Creating robot with config', json.dumps(config, indent=4))
 
     # Create robot
     robot = Robot(config)
