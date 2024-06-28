@@ -8,6 +8,7 @@ config = {
     'port': 80,  # client port to connect to
     'host': 'localhost',  # client url to connect to
     'id': 'PythonExample7Axis',  # robot id
+    'key': 'examples',  # robot key
 }
 
 # Process the arguments

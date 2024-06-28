@@ -75,9 +75,12 @@ const AppProvider = ({ children }) => {
   const orbitControl = useRef();
   const cameraControl = useRef();
 
+  // Socket Connection
+  const key = new URLSearchParams(window.location.search).get('key');
   const socketRef = useRef();
+
   useState(() => {
-    const socket = io('/client', {
+    const socket = io(`/client?key=${key}`, {
       transports: ['websocket'],
       secure: true,
     });
@@ -106,6 +109,7 @@ const AppProvider = ({ children }) => {
     socket: socketRef.current,
     orbitControl,
     cameraControl,
+    key,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

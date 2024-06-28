@@ -6,9 +6,9 @@ const logger = Debug('mock:server' + '\t');
 
 export const startServer = (config) => {
   // Create socket
-  let connectionString = `http://${config.host}:${config.port}/robot?id=${config.id}`;
+  let connectionString = `http://${config.host}:${config.port}/robot?id=${config.id}&key=${config.key}`;
   if (config.url) {
-    connectionString = `${config.url}/robot?id=${config.id}`;
+    connectionString = `${config.url}/robot?id=${config.id}&key=${config.key}`;
   }
 
   // const connectionString = `https://${config.host}/robot?id=${config.id}`;

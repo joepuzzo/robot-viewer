@@ -26,23 +26,25 @@ export class RobotMessenger extends EventEmitter {
   }
 
   connect(socket) {
-    // Get the id of the motor from the socket handshake
+    // Get the id of the robot from the socket handshake
     const id = socket.handshake.query.id;
+    // Get the key if there is one
+    const key = socket.handshake.query.key;
     // Log connection
-    logger(`robot ${id} connected`);
+    logger(`robot with key ${key} and id ${id} connected`);
     // Publish connection event
-    this.emit('connect', id, socket);
+    this.emit('connect', key, id, socket);
 
     // Subscribe to disconnect event
     socket.on('disconnect', (...args) => {
       logger(`robot ${id} disconnected`, args);
-      this.emit('disconnect', id, args);
+      this.emit('disconnect', key, id, args);
     });
 
     // Subscribe to any events from robot
     socket.onAny((eventName, ...args) => {
       // logger(`robot recived ${eventName} from robot ${id}`, args);
-      this.emit(eventName, id, ...args);
+      this.emit(eventName, key, id, ...args);
     });
   }
 }

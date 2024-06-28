@@ -7,6 +7,7 @@ const config = {
   port: 80, // client port to connect to
   host: 'localhost', // client url to connect to
   id: 'JSExample', // robot id
+  key: 'examples', // key to connect to the server
 };
 
 // Process the arguments
