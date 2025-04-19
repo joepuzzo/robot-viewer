@@ -1,6 +1,6 @@
 # --------- Phase 1 Setup --------
 # Use node base
-FROM node:16-alpine as base
+FROM node:20-alpine AS base
 
 # Install Python and other dependencies required by node-gyp
 RUN apk add --no-cache python3 make g++ 
@@ -30,8 +30,10 @@ RUN npm i
 
 # Copy the rest of the files
 COPY ["babel.config.cjs", "./"]
+COPY ["index.html", "./"]
 COPY src ./src
 COPY robots ./robots
+COPY vite.config.js ./
 
 # Build
 RUN npm run build
@@ -47,7 +49,7 @@ WORKDIR /app
 # copy app sources
 COPY --from=build /app/src/server ./server
 COPY --from=build /app/src/lib ./lib
-COPY --from=build /app/src/client/build ./client
+COPY --from=build /app/build ./client
 COPY --from=build /app/robots ./robots
 
 # Expose port

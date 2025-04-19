@@ -10,6 +10,8 @@
 !/package-lock.json
 !/.npmrc
 !/babel.config.cjs
+!/vite.config.js
+!/index.html
 
 # Ignore unnecessary files inside allowed directories
 # This should go after the allowed directories
