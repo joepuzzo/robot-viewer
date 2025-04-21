@@ -1,10 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './components/App/App.js';
-import AppProvider from './providers/AppProvider.js';
-import SimulateProvider from './providers/SimulateProvider.js';
-import RobotProvider from './providers/RobotProvider.js';
-import ControlProvider from './providers/ControlProvider.js';
+import App from './components/App/App.jsx';
+import AppProvider from './providers/AppProvider.jsx';
+import SimulateProvider from './providers/SimulateProvider.jsx';
+import RobotProvider from './providers/RobotProvider.jsx';
+import ControlProvider from './providers/ControlProvider.jsx';
 
 import { Informed } from 'informed';
 
@@ -26,8 +26,8 @@ import '@spectrum-css/typography/dist/index-vars.css';
 import '@spectrum-css/sidenav/dist/index-vars.css';
 
 import './index.css';
-import GamepadProvider from './providers/GamepadProvider.js';
-import CameraProvider from './providers/CameraProvider.js';
+import GamepadProvider from './providers/GamepadProvider.jsx';
+import CameraProvider from './providers/CameraProvider.jsx';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement); // createRoot(container!) if you use TypeScript
