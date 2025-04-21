@@ -74,7 +74,7 @@ const setupCors = () => {
     whitelist = ['http://localhost:3000', 'https://dev.myapp.com'];
   }
   if (process.env.NODE_ENV === 'production') {
-    whitelist = ['https://myapp.com'];
+    whitelist = ['https://myapp.com', 'https://robot-viewer.com'];
   }
   return {
     origin(origin, callback) {
