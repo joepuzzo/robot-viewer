@@ -597,13 +597,13 @@ export const RobotNav = () => {
         {/* <ActionButton title="Reset Robot" aria-label="Reset Robot" onClick={() => resetRobot()}>
           <Refresh />
         </ActionButton> */}
-        <ActionButton
+        {/* <ActionButton
           title="Switch Theme"
           aria-label="Switch Theme"
           onClick={() => toggleColorScheme()}
         >
           <Contrast />
-        </ActionButton>
+        </ActionButton> */}
         <ActionButton title="Freeze" onPress={() => freezeRobot()} isDisabled={disabled}>
           <Stopwatch />
         </ActionButton>

@@ -35,9 +35,11 @@ main {
   }
 }
 
+
 .app {
   display: flex;
   /* height: 100vh; */
+  background: rgb(24,26,27);
 }
 
 .app-extra {
@@ -47,7 +49,8 @@ main {
 /* ---------- Nav ---------- */
 
 .sidenav {
-  background: var(--spectrum-global-color-gray-200);
+  /* background: var(--spectrum-global-color-gray-200); */
+  background: rgb(36,39,41);
   box-sizing: border-box;
   padding: 0 24px;
   z-index: 100;
