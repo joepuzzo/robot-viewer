@@ -60,7 +60,7 @@ const setupController = (io) => {
  * Setup cors
  *
  * origin - ["http://example1.com", /\.example2\.com$/] will accept any request
- * from “http://example1.com” or from a subdomain of “example2.com”.
+ * from "http://example1.com" or from a subdomain of "example2.com".
  */
 const setupCors = () => {
   if (process.env.NODE_ENV === 'spec') {
@@ -74,7 +74,7 @@ const setupCors = () => {
     whitelist = ['http://localhost:3000', 'https://dev.myapp.com'];
   }
   if (process.env.NODE_ENV === 'production') {
-    whitelist = ['https://myapp.com', 'https://robot-viewer.com'];
+    whitelist = ['https://myapp.com', 'https://robot-viewer.com', 'https://www.joepuzzo.com'];
   }
   return {
     origin(origin, callback) {
