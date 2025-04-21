@@ -13,6 +13,7 @@
 body {
   margin: 0px;
   overflow: scroll;
+  background: rgb(24,26,27);
 }
 
 main {
