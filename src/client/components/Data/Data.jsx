@@ -9,6 +9,7 @@ import useOutsideAlerter from '../../hooks/useOutsideAlerter';
 import { BuilderData } from './BuilderData';
 import { MotorData } from './MotorData';
 import { RobotData } from './RobotData';
+import useRobotMeta from '../../hooks/useRobotMeta';
 
 const DataBar = ({ children, wide }) => {
   const { dataOpen } = useApp();
@@ -19,22 +20,27 @@ const DataBar = ({ children, wide }) => {
 };
 
 export const Data = () => {
+
+  const { connected } = useRobotMeta();
+
   return (
     <Routes>
       <Route
         path="/"
-        element={
+        element={connected ? (
           <DataBar>
             <RobotData />
           </DataBar>
+        ) : null
         }
       />
       <Route
         path="/motor"
-        element={
+        element={connected ? (
           <DataBar>
             <MotorData />
-          </DataBar>
+            </DataBar>
+        ) : null
         }
       />
       <Route
