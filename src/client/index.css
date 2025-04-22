@@ -19,7 +19,6 @@ body {
 main {
   box-sizing: border-box;
   flex-direction: column;
-  padding: 10px 52px 0;
   display: flex;
   align-items: center;
   transition: margin-left 0.2s;
@@ -31,9 +30,23 @@ main {
 @media (max-width: 1200px) {
   main {
     margin-top: 0px;
-    padding: 10px 80px;
     text-align: center;
+    padding-top: 0px;
   }
+}
+
+.main-container {
+  box-sizing: border-box;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  transition: margin-left 0.2s;
+  height: 100vh;
+  overflow: scroll;
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 40px;
 }
 
 
@@ -61,6 +74,7 @@ main {
   overflow-y: auto;
   flex-shrink: 0;
   height: 100vh;
+  width: 480px;
 }
 
 .sidenav .input-slider {
@@ -197,18 +211,23 @@ main {
 /* ----------  ---------- */
 
 .pageHeader {
-  border-bottom: 1px solid var(--spectrum-global-color-gray-200);
-  background: var(--page-background);
+  /* border-bottom: 1px solid var(--spectrum-global-color-gray-200); */
+  background: var(--spectrum-global-color-gray-75);
   z-index: 50;
   width: 100%;
   display: flex;
   padding-bottom: 5px;
   margin-bottom: 20px;
+  padding: 5px;
+  align-items: center;
+  justify-content: right;
+  padding-right: 30px;
 }
 
 @media (min-width: 1200px) {
   .pageHeader {
     /* margin-left: 450px; */
+    justify-content: center;
   }
 }
 

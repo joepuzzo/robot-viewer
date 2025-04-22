@@ -37,7 +37,9 @@ const App = () => {
           <Nav />
           <main>
             <Header />
+            <div className="main-container">
             <Routes />
+            </div>
           </main>
           <Data />
         </div>
